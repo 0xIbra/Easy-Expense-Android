@@ -13,12 +13,11 @@ public class UserSession {
 
 
 
-    public static void setSharedPrefs(SharedPreferences session, String USER_EMAIL, String USER_PASS) {
+    public static void setSharedPrefs(SharedPreferences session, String USER_TOKEN, String USER_EMAIL) {
         SharedPreferences.Editor editor = session.edit();
+        editor.putString("USER_TOKEN", USER_TOKEN);
         editor.putString("USER_EMAIL", USER_EMAIL);
-        editor.putString("USER_PASS", USER_PASS);
         editor.apply();
-
     }
 
     public static Map<String, ?> getUserSession(SharedPreferences session){
@@ -28,7 +27,7 @@ public class UserSession {
 
 
     public static Boolean CheckSession(SharedPreferences userPrefs) {
-        if (userPrefs.contains("USER_EMAIL") && userPrefs.contains("USER_PASS")){
+        if (userPrefs.contains("USER_EMAIL") && userPrefs.contains("USER_TOKEN")){
             return true;
         }else{
             return false;

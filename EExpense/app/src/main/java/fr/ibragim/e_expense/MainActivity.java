@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,42 +13,34 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
-import fr.ibragim.e_expense.AdaptListView.CardViewAdapter;
-import fr.ibragim.e_expense.Metier.NoteFrais;
 import fr.ibragim.e_expense.network.HttpsPostRequest;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    protected final String USER_EMAIL = "";
-    private final int USER_ID = 0;
+    protected final String USER_TOKEN = "";
+    private final String USER_ID = "USER_ID";
     String result = "";
     String login;
     String pass;
     private final String USER_SESSION = "USER_SESSION";
     SharedPreferences userPrefs;
-    protected String API_URL = "https://e-expense.000webhostapp.com/Android.php";
+    protected String API_URL = "http://api.ibragim.fr/Android.php";
     protected HttpsPostRequest getRequest;
     protected String user_email;
 
     //CURRENT USER
     protected String userid;
     protected String useremail;
+    protected String userToken;
     protected String usernom;
     protected String userprenom;
-    private ArrayList<NoteFrais> listFrais;
-    protected CardViewAdapter adapter;
-    private ListView listCards;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,23 +49,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        listCards = findViewById(R.id.cardviewTemplate);
-
 
         Intent intent = getIntent();
         if (intent != null){
-            user_email = intent.getStringExtra(USER_EMAIL);
+            userToken = intent.getStringExtra(USER_TOKEN);
+
             getRequest = new HttpsPostRequest();
             try {
-                result = getRequest.execute(API_URL, "getUserSession=true&userEmail="+user_email.toString()).get();
-                Log.v("RETOUR : ", result);
+                String params = "getUserSession=true&token="+userToken+"&userid="+userid;
+                result = getRequest.execute(API_URL, params).get();
                 JSONObject user = new JSONObject(result);
                 userid = user.getString("id");
                 usernom = user.getString("nom");
                 userprenom = user.getString("prenom");
                 useremail = user.getString("email");
-                System.out.println(usernom + " - " + userprenom);
-                System.out.println(useremail);
+                //System.out.println(usernom + " - " + userprenom);
+                //System.out.println(useremail);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
@@ -86,9 +75,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         userPrefs = this.getSharedPreferences(USER_SESSION, MODE_PRIVATE);
-
-
-        getNotes();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -186,31 +172,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    public ArrayList<CardView> getNotes(){
-        HttpsPostRequest requette = new HttpsPostRequest();
-        String params = "getNotes=true&userID="+userid;
-        String result = null;
-        try {
-            result = requette.execute(API_URL, params).get();
-            JSONArray listNotesJson = new JSONArray(result);
-            final String[] items = new String[listNotesJson.length()];
 
-            for (int i = 0; i < listNotesJson.length(); i++){
-                JSONObject note = new JSONObject(listNotesJson.getString(i));
-                this.listFrais.add(new NoteFrais(note.getInt("codeFrais"), note.getString("libelleNote"), note.getString("dateFrais"), note.getString("villeFrais"), note.getString("dateSoumission"), note.getString("commentaireFrais"), note.getInt("idUtilisateur"), note.getInt("idClient")));
-            }
-            //adapter = new CardViewAdapter(this,R.layout.activity_main, R.id.cardviewTemplate, listNotesJson);
-            //listCards.setAdapter(adapter);
-
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
 }

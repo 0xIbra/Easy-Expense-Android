@@ -6,8 +6,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import fr.ibragim.e_expense.network.HttpsPostData;
-
 public class NoteFraisActivity extends AppCompatActivity {
     private EditText noteDate;
     private EditText noteComment;
@@ -26,14 +24,12 @@ public class NoteFraisActivity extends AppCompatActivity {
         DistanceKM = findViewById(R.id.noteDistance);
         noteSubmit = findViewById(R.id.noteSubmit);
 
-        final HttpsPostData query = new HttpsPostData();
 
 
         noteSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                query.execute(url, "addFrais=true;date_note="+noteDate.getText().toString()+"&commentaire="+noteComment.getText().toString()+"&distance_km="+DistanceKM.getText().toString());
-                System.out.println(url +"  addFrais=true;date_note="+noteDate.getText().toString()+"&commentaire="+noteComment.getText().toString()+"&distance_km="+DistanceKM.getText().toString());
+
             }
         });
 
