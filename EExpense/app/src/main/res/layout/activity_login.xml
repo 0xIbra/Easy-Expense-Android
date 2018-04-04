@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context="fr.ibragim.e_expense.LoginActivity"
     android:background="@drawable/gradient_background">
 
@@ -15,7 +16,8 @@
         android:id="@+id/logo"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="50dp">
-        v
+
+
         <ImageView
             android:layout_width="150dp"
             android:layout_height="150dp"
@@ -30,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/imglogo"
             android:layout_marginTop="20dp"
-            android:text="E-Expense"
+            android:text="Easy Expense"
             android:textAlignment="center"
             android:textSize="22dp"
             android:textColor="#ccc"/>
@@ -53,6 +55,7 @@
             android:layout_marginHorizontal="40dp"
             android:textColorHint="#b2b1b1"
             android:layout_marginBottom="10dp"
+            android:text="test@test.fr"
             android:textColor="#fff"
             android:id="@+id/loginField"
             android:drawableLeft="@drawable/user"
@@ -66,6 +69,7 @@
             android:textSize="16dp"
             android:inputType="textPassword"
             android:layout_marginHorizontal="40dp"
+            android:text="test"
             android:textColorHint="#b2b1b1"
             android:textColor="#fff"
             android:id="@+id/passField"
@@ -86,7 +90,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Se souvenir"
+            android:text="Rester connecté"
             android:textColor="#fff"
             />
 

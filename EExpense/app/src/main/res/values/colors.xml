@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#374761</color>
     <color name="colorAccent">#b2b1b1</color>
     <color name="toolbarColor">#374761</color>
+    <color name="noteViewColor">#d1d1d1</color>
 </resources>
