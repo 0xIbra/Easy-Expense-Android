@@ -19,21 +19,9 @@ public class DepenseActivity extends AppCompatActivity {
         btnTrajet = findViewById(R.id.btnTrajet);
 
 
-        btnFrais.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(DepenseActivity.this, FraisActivity.class);
-                startActivity(i);
-            }
-        });
 
-        btnTrajet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(DepenseActivity.this, TrajetActivity.class);
-                startActivity(i);
-            }
-        });
+
+
 
 
     }
