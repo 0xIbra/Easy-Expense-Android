@@ -22,6 +22,10 @@ public class Adapter extends RecyclerView.Adapter<ViewHolder> {
         this.list = list;
     }
 
+
+
+
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview, parent, false);
@@ -32,6 +36,7 @@ public class Adapter extends RecyclerView.Adapter<ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         NoteFrais n = list.get(position);
         holder.bind(n);
+
     }
 
     @Override

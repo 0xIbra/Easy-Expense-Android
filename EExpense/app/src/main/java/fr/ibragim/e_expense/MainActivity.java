@@ -1,5 +1,6 @@
 package fr.ibragim.e_expense;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,8 +17,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -228,6 +231,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 r = findViewById(R.id.fragment_main_recycler_view);
                 r.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 r.setAdapter(new Adapter(NotesFrais));
+
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

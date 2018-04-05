@@ -26,10 +26,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    implementation 'com.android.support:cardview-v7:28.0.0-alpha1'
-<<<<<<< HEAD
-    compile 'com.android.support:recyclerview-v7:26.1.0'
-=======
-    implementation 'com.android.support:recyclerview-v7:28.0.0-alpha1'
->>>>>>> c0d8fe080f9257ff07f68f51528c340bb3ff8bca
+    compile 'com.android.support:recyclerview-v7:22.1.1'
+    compile 'com.android.support:cardview-v7:22.1.1'
 }

@@ -20,12 +20,6 @@
 <<<<<<< HEAD
             android:layout_height="match_parent"
             android:layout_marginBottom="60dp"/>
-
-
-=======
-            android:layout_height="match_parent" />
-
->>>>>>> c0d8fe080f9257ff07f68f51528c340bb3ff8bca
     </RelativeLayout>
 
 
