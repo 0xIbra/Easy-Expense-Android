@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     String pass;
     private final String USER_SESSION = "USER_SESSION";
     SharedPreferences userPrefs;
-    protected String API_URL = "http://api.ibragim.fr/Android.php";
+    protected String API_URL = "https://api.ibragim.fr/Android.php";
     protected HttpsPostRequest getRequest;
     protected String user_email;
 
@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             r.setAdapter(new Adapter(NotesFrais, new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    Snackbar.make(view, "test "+i, Snackbar.LENGTH_SHORT).show();
+                    
                 }
             }));
 

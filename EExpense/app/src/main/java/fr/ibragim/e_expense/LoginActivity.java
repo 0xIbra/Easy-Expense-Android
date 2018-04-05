@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         userPrefs = getSharedPreferences(this.USER_SESSION, MODE_PRIVATE);
-        API_URL = "http://api.ibragim.fr/Android.php";
+        API_URL = "https://api.ibragim.fr/Android.php";
         boolean SessionCheck = UserSession.CheckSession(userPrefs);
 
         if (SessionCheck){
