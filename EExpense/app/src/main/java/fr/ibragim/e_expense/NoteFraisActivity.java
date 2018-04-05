@@ -1,5 +1,7 @@
 package fr.ibragim.e_expense;
 
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,7 +11,7 @@ import android.widget.EditText;
 public class NoteFraisActivity extends AppCompatActivity {
     private EditText noteDate;
     private EditText noteComment;
-    private EditText DistanceKM;
+    private EditText noteLibelle;
     private Button noteSubmit;
 
     private final String url = "https://e-expense.000webhostapp.com/Android.php";
@@ -18,20 +20,21 @@ public class NoteFraisActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_frais);
-
-        noteDate = findViewById(R.id.noteDate);
+        noteLibelle = findViewById(R.id.noteLibelle);
         noteComment = findViewById(R.id.noteComment);
-        DistanceKM = findViewById(R.id.noteDistance);
-        noteSubmit = findViewById(R.id.noteSubmit);
+        //noteSubmit = findViewById(R.id.noteSubmit);
 
 
 
+        FloatingActionButton noteSubmit = (FloatingActionButton) findViewById(R.id.noteSubmit);
         noteSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent i = new Intent(NoteFraisActivity.this, DepenseActivity.class);
+                startActivity(i);
             }
         });
+
 
 
 
