@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.deconnexion) {
             SharedPreferences.Editor editor = userPrefs.edit();
             editor.remove("USER_EMAIL");
-            editor.remove("USER_PASS");
+            editor.remove("USER_TOKEN");
             editor.apply();
             Intent deco = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(deco);
