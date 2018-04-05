@@ -1,6 +1,5 @@
 package fr.ibragim.e_expense;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,7 +8,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,9 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -81,8 +77,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 usernom = user.getString("nom");
                 userprenom = user.getString("prenom");
                 useremail = user.getString("email");
-                //System.out.println(usernom + " - " + userprenom);
-                //System.out.println(useremail);
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
@@ -192,8 +187,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     public void getNotes(){
-
-
         HttpsPostRequest newReq = new HttpsPostRequest();
         String res = "";
         String params = "getNotes=true&userID="+userid;
@@ -212,12 +205,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 String dateS = currentCard.getString("dateSoumission");
                 String comm = currentCard.getString("commentaireFrais");
                 int idUtilisateur = currentCard.getInt("idUtilisateur");
+                int idClient = currentCard.getInt("idClient");
 
 
-                NoteFrais n = null;
-                n = new NoteFrais(codeFrais, libelleNote, dateF, ville, dateS, comm, idUtilisateur);
-
-                NotesFrais.add(n);
+                NotesFrais.add(new NoteFrais(codeFrais, libelleNote, dateF, ville, dateS, comm, idUtilisateur, idClient));
 
             }
 

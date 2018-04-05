@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="fr.ibragim.e_expense.NoteFraisActivity"
+    >
+
+    <LinearLayout
+        android:id="@+id/inputFields"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="40dp"
+        android:layout_marginTop="50dp"
+        >
+
+
+        <TextView
+            android:id="@+id/typeDepense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:textSize="22dp"
+            android:inputType="textPersonName"
+            android:text="Type de dépense"
+            android:layout_marginBottom="20dp"
+            android:textAlignment="center" />
+
+        <Button
+            android:id="@+id/btnFrais"
+            android:layout_width="match_parent"
+            android:layout_height="210dp"
+            android:textSize="22dp"
+            app:srcCompat="@drawable/rounded_corners"
+            android:background="@drawable/rounded_corners"
+            android:text="Frais" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:orientation="horizontal"></LinearLayout>
+
+        <Button
+            android:id="@+id/btnTrajet"
+            android:layout_width="match_parent"
+            android:layout_height="210dp"
+            android:textSize="22dp"
+            android:background="@drawable/rounded_corners"
+            android:text="Trajet"
+            app:srcCompat="@drawable/rounded_corners" />
+    </LinearLayout>
+
+
+
+</RelativeLayout>
+
