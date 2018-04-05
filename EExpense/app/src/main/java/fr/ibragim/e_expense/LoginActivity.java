@@ -2,6 +2,7 @@ package fr.ibragim.e_expense;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -43,7 +44,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         userPrefs = getSharedPreferences(this.USER_SESSION, MODE_PRIVATE);
         API_URL = "http://api.ibragim.fr/Android.php";
-        getRequest = new HttpsPostRequest();
         boolean SessionCheck = UserSession.CheckSession(userPrefs);
 
         if (SessionCheck){
@@ -61,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
 
             params = "AuthToken=true&token="+sharedToken+"&mail="+userEmail+"&password="+pass;
             try {
+                getRequest = new HttpsPostRequest();
                 result = getRequest.execute(API_URL, params).get();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -96,14 +97,15 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 int userid = 0;
                 try {
+                    getRequest = new HttpsPostRequest();
                     String base = emailField.getText().toString() + ":" + passField.getText().toString();
                     AuthHeader = Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-                    byte[] test = AuthHeader.getBytes();
-                    String test2 = new String(test);
-                    byte[] decoded = Base64.decode(test2, Base64.NO_WRAP);
-                    String decodedTest2 = new String(decoded);
-                    userEmail = decodedTest2.substring(0, emailField.getText().length());
-                    String pass = decodedTest2.substring(emailField.getText().length() + 1, decodedTest2.length());
+                    //byte[] test = AuthHeader.getBytes();
+                    //String test2 = new String(test);
+                    //byte[] decoded = Base64.decode(test2, Base64.NO_WRAP);
+                    //String decodedTest2 = new String(decoded);
+                    //userEmail = decodedTest2.substring(0, emailField.getText().length());
+                    //String pass = decodedTest2.substring(emailField.getText().length() + 1, decodedTest2.length());
                     result = getRequest.execute(API_URL,"AuthToken=true&token="+AuthHeader+"&mail="+emailField.getText().toString() +"&password="+ passField.getText().toString()).get(); // Exécution du Thread pour connexion.
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -139,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                 }else{
-                    Toast.makeText(getApplicationContext(), "Email ou Mot de passe incorrects", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(view, "Email ou Mot de passe incorrects", Snackbar.LENGTH_SHORT).show();
                 }
 
 

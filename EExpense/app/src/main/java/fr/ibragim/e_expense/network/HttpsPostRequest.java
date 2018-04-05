@@ -54,6 +54,7 @@ public class HttpsPostRequest extends AsyncTask<String, Void, String> {
                 response.append('\r');
             }
             reader.close();
+
             return response.toString();
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -63,4 +64,5 @@ public class HttpsPostRequest extends AsyncTask<String, Void, String> {
 
         return null;
     }
+
 }
