@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="fr.ibragim.e_expense.NoteFraisActivity">
+    tools:context="fr.ibragim.e_expense.NoteFraisActivity"
+    >
 
     <LinearLayout
         android:id="@+id/inputFields"
@@ -12,35 +13,50 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingHorizontal="40dp"
-        android:layout_marginTop="50dp">
+        android:layout_marginTop="50dp"
+        >
+
 
         <EditText
-            android:id="@+id/noteDate"
+            android:id="@+id/noteLibelle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Date"/>
+            android:hint="Libéllé de la note"
+            android:textAlignment="center"
+            />
 
         <EditText
             android:id="@+id/noteComment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textAlignment="center"
             android:hint="Commentaire" />
 
-        <EditText
-            android:id="@+id/noteDistance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Disance KM"
-            />
 
-        <Button
+        <CalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+
+    </LinearLayout>
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/inputFields">
+
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/noteSubmit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ajouter"
-            android:background="#2d2d2d"
-            android:textColor="#fff"/>
+            android:layout_gravity="bottom|center"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@drawable/ic_add_black_24dp"
+            app:backgroundTint="@color/cardview_dark_background"
+             />
 
-    </LinearLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
 </RelativeLayout>
