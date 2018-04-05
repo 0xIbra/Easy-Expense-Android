@@ -2,10 +2,10 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="#d1d1d1" />
+            <solid android:color="#ededed" />
             <stroke android:color="#d1d1d1" android:width="0dp" />
             <!--corners allow us to make the rounded corners button-->
-            <corners android:radius="10dp" />
+            <corners android:radius="1dp" />
         </shape>
     </item>
 </selector>

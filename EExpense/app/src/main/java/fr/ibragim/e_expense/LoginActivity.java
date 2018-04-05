@@ -133,6 +133,7 @@ public class LoginActivity extends AppCompatActivity {
                     }else {
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.putExtra(USER_TOKEN, authToken);
+                        intent.putExtra(USER_ID, userid);
                         startActivity(intent);
                         finish();
                     }

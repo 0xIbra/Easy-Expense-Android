@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,13 +16,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import fr.ibragim.e_expense.Metier.NoteFrais;
+import fr.ibragim.e_expense.Views.Adapter;
 import fr.ibragim.e_expense.network.HttpsPostRequest;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -36,11 +45,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected String user_email;
 
     //CURRENT USER
-    protected String userid;
+    protected int userid;
     protected String useremail;
     protected String userToken;
     protected String usernom;
     protected String userprenom;
+
+    protected List<NoteFrais> NotesFrais = new ArrayList<NoteFrais>();
+    RecyclerView r;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +65,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = getIntent();
         if (intent != null){
             userToken = intent.getStringExtra(USER_TOKEN);
+            userid = intent.getIntExtra(USER_ID, 0);
 
             getRequest = new HttpsPostRequest();
             try {
                 String params = "getUserSession=true&token="+userToken+"&userid="+userid;
                 result = getRequest.execute(API_URL, params).get();
                 JSONObject user = new JSONObject(result);
-                userid = user.getString("id");
+                userid = user.getInt("id");
                 usernom = user.getString("nom");
                 userprenom = user.getString("prenom");
                 useremail = user.getString("email");
@@ -105,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navname.setText(userprenom + " " + usernom);
         navemail.setText(useremail);
 
+        getNotes();
 
     }
 
@@ -172,6 +186,59 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+    public void getNotes(){
+
+
+        HttpsPostRequest newReq = new HttpsPostRequest();
+        String res = "";
+        String params = "getNotes=true&userID="+userid;
+        System.out.println("MY ID "+params);
+        try {
+            res = newReq.execute(API_URL, params).get();
+            Log.v("RETOUR ", res);
+            JSONArray cards = new JSONArray(res);
+            JSONObject currentCard;
+            for (int i = 0; i < cards.length(); i++){
+                currentCard = cards.getJSONObject(i);
+                int codeFrais = currentCard.getInt("codeFrais");
+                String libelleNote = currentCard.getString("libelleNote");
+                String dateF = currentCard.getString("dateFrais");
+                String ville = currentCard.getString("villeFrais");
+                String dateS = currentCard.getString("dateSoumission");
+                String comm = currentCard.getString("commentaireFrais");
+                int idUtilisateur = currentCard.getInt("idUtilisateur");
+                //int idClient = Integer.parseInt(String.valueOf(currentCard.getInt("idClient")));
+
+
+
+                NoteFrais n;
+                //if (idClient == Integer.parseInt(null)){
+                   // n = new NoteFrais(codeFrais, libelleNote, dateF, ville, dateS, comm, idUtilisateur);
+                //}else{
+
+                    n = new NoteFrais(codeFrais, libelleNote, dateF, ville, dateS, comm, idUtilisateur);
+               // }
+
+                NotesFrais.add(n);
+
+
+
+
+
+                r = findViewById(R.id.fragment_main_recycler_view);
+                r.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                r.setAdapter(new Adapter(NotesFrais));
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 
 
 }

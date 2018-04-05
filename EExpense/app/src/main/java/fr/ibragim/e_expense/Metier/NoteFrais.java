@@ -13,12 +13,13 @@ public class NoteFrais {
     private String Ville;
     private String dateSoumission;
     private String commentaireFrais;
+    private String etat;
     private int idUtilisateur;
     private int idClient;
     private ArrayList<Depense> listeDepenses;
 
 
-    public NoteFrais(int id, String libelle, String dateFrais, String ville, String dateSoumission, String commentaireFrais,int idU,int idC) {
+    public NoteFrais(int id, String libelle, String dateFrais, String ville, String dateSoumission, String commentaireFrais,int idU) {
         this.id = id;
         this.libelle = libelle;
         DateFrais = dateFrais;
@@ -26,9 +27,20 @@ public class NoteFrais {
         this.dateSoumission = dateSoumission;
         this.commentaireFrais = commentaireFrais;
         this.idUtilisateur = idU;
-        this.idClient = idC;
+
     }
 
+    public NoteFrais(int id, String libelle, String dateFrais, String ville, String dateSoumission, String commentaireFrais,int idU, int idC) {
+        this.id = id;
+        this.libelle = libelle;
+        DateFrais = dateFrais;
+        Ville = ville;
+        this.dateSoumission = dateSoumission;
+        this.commentaireFrais = commentaireFrais;
+        this.etat = etat;
+        this.idUtilisateur = idU;
+        this.idClient = idC;
+    }
 
     public NoteFrais(String libelle, String dateFrais, String ville, String dateSoumission, String commentaireFrais) {
         this.libelle = libelle;
@@ -40,6 +52,14 @@ public class NoteFrais {
 
 
 
+
+    public String getEtat() {
+        return etat;
+    }
+
+    public void setEtat(String etat) {
+        this.etat = etat;
+    }
 
     public void addDepense(Depense d){
         this.listeDepenses.add(d);
@@ -117,3 +137,4 @@ public class NoteFrais {
         this.idClient = idClient;
     }
 }
+
