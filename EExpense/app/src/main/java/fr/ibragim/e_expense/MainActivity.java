@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected List<NoteFrais> NotesFrais = new ArrayList<NoteFrais>();
     RecyclerView r;
 
+    //protected NoteFrais currentNote;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
