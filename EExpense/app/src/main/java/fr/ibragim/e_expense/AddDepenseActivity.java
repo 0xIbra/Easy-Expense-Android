@@ -145,6 +145,7 @@ public class AddDepenseActivity extends AppCompatActivity {
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         Bitmap bitmap = BitmapFactory.decodeFile(imageUri.getPath(), options);
         addPicture.setImageBitmap(bitmap);
+        addPicture.setRotation(90);
     }
 
 
