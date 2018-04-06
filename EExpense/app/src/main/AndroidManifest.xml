@@ -35,6 +35,8 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".NoteFraisActivity" />
         <activity android:name=".AddDepenseActivity"></activity>
+
+
     </application>
 
 </manifest>
