@@ -6,14 +6,17 @@
     android:layout_height="match_parent"
     tools:context="fr.ibragim.e_expense.NoteFraisActivity"
     >
+    <include layout="@layout/custom_toolbar"
+        android:id="@+id/customToolbar"/>
 
     <LinearLayout
         android:id="@+id/inputFields"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_below="@id/customToolbar"
         android:paddingHorizontal="40dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="10dp"
         >
 
 

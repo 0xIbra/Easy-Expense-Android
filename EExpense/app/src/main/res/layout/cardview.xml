@@ -5,11 +5,12 @@
     android:backgroundTint="@color/colorPrimary"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_marginHorizontal="5dp"
-    android:layout_marginVertical="5dp">
+    android:layout_marginVertical="3dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingVertical="10dp"
             android:background="@drawable/roundcard">
 
             <ImageView
@@ -43,7 +44,7 @@
                 android:layout_below="@id/idNoteFrais"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
+                android:layout_marginTop="7dp"
                 android:text="en cours"
                 android:textColor="#fff"
                 android:background="@drawable/etatbackground"

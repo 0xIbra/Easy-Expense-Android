@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,7 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     String pass;
     private final String USER_SESSION = "USER_SESSION";
     SharedPreferences userPrefs;
-    protected String API_URL = "http://api.ibragim.fr/Android.php";
+    protected String API_URL = "https://api.ibragim.fr/Android.php";
     protected HttpsPostRequest getRequest;
     protected String user_email;
 
@@ -53,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     protected List<NoteFrais> NotesFrais = new ArrayList<NoteFrais>();
     RecyclerView r;
+
+    //protected NoteFrais currentNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +79,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 usernom = user.getString("nom");
                 userprenom = user.getString("prenom");
                 useremail = user.getString("email");
-                //System.out.println(usernom + " - " + userprenom);
-                //System.out.println(useremail);
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
@@ -173,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.deconnexion) {
             SharedPreferences.Editor editor = userPrefs.edit();
             editor.remove("USER_EMAIL");
-            editor.remove("USER_PASS");
+            editor.remove("USER_TOKEN");
             editor.apply();
             Intent deco = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(deco);
@@ -187,8 +189,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     public void getNotes(){
-
-
         HttpsPostRequest newReq = new HttpsPostRequest();
         String res = "";
         String params = "getNotes=true&userID="+userid;
@@ -207,28 +207,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 String dateS = currentCard.getString("dateSoumission");
                 String comm = currentCard.getString("commentaireFrais");
                 int idUtilisateur = currentCard.getInt("idUtilisateur");
-                //int idClient = Integer.parseInt(String.valueOf(currentCard.getInt("idClient")));
+                int idClient = currentCard.getInt("idClient");
 
 
+                NotesFrais.add(new NoteFrais(codeFrais, libelleNote, dateF, ville, dateS, comm, idUtilisateur, idClient));
 
-                NoteFrais n;
-                //if (idClient == Integer.parseInt(null)){
-                   // n = new NoteFrais(codeFrais, libelleNote, dateF, ville, dateS, comm, idUtilisateur);
-                //}else{
-
-                    n = new NoteFrais(codeFrais, libelleNote, dateF, ville, dateS, comm, idUtilisateur);
-               // }
-
-                NotesFrais.add(n);
-
-
-
-
-
-                r = findViewById(R.id.fragment_main_recycler_view);
-                r.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                r.setAdapter(new Adapter(NotesFrais));
             }
+
+            r = findViewById(R.id.fragment_main_recycler_view);
+            r.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+            r.setAdapter(new Adapter(NotesFrais, new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                }
+            }));
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
