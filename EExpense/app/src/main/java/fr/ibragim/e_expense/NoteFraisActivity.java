@@ -43,7 +43,7 @@ public class NoteFraisActivity extends AppCompatActivity {
         noteSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(NoteFraisActivity.this, DepenseActivity.class);
+                Intent i = new Intent(NoteFraisActivity.this, AddDepenseActivity.class);
                 startActivity(i);
             }
         });
