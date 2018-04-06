@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutionException;
 
 import fr.ibragim.e_expense.Metier.NoteFrais;
 import fr.ibragim.e_expense.Views.Adapter;
+import fr.ibragim.e_expense.network.ConnectionDetector;
 import fr.ibragim.e_expense.network.HttpsPostRequest;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     SharedPreferences userPrefs;
     protected String API_URL = "https://api.ibragim.fr/Android.php";
     protected HttpsPostRequest getRequest;
+    protected ConnectionDetector connectionDetector;
     protected String user_email;
 
     //CURRENT USER
@@ -67,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Intent intent = getIntent();
         if (intent != null){
+
             userToken = intent.getStringExtra(USER_TOKEN);
             userid = intent.getIntExtra(USER_ID, 0);
 

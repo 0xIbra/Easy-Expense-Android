@@ -4,24 +4,30 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.MultiAutoCompleteTextView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
-public class NoteFraisActivity extends AppCompatActivity {
+public class NoteFraisActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     private EditText noteDate;
     private EditText noteComment;
     private EditText noteLibelle;
     private Button noteSubmit;
     private final String API_URL = "https://api.ibragim.fr/Android.php";
 
-
+    private String selectedType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +53,15 @@ public class NoteFraisActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+
+        Spinner spinner = findViewById(R.id.dropdownTypeDepense);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.type_depenses, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
+
+
     }
 
 
@@ -78,5 +93,17 @@ public class NoteFraisActivity extends AppCompatActivity {
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        selectedType = adapterView.getItemAtPosition(i).toString();
+        Snackbar.make(view, selectedType, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 }
