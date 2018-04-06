@@ -35,8 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     SharedPreferences userPrefs;
     protected String API_URL;
     protected HttpsPostRequest getRequest;
-    private String userID;
-
+    private int userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +51,9 @@ public class LoginActivity extends AppCompatActivity {
             String sharedToken = userS.get("USER_TOKEN").toString();
             String sharedEmail = userS.get("USER_EMAIL").toString();
 
+            System.out.println("TOKEN " + sharedToken);
+            System.out.println("SHAREDEMAIL " + sharedEmail);
+
             byte[] tokenBytes = sharedToken.getBytes();
 
             byte[] decoded = Base64.decode(tokenBytes, Base64.NO_WRAP);
@@ -60,9 +62,12 @@ public class LoginActivity extends AppCompatActivity {
             String pass = decodedTest2.substring(sharedEmail.length() + 1, decodedTest2.length());
 
             params = "AuthToken=true&token="+sharedToken+"&mail="+userEmail+"&password="+pass;
+            System.out.println("PARAMS "+params);
+
             try {
                 getRequest = new HttpsPostRequest();
                 result = getRequest.execute(API_URL, params).get();
+                System.out.println("PASS "+result);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
@@ -72,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 JSONObject user = new JSONObject(result);
                 authToken = user.getString("AuthToken");
-                userID = user.getString("id");
+                userID = user.getInt("id");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -100,6 +105,12 @@ public class LoginActivity extends AppCompatActivity {
                     getRequest = new HttpsPostRequest();
                     String base = emailField.getText().toString() + ":" + passField.getText().toString();
                     AuthHeader = Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+
+                    byte[] decoding = AuthHeader.getBytes();
+                    String decoded = new String(decoding);
+                    userEmail = decoded.substring(0, emailField.getText().length());
+
+
                     //byte[] test = AuthHeader.getBytes();
                     //String test2 = new String(test);
                     //byte[] decoded = Base64.decode(test2, Base64.NO_WRAP);
@@ -124,6 +135,9 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 if (AuthHeader.equals(authToken)){
+                    byte[] decoding = AuthHeader.getBytes();
+                    String decoded = new String(decoding);
+                    userEmail = decoded.substring(0, emailField.getText().length());
 
                     if (rememberSw.isChecked()){
                         UserSession.setSharedPrefs(userPrefs, authToken, userEmail);
