@@ -20,6 +20,10 @@ import android.widget.MultiAutoCompleteTextView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
+import fr.ibragim.e_expense.Metier.Depense;
+
 public class NoteFraisActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     private EditText noteDate;
     private EditText noteComment;
@@ -28,6 +32,8 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
     private final String API_URL = "https://api.ibragim.fr/Android.php";
 
     private String selectedType;
+
+    ArrayList<Depense> depensesList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +61,15 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
         });
 
 
+        String[] typedepense = new String[]{
+                "Frais",
+                "Trajet"
+        };
+
+
         Spinner spinner = findViewById(R.id.dropdownTypeDepense);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.type_depenses, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_item, typedepense);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
 
