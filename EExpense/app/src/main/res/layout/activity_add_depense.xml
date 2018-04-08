@@ -72,7 +72,7 @@
                     android:id="@+id/changeDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Click To Change Date" />
+                    android:text="Changer la date" />
 
 
             </LinearLayout>
