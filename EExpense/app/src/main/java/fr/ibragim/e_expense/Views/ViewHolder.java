@@ -14,42 +14,14 @@ import android.widget.AdapterView.OnItemClickListener;
  * Created by ibragim.abubakarov on 04/04/2018.
  */
 
-public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public abstract class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    private ImageView img;
-    private TextView title;
-    private TextView date;
-    private TextView etat;
-
-    ItemClickListener itemClickListener;
 
     public ViewHolder(View itemView) {
         super(itemView);
-
-        img = itemView.findViewById(R.id.justi);
-        title = itemView.findViewById(R.id.idNoteFrais);
-        date = itemView.findViewById(R.id.dateNoteFrais);
-        etat = itemView.findViewById(R.id.etatNoteFrais);
-
-        itemView.setOnClickListener(this);
     }
 
+    public abstract void bindType(ListItem item, AdapterView.OnItemClickListener listener);
 
-
-
-    public void bind(final NoteFrais n, final OnItemClickListener listener){
-        title.setText(n.getLibelle());
-        date.setText(n.getDateFrais());
-        etat.setText("en cours");
-    }
-
-    @Override
-    public void onClick(View view) {
-        this.itemClickListener.onItemClick(view, getLayoutPosition());
-    }
-
-    public void setItemClickListener(ItemClickListener ic){
-        this.itemClickListener = ic;
-    }
-
+    public abstract void setItemClickListener(ItemClickListener ic);
 }

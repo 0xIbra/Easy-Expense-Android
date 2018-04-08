@@ -1,28 +1,38 @@
 package fr.ibragim.e_expense;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.MultiAutoCompleteTextView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import fr.ibragim.e_expense.Metier.Depense;
+import fr.ibragim.e_expense.Metier.Frais;
+import fr.ibragim.e_expense.Metier.Trajet;
+import fr.ibragim.e_expense.Views.FraisAdapter;
+import fr.ibragim.e_expense.Views.ListItem;
+import fr.ibragim.e_expense.network.HttpsPostRequest;
 
 public class NoteFraisActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     private EditText noteDate;
@@ -30,10 +40,14 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
     private EditText noteLibelle;
     private Button noteSubmit;
     private final String API_URL = "https://api.ibragim.fr/Android.php";
+    private HttpsPostRequest request;
 
     private String selectedType;
 
-    ArrayList<Depense> depensesList;
+    private int CurrentNoteFrais;
+    private List<ListItem> DepensesList = new ArrayList<ListItem>();
+
+    private RecyclerView depenseRecyclerview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +86,84 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
         adapter.setDropDownViewResource(R.layout.spinner_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
+
+
+        Intent intentToDepense = getIntent();
+        if (intentToDepense != null){
+            this.CurrentNoteFrais = intentToDepense.getIntExtra("NOTE_FRAIS_ID", 0);
+        }
+
+        if (this.CurrentNoteFrais != 0){
+            this.getDepensesForNote();
+        }
+
+    }
+
+
+    public void getDepensesForNote(){
+        request = new HttpsPostRequest();
+        String result = null;
+
+        String params = "getDepensesForNoteFrais=true&codeFrais="+this.CurrentNoteFrais;
+
+        try{
+            result = request.execute(API_URL, params).get();
+            Log.v("RETOUR DEPENSES", result);
+            JSONObject depenseArray = new JSONObject(result);
+            JSONArray FraisType = depenseArray.getJSONArray("Frais");
+            JSONArray Trajet = depenseArray.getJSONArray("Trajet");
+            JSONObject currentDepense;
+            for (int i = 0; i < FraisType.length(); i++){
+                currentDepense = FraisType.getJSONObject(i);
+                int idD = currentDepense.getInt("idDepense");
+                String dateD = currentDepense.getString("dateDepense");
+                double montantR = currentDepense.getDouble("montantRemboursement");
+                String etat = currentDepense.getString("etatValidation");
+                String dateValidation = currentDepense.getString("dateValidation");
+                double montantD = currentDepense.getDouble("montantDepense");
+                int codeF = currentDepense.getInt("codeFrais");
+                int idU = currentDepense.getInt("idUtilisateur");
+                String libelle = currentDepense.getString("libelleFrais");
+                String details = currentDepense.getString("detailsFrais");
+                String dateF = currentDepense.getString("dateFrais");
+
+
+                this.DepensesList.add(new Frais(idD, dateD, montantR, etat, dateValidation, montantD, codeF, idU, libelle, details, dateF, idD, codeF));
+            }
+
+            for (int i = 0; i < Trajet.length(); i++){
+                currentDepense = Trajet.getJSONObject(i);
+                int idD = currentDepense.getInt("idDepense");
+                String dateD = currentDepense.getString("dateDepense");
+                double montantR = currentDepense.getDouble("montantRemboursement");
+                String etat = currentDepense.getString("etatValidation");
+                String dateValidation = currentDepense.getString("dateValidation");
+                double montantD = currentDepense.getDouble("montantDepense");
+                int codeF = currentDepense.getInt("codeFrais");
+                int idU = currentDepense.getInt("idUtilisateur");
+                double dureeT = currentDepense.getDouble("dureeTrajet");
+                String villeD = currentDepense.getString("villeDepart");
+                String villeA = currentDepense.getString("villeArrivee");
+                String dateA = currentDepense.getString("dateAller");
+                String dateR = currentDepense.getString("dateRetour");
+                double distance = currentDepense.getDouble("distanceKilometres");
+
+
+
+                this.DepensesList.add(new Trajet(idD, dateD, montantR, etat, dateValidation, montantD, codeF, idU, dureeT, villeD, villeA, dateA, dateR, distance, idD, codeF));
+            }
+
+            this.depenseRecyclerview = findViewById(R.id.depenseRecycler);
+            depenseRecyclerview.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+            depenseRecyclerview.setAdapter(new FraisAdapter(DepensesList, null, getApplicationContext()));
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
 
     }
