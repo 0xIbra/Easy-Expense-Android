@@ -217,14 +217,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             }
 
+
+
             r = findViewById(R.id.fragment_main_recycler_view);
             r.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-            r.setAdapter(new Adapter(NotesFrais, new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                }
-            }));
+            r.setAdapter(new Adapter(NotesFrais, null, getApplicationContext()));
 
         } catch (InterruptedException e) {
             e.printStackTrace();

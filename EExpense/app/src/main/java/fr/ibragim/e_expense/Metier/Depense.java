@@ -4,31 +4,37 @@ package fr.ibragim.e_expense.Metier;
  * Created by ibragim.abubakarov on 03/04/2018.
  */
 
-public class Depense {
+public abstract class Depense {
     private int id;
-    private String datePaiement;
+    private String dateDepense;
     private double MontantRemboursement;
     private String etatValidation;
     private String dateValidation;
     private double montantDepense;
+    private int codeFrais;
+    private int idUtilisateur;
 
 
-    public Depense(int id, String datePaiement, double montantRemboursement, String etatValidation, String dateValidation, double montantDepense) {
+    public Depense(int id, String datePaiement, double montantRemboursement, String etatValidation, String dateValidation, double montantDepense,int codeF, int idU) {
         this.id = id;
-        this.datePaiement = datePaiement;
+        this.dateDepense = datePaiement;
         MontantRemboursement = montantRemboursement;
         this.etatValidation = etatValidation;
         this.dateValidation = dateValidation;
         this.montantDepense = montantDepense;
+        this.codeFrais = codeF;
+        this.idUtilisateur = idU;
     }
 
 
-    public Depense(String datePaiement, double montantRemboursement, String etatValidation, String dateValidation, double montantDepense) {
-        this.datePaiement = datePaiement;
+    public Depense(String datePaiement, double montantRemboursement, String etatValidation, String dateValidation, double montantDepense,int codeF, int idU) {
+        this.dateDepense = datePaiement;
         MontantRemboursement = montantRemboursement;
         this.etatValidation = etatValidation;
         this.dateValidation = dateValidation;
         this.montantDepense = montantDepense;
+        this.codeFrais = codeF;
+        this.idUtilisateur = idU;
     }
 
     public int getId() {
@@ -39,12 +45,12 @@ public class Depense {
         this.id = id;
     }
 
-    public String getDatePaiement() {
-        return datePaiement;
+    public String getDateDepense() {
+        return dateDepense;
     }
 
-    public void setDatePaiement(String datePaiement) {
-        this.datePaiement = datePaiement;
+    public void setDateDepense(String dateDepense) {
+        this.dateDepense = dateDepense;
     }
 
     public double getMontantRemboursement() {
@@ -77,5 +83,21 @@ public class Depense {
 
     public void setMontantDepense(double montantDepense) {
         this.montantDepense = montantDepense;
+    }
+
+    public int getCodeFrais() {
+        return codeFrais;
+    }
+
+    public void setCodeFrais(int codeFrais) {
+        this.codeFrais = codeFrais;
+    }
+
+    public int getIdUtilisateur() {
+        return idUtilisateur;
+    }
+
+    public void setIdUtilisateur(int idUtilisateur) {
+        this.idUtilisateur = idUtilisateur;
     }
 }

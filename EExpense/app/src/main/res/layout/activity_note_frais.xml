@@ -10,48 +10,95 @@
         android:id="@+id/customToolbar"/>
 
     <LinearLayout
-        android:id="@+id/inputFields"
+        android:id="@+id/fieldContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_below="@id/customToolbar"
-        android:paddingHorizontal="40dp"
-        android:layout_marginTop="10dp"
-        >
+        android:background="@drawable/non_gradient_background"
+        android:weightSum="100">
 
 
-        <EditText
-            android:id="@+id/noteLibelle"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="5dp">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:rotation="0"
+                android:src="@drawable/if_icon_45_note_list_314233"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/inputFields"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Libéllé de la note"
-            android:textAlignment="center"
-            />
-
-        <EditText
-            android:id="@+id/noteComment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:hint="Commentaire" />
+            android:orientation="vertical"
+            android:paddingHorizontal="5dp"
+            android:layout_weight="100"
+            android:padding="5dp"
+            >
 
 
-        <Spinner
-            android:id="@+id/dropdownTypeDepense"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/noteLibelle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#fff"
+                android:hint="Libéllé de la note"
+                android:textColorHint="@color/colorAccent"
+                android:backgroundTint="@color/txtWhite"
+                android:paddingHorizontal="10dp"
+                />
+
+            <EditText
+                android:id="@+id/noteComment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#fff"
+                android:textColorHint="@color/colorAccent"
+                android:backgroundTint="@color/txtWhite"
+                android:hint="Commentaire"
+                android:paddingHorizontal="10dp"/>
 
 
-        </Spinner>
+            <Spinner
+                android:id="@+id/dropdownTypeDepense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/Theme.MyFancyTheme"
+                android:backgroundTint="@color/txtWhite"
+
+                android:popupBackground="@drawable/non_gradient_background"
+                android:popupTheme="@style/Theme.MyFancyTheme">
 
 
+
+            </Spinner>
+
+
+
+        </LinearLayout>
 
     </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/depenseRecycler"
+        android:layout_below="@+id/fieldContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </android.support.v7.widget.RecyclerView>
+
+
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/inputFields">
+        android:layout_alignParentBottom="true">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/noteSubmit"
