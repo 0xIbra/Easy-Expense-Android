@@ -4,6 +4,8 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -29,11 +31,14 @@ import android.widget.Toast;
 
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
-public class AddDepenseActivity extends AppCompatActivity {
+import fr.ibragim.e_expense.Fragments.FraisFragment;
+
+public class AddDepenseActivity extends AppCompatActivity implements FraisFragment.OnFragmentInteractionListener{
 
     private TextView Output;
-    private Button changeDate;
     private int year;
     private int month;
     private int day;
@@ -51,6 +56,9 @@ public class AddDepenseActivity extends AppCompatActivity {
     private Uri imageUri;
 
 
+    private String selectedFragmentType;
+
+
     //@RequiresApi(api = Build.VERSION_CODES.N)
     @TargetApi(Build.VERSION_CODES.N)
     @Override
@@ -64,10 +72,9 @@ public class AddDepenseActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        addPicture = (ImageView) findViewById(R.id.addPicture);
+        addPicture = findViewById(R.id.addPicture);
 
-        Output = (TextView) findViewById(R.id.Output);
-        changeDate = (Button) findViewById(R.id.changeDate);
+        Output =  findViewById(R.id.Output);
 
         // Get current date by calender
         final Calendar c = Calendar.getInstance();
@@ -75,21 +82,40 @@ public class AddDepenseActivity extends AppCompatActivity {
         month = c.get(Calendar.MONTH);
         day = c.get(Calendar.DAY_OF_MONTH);
 
+        //String dateDepense = day+"/"+month+"/"+year;
+
+
+
+
+
+
+
+
         // Show current date
-        Output.setText(new StringBuilder()
-                // Month is 0 based, just add 1
-                .append(month + 1).append("-").append(day).append("-")
-                .append(year).append(" "));
+        //Output.setText(dateDepense);
 
-        // Button listener to show date picker dialog
-        changeDate.setOnClickListener(new View.OnClickListener() {
+
+        Intent i = getIntent();
+        if (i != null){
+            selectedFragmentType = i.getStringExtra("TYPE_DEPENSE");
+        }
+
+
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        
+
+
+        Output.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-
-                // On button click show datepicker dialog
+            public void onClick(View view) {
                 showDialog(DATE_PICKER_ID);
+                Toast.makeText(getApplicationContext(), Output.getText(), Toast.LENGTH_SHORT).show();
             }
         });
+
+
         StrictMode.VmPolicy.Builder newbuilder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(newbuilder.build());
         Log.v("Path image", this.getExternalFilesDir(Environment.DIRECTORY_DCIM).getAbsolutePath());
@@ -194,5 +220,9 @@ public class AddDepenseActivity extends AppCompatActivity {
         }
     };
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 }
 

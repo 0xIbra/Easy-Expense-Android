@@ -70,6 +70,7 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(NoteFraisActivity.this, AddDepenseActivity.class);
+                i.putExtra("TYPE_DEPENSE", selectedType);
                 startActivity(i);
             }
         });
@@ -134,6 +135,7 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
             for (int i = 0; i < Trajet.length(); i++){
                 currentDepense = Trajet.getJSONObject(i);
                 int idD = currentDepense.getInt("idDepense");
+                String libelle = currentDepense.getString("libelleTrajet");
                 String dateD = currentDepense.getString("dateDepense");
                 double montantR = currentDepense.getDouble("montantRemboursement");
                 String etat = currentDepense.getString("etatValidation");
@@ -150,7 +152,7 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
 
 
 
-                this.DepensesList.add(new Trajet(idD, dateD, montantR, etat, dateValidation, montantD, codeF, idU, dureeT, villeD, villeA, dateA, dateR, distance, idD, codeF));
+                this.DepensesList.add(new Trajet(idD, libelle, dateD, montantR, etat, dateValidation, montantD, codeF, idU, dureeT, villeD, villeA, dateA, dateR, distance, idD, codeF));
             }
 
             this.depenseRecyclerview = findViewById(R.id.depenseRecycler);

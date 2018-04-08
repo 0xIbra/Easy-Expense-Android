@@ -37,7 +37,7 @@ public class BasicViewHolder extends RecyclerView.ViewHolder implements View.OnC
     public void bind(final NoteFrais n, final AdapterView.OnItemClickListener listener){
         title.setText(n.getLibelle());
         date.setText(n.getDateFrais());
-        etat.setText("en cours");
+        etat.setText(n.getEtat());
     }
 
     @Override

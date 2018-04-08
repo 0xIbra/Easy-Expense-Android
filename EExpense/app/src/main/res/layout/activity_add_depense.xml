@@ -11,6 +11,7 @@
         android:id="@+id/customToolbar"/>
 
 <RelativeLayout
+    android:id="@+id/topContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@id/customToolbar">
@@ -60,44 +61,30 @@
                     android:hint="Montant de la dépense"
                     android:textAlignment="center" />
 
-                <TextView
+                <EditText
                     android:id="@+id/Output"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=""
+                    android:inputType="none"
+                    android:hint="Date"
                     android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                <Button
-                    android:id="@+id/changeDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Click To Change Date" />
-
+                    android:textIsSelectable="false"
+                    android:editable="false"
+                    />
 
             </LinearLayout>
-
-
-
-
-
         </RelativeLayout>
-
-
-
-
-
     </LinearLayout>
-
-
-
-
-
-
-
 </RelativeLayout>
 
+<RelativeLayout
+    android:layout_below="@id/topContainer"
+    android:id="@+id/middleContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="5dp">
 
+</RelativeLayout>
 
 
 

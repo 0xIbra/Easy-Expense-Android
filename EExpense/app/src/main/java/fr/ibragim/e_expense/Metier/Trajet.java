@@ -7,6 +7,7 @@ import fr.ibragim.e_expense.Views.ListItem;
  */
 
 public class Trajet extends Depense implements ListItem{
+    private String libelleTrajet;
     private double dureeTrajet;
     private String villeDepart;
     private String villeArrivee;
@@ -17,8 +18,9 @@ public class Trajet extends Depense implements ListItem{
     private int codeFrais;
 
 
-    public Trajet(int id, String datePaiement, double montantRemboursement, String etatValidation, String dateValidation, double montantDepense, int codeF, int idU, double dureeTrajet, String villeDepart, String villeArrivee, String dateAller, String dateRetour, double distanceKM, int idDepense, int codeFrais) {
+    public Trajet(int id, String libelle, String datePaiement, double montantRemboursement, String etatValidation, String dateValidation, double montantDepense, int codeF, int idU, double dureeTrajet, String villeDepart, String villeArrivee, String dateAller, String dateRetour, double distanceKM, int idDepense, int codeFrais) {
         super(id, datePaiement, montantRemboursement, etatValidation, dateValidation, montantDepense, codeF, idU);
+        this.libelleTrajet = libelle;
         this.dureeTrajet = dureeTrajet;
         this.villeDepart = villeDepart;
         this.villeArrivee = villeArrivee;
@@ -29,8 +31,9 @@ public class Trajet extends Depense implements ListItem{
         this.codeFrais = codeFrais;
     }
 
-    public Trajet(String datePaiement, double montantRemboursement, String etatValidation, String dateValidation, double montantDepense, int codeF, int idU, double dureeTrajet, String villeDepart, String villeArrivee, String dateAller, String dateRetour, double distanceKM, int idDepense, int codeFrais) {
+    public Trajet( String libelle, String datePaiement, double montantRemboursement, String etatValidation, String dateValidation, double montantDepense, int codeF, int idU, double dureeTrajet, String villeDepart, String villeArrivee, String dateAller, String dateRetour, double distanceKM, int idDepense, int codeFrais) {
         super(datePaiement, montantRemboursement, etatValidation, dateValidation, montantDepense, codeF, idU);
+        this.libelleTrajet = libelle;
         this.dureeTrajet = dureeTrajet;
         this.villeDepart = villeDepart;
         this.villeArrivee = villeArrivee;
@@ -39,6 +42,15 @@ public class Trajet extends Depense implements ListItem{
         this.distanceKM = distanceKM;
         this.idDepense = idDepense;
         this.codeFrais = codeFrais;
+    }
+
+
+    public String getLibelleTrajet() {
+        return libelleTrajet;
+    }
+
+    public void setLibelleTrajet(String libelleTrajet) {
+        this.libelleTrajet = libelleTrajet;
     }
 
     public double getDureeTrajet() {
