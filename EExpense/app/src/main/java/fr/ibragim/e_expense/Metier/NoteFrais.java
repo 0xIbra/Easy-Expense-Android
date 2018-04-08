@@ -30,7 +30,7 @@ public class NoteFrais {
 
     }
 
-    public NoteFrais(int id, String libelle, String dateFrais, String ville, String dateSoumission, String commentaireFrais,int idU, int idC) {
+    public NoteFrais(int id, String libelle, String dateFrais, String ville, String dateSoumission, String commentaireFrais, String etat, int idU, int idC) {
         this.id = id;
         this.libelle = libelle;
         DateFrais = dateFrais;

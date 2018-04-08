@@ -209,11 +209,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 String ville = currentCard.getString("villeFrais");
                 String dateS = currentCard.getString("dateSoumission");
                 String comm = currentCard.getString("commentaireFrais");
+                String etatN = currentCard.getString("etat");
                 int idUtilisateur = currentCard.getInt("idUtilisateur");
                 int idClient = currentCard.getInt("idClient");
 
 
-                NotesFrais.add(new NoteFrais(codeFrais, libelleNote, dateF, ville, dateS, comm, idUtilisateur, idClient));
+                NotesFrais.add(new NoteFrais(codeFrais, libelleNote, dateF, ville, dateS, comm, etatN, idUtilisateur, idClient));
 
             }
 

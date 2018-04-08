@@ -34,7 +34,7 @@ public class ViewHolderTrajet extends ViewHolder {
 
     @Override
     public void bindType(ListItem item, final AdapterView.OnItemClickListener listener) {
-        title.setText(((Trajet) item).getDateDepense()+" - "+((Trajet) item).getDateAller());
+        title.setText(((Trajet) item).getLibelleTrajet());
         date.setText(((Trajet) item).getDateDepense());
         etat.setText(((Trajet) item).getEtatValidation());
 
