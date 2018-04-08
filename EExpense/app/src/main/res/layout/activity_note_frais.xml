@@ -63,7 +63,7 @@
                 android:textColorHint="@color/colorAccent"
                 android:backgroundTint="@color/txtWhite"
                 android:hint="Commentaire"
-                android:paddingHorizontal="10dp"/>
+                android:paddingHorizontal="10dp" />
 
 
             <Spinner

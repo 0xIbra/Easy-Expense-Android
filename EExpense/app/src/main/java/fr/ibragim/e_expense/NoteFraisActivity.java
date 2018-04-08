@@ -69,7 +69,8 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
         noteComment = findViewById(R.id.noteComment);
         //noteSubmit = findViewById(R.id.noteSubmit);
 
-
+        noteLibelle.setSelected(false);
+        noteComment.setSelected(false);
 
         FloatingActionButton noteSubmit = (FloatingActionButton) findViewById(R.id.noteSubmit);
         noteSubmit.setOnClickListener(new View.OnClickListener() {
