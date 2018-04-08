@@ -1,12 +1,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="fr.ibragim.e_expense.Fragments.FraisFragment">
+    android:layout_height="wrap_content"
+    tools:context="fr.ibragim.e_expense.Fragments.FraisFragment"
+    android:background="#fff">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="FRAIS"/>
+
 
 </RelativeLayout>
