@@ -27,6 +27,7 @@ public class ViewHolderTrajet extends ViewHolder {
 
         img = itemView.findViewById(R.id.justi);
         title = itemView.findViewById(R.id.idNoteFrais);
+
         date = itemView.findViewById(R.id.dateNoteFrais);
         etat = itemView.findViewById(R.id.etatNoteFrais);
     }

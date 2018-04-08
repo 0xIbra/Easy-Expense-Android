@@ -49,12 +49,16 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
 
     private RecyclerView depenseRecyclerview;
 
+    private String noteFraisLibelle = null;
+    private String noteFraisCommentaire = null;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_frais);
         android.support.v7.widget.Toolbar toolbar = findViewById(R.id.customToolbar);
-        toolbar.setTitle("");
+        toolbar.setTitle("Mes dépenses");
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -64,6 +68,8 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
         noteLibelle = findViewById(R.id.noteLibelle);
         noteComment = findViewById(R.id.noteComment);
         //noteSubmit = findViewById(R.id.noteSubmit);
+
+
 
         FloatingActionButton noteSubmit = (FloatingActionButton) findViewById(R.id.noteSubmit);
         noteSubmit.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +97,11 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
         Intent intentToDepense = getIntent();
         if (intentToDepense != null){
             this.CurrentNoteFrais = intentToDepense.getIntExtra("NOTE_FRAIS_ID", 0);
+            noteFraisLibelle = intentToDepense.getStringExtra("NOTE_FRAIS_LIBELLE");
+            noteLibelle.setText(noteFraisLibelle);
+
+            noteFraisCommentaire = intentToDepense.getStringExtra("NOTE_FRAIS_COMMENTAIRE");
+            noteComment.setText(noteFraisCommentaire);
         }
 
         if (this.CurrentNoteFrais != 0){

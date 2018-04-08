@@ -53,6 +53,8 @@ public class Adapter extends RecyclerView.Adapter<BasicViewHolder> {
             public void onItemClick(View v, int pos) {
                 Intent intentToDepense = new Intent(v.getContext(), NoteFraisActivity.class);
                 intentToDepense.putExtra("NOTE_FRAIS_ID", n.getId());
+                intentToDepense.putExtra("NOTE_FRAIS_LIBELLE", n.getLibelle());
+                intentToDepense.putExtra("NOTE_FRAIS_COMMENTAIRE", n.getCommentaireFrais());
                 v.getContext().startActivity(intentToDepense);
             }
         });
