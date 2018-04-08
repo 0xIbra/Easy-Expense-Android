@@ -36,9 +36,11 @@ import java.util.Locale;
 
 import fr.ibragim.e_expense.Fragments.FraisFragment;
 
+@RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class AddDepenseActivity extends AppCompatActivity implements FraisFragment.OnFragmentInteractionListener{
 
     private TextView Output;
+    private ImageView refreshDate;
     private int year;
     private int month;
     private int day;
@@ -75,6 +77,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
         addPicture = findViewById(R.id.addPicture);
 
         Output =  findViewById(R.id.Output);
+        refreshDate = findViewById(R.id.refreshDate);
 
         // Get current date by calender
         final Calendar c = Calendar.getInstance();
@@ -92,6 +95,10 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
 
 
         // Show current date
+        Output.setText(new StringBuilder()
+                // Month is 0 based, just add 1
+                .append(day).append("/").append(month + 1).append("/")
+                .append(year).append(" "));
         //Output.setText(dateDepense);
 
 
@@ -104,14 +111,14 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-        
 
 
-        Output.setOnClickListener(new View.OnClickListener() {
+
+        refreshDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showDialog(DATE_PICKER_ID);
-                Toast.makeText(getApplicationContext(), Output.getText(), Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -214,10 +221,10 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
             day = selectedDay;
 
             // Show selected date
-            Output.setText(new StringBuilder().append(month + 1)
-                    .append("-").append(day).append("-").append(year)
+            Output.setText(new StringBuilder().append(day)
+                    .append("/").append(month + 1).append("/").append(year)
                     .append(" "));
-
+            Toast.makeText(getApplicationContext(), Output.getText(), Toast.LENGTH_SHORT).show();
         }
     };
 

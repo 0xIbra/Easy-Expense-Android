@@ -61,27 +61,36 @@
                     android:hint="Montant de la dépense"
                     android:textAlignment="center" />
 
-                <EditText
+                <TextView
                     android:id="@+id/Output"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="none"
                     android:hint="Date"
+                    android:inputType="none"
                     android:textAlignment="center"
-<<<<<<< HEAD
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                <Button
-                    android:id="@+id/changeDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Changer la date" />
+                <ImageView
+                    android:id="@+id/refreshDate"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="190dp"
+                    android:layout_marginTop="-30dp"
+                    android:src="@drawable/change_date" />
 
-=======
-                    android:textIsSelectable="false"
-                    android:editable="false"
-                    />
->>>>>>> ibragim
+
+                <!--<Button-->
+                    <!--android:id="@+id/changeDate"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="Changer la date"-->
+                    <!--android:textIsSelectable="false"-->
+                    <!--android:editable="false"-->
+                    <!--/>-->
+
+
+
+
 
             </LinearLayout>
         </RelativeLayout>

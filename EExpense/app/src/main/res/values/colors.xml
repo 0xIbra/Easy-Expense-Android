@@ -5,7 +5,7 @@
     <color name="colorAccent">#b2b1b1</color>
     <color name="toolbarColor">#374761</color>
     <color name="noteViewColor">#d1d1d1</color>
-    <color name="noteViewColorValide"></color>
-    <color name="noteViewColorRefuse"></color>
+    <color name="noteViewColorValide">#0B6138</color>
+    <color name="noteViewColorRefuse">#B40431</color>
     <color name="txtWhite">#ededed</color>
 </resources>

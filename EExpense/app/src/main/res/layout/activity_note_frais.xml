@@ -98,10 +98,6 @@
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-<<<<<<< HEAD
-
-=======
->>>>>>> Vincent
         android:layout_alignParentBottom="true">
 
         <android.support.design.widget.FloatingActionButton

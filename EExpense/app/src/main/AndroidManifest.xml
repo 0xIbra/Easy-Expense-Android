@@ -36,7 +36,9 @@
         <activity
             android:name=".NoteFraisActivity"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".AddDepenseActivity"></activity>
+        <activity
+            android:name=".AddDepenseActivity"
+            android:windowSoftInputMode="stateHidden"/>
 
 
     </application>
