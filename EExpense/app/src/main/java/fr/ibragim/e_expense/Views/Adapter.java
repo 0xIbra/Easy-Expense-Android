@@ -27,7 +27,7 @@ public class Adapter extends RecyclerView.Adapter<BasicViewHolder> {
     private final OnItemClickListener listener;
     //private Context context;
 
-    public Adapter(List<NoteFrais> list, OnItemClickListener listener, Context context) {
+    public Adapter(List<NoteFrais> list, OnItemClickListener listener) {
         this.list = list;
         this.listener = listener;
         //this.context = context;

@@ -1,0 +1,16 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginHorizontal="40dp"
+    tools:context="fr.ibragim.e_expense.Fragments.StatFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Statistiques"
+        android:textSize="20dp"
+        android:textAlignment="center"
+        android:layout_centerVertical="true"/>
+
+</RelativeLayout>
