@@ -63,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FragmentManager manager;
     private FragmentTransaction transaction;
 
+    private FloatingActionButton fab;
+
 
     // FRAGMENTS
     private MainActivityFragmentType mainF;
@@ -123,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navname.setText(userprenom + " " + usernom);
         navemail.setText(useremail);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -183,14 +185,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.mesNotesFrais:
                 mainF = new MainFragment();
                 mainF.init(userid);
+                fab.show();
                 break;
 
             case R.id.statistics:
                 mainF = new StatFragment();
+                fab.hide();
                 break;
 
             case R.id.nav_manage:
                 mainF = new AccountFragment();
+                fab.hide();
                 break;
 
             case R.id.contact:
