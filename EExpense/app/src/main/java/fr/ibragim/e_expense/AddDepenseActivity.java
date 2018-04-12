@@ -75,14 +75,17 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
 
         // Get current date by calender
         final Calendar c = Calendar.getInstance();
+
         year = c.get(Calendar.YEAR);
         month = c.get(Calendar.MONTH);
         day = c.get(Calendar.DAY_OF_MONTH);
 
+        Output.setText(new StringBuilder().append(day).append("/").append(month + 1).append("/").append(year));
 
-        Intent i = getIntent();
-        if (i != null){
-            selectedFragmentType = i.getStringExtra("TYPE_DEPENSE");
+
+        Intent intent = getIntent();
+        if (intent != null){
+            selectedFragmentType = intent.getStringExtra("TYPE_DEPENSE");
         }
 
 

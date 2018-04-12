@@ -69,6 +69,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // FRAGMENTS
     private MainActivityFragmentType mainF;
 
+    public void fillNoteFrais(List<NoteFrais> list){
+        this.NotesFrais = list;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,8 +144,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         displaySelectedNavigation(R.id.mesNotesFrais);
-
-
     }
 
     @Override

@@ -76,8 +76,7 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
         noteSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(NoteFraisActivity.this, AddDepenseActivity.class);
-                i.putExtra("TYPE_DEPENSE", selectedType);
+                Intent i = new Intent(NoteFraisActivity.this, TypeDepenseActivity.class);
                 startActivity(i);
             }
         });
@@ -203,7 +202,7 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        selectedType = adapterView.getItemAtPosition(i).toString();
+        //selectedType = adapterView.getItemAtPosition(i).toString();
         Snackbar.make(view, selectedType, Snackbar.LENGTH_SHORT).show();
     }
 
