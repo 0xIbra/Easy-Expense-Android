@@ -36,11 +36,16 @@
         <activity
             android:name=".NoteFraisActivity"
             android:windowSoftInputMode="stateHidden" />
+<<<<<<< HEAD
         <activity
             android:name=".AddDepenseActivity"
             android:windowSoftInputMode="stateHidden"/>
 
 
+=======
+        <activity android:name=".AddDepenseActivity" />
+        <activity android:name=".TypeDepenseActivity"></activity>
+>>>>>>> master
     </application>
 
 </manifest>
