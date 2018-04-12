@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import fr.ibragim.e_expense.R;
+<<<<<<< HEAD
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,6 +20,13 @@ import fr.ibragim.e_expense.R;
  * create an instance of this fragment.
  */
 public class StatFragment extends Fragment {
+=======
+import fr.ibragim.e_expense.Views.MainActivityFragmentType;
+
+
+
+public class StatFragment extends Fragment implements MainActivityFragmentType{
+>>>>>>> master
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -28,7 +36,11 @@ public class StatFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+<<<<<<< HEAD
     private OnFragmentInteractionListener mListener;
+=======
+    //private OnFragmentInteractionListener mListener;
+>>>>>>> master
 
     public StatFragment() {
         // Required empty public constructor
@@ -65,11 +77,18 @@ public class StatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+<<<<<<< HEAD
         return inflater.inflate(R.layout.fragment_stat, container, false);
+=======
+        View view = inflater.inflate(R.layout.fragment_stat, container, false);
+
+        return view;
+>>>>>>> master
     }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
+<<<<<<< HEAD
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
@@ -85,10 +104,19 @@ public class StatFragment extends Fragment {
                     + " must implement OnFragmentInteractionListener");
         }
     }
+=======
+        //if (mListener != null) {
+            //mListener.onFragmentInteraction(uri);
+       // }
+    }
+
+
+>>>>>>> master
 
     @Override
     public void onDetach() {
         super.onDetach();
+<<<<<<< HEAD
         mListener = null;
     }
 
@@ -106,4 +134,20 @@ public class StatFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+=======
+        //mListener = null;
+    }
+
+    @Override
+    public int getMenuType() {
+        return MainActivityFragmentType.StatFragment;
+    }
+
+    @Override
+    public void init(int USERID) {
+
+    }
+
+
+>>>>>>> master
 }

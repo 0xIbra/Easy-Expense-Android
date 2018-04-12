@@ -15,7 +15,7 @@ import fr.ibragim.e_expense.R;
 
 public class BasicViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-    private ImageView img;
+    //private ImageView img;
     private TextView title;
     private TextView date;
     private TextView etat;
@@ -26,7 +26,7 @@ public class BasicViewHolder extends RecyclerView.ViewHolder implements View.OnC
     public BasicViewHolder(View itemView) {
         super(itemView);
 
-        img = itemView.findViewById(R.id.justi);
+        //img = itemView.findViewById(R.id.justi);
         title = itemView.findViewById(R.id.idNoteFrais);
         date = itemView.findViewById(R.id.dateNoteFrais);
         etat = itemView.findViewById(R.id.etatNoteFrais);
@@ -37,7 +37,26 @@ public class BasicViewHolder extends RecyclerView.ViewHolder implements View.OnC
     public void bind(final NoteFrais n, final AdapterView.OnItemClickListener listener){
         title.setText(n.getLibelle());
         date.setText(n.getDateFrais());
-        etat.setText(n.getEtat());
+        setEtatBackground(n.getEtat());
+    }
+
+    public void setEtatBackground(String etat){
+
+        switch (etat){
+            case "En Cours":
+                this.etat.setBackgroundResource(R.drawable.etatbackground);
+                this.etat.setText(etat);
+                break;
+            case "Validé":
+                this.etat.setBackgroundResource(R.drawable.etat_validated_background);
+                this.etat.setText(etat);
+                break;
+
+            case "Refusé":
+                this.etat.setBackgroundResource(R.drawable.etat_refused_background);
+                this.etat.setText(etat);
+                break;
+        }
     }
 
     @Override

@@ -4,8 +4,6 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -16,14 +14,13 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -31,13 +28,17 @@ import android.widget.Toast;
 
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import fr.ibragim.e_expense.Fragments.FraisFragment;
+import fr.ibragim.e_expense.Fragments.TrajetFragment;
+import fr.ibragim.e_expense.Views.FragmentType;
 
+<<<<<<< HEAD
 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class AddDepenseActivity extends AppCompatActivity implements FraisFragment.OnFragmentInteractionListener{
+=======
+public class AddDepenseActivity extends AppCompatActivity implements FraisFragment.OnFragmentInteractionListener, TrajetFragment.OnFragmentInteractionListener{
+>>>>>>> master
 
     private TextView Output;
     private ImageView refreshDate;
@@ -85,6 +86,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
         month = c.get(Calendar.MONTH);
         day = c.get(Calendar.DAY_OF_MONTH);
 
+<<<<<<< HEAD
         //String dateDepense = day+"/"+month+"/"+year;
 
 
@@ -101,6 +103,8 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
                 .append(year).append(" "));
         //Output.setText(dateDepense);
 
+=======
+>>>>>>> master
 
         Intent i = getIntent();
         if (i != null){
@@ -111,6 +115,24 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
 
+<<<<<<< HEAD
+=======
+        FragmentType test = null;
+
+        switch (selectedFragmentType){
+            case "Frais":
+                test = new FraisFragment();
+                transaction.add(R.id.middleContainer, (Fragment) test);
+                break;
+            case "Trajet":
+                test = new TrajetFragment();
+                transaction.add(R.id.middleContainer, (Fragment) test);
+                break;
+        }
+
+
+        transaction.commit();
+>>>>>>> master
 
 
 
@@ -213,9 +235,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
 
         // when dialog box is closed, below method will be called.
         @Override
-        public void onDateSet(DatePicker view, int selectedYear,
-                              int selectedMonth, int selectedDay) {
-
+        public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
             year = selectedYear;
             month = selectedMonth;
             day = selectedDay;
@@ -224,8 +244,12 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
             Output.setText(new StringBuilder().append(day)
                     .append("/").append(month + 1).append("/").append(year)
                     .append(" "));
+<<<<<<< HEAD
             Toast.makeText(getApplicationContext(), Output.getText(), Toast.LENGTH_SHORT).show();
+=======
+>>>>>>> master
         }
+
     };
 
     @Override

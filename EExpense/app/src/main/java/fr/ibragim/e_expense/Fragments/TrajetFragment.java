@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import fr.ibragim.e_expense.R;
+import fr.ibragim.e_expense.Views.FragmentType;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,7 +19,7 @@ import fr.ibragim.e_expense.R;
  * Use the {@link TrajetFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TrajetFragment extends Fragment {
+public class TrajetFragment extends Fragment implements FragmentType{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -90,6 +91,11 @@ public class TrajetFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public int getFragmentType() {
+        return FragmentType.TrajetFragment;
     }
 
     /**

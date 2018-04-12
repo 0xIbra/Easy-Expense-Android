@@ -1,12 +1,63 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="fr.ibragim.e_expense.Fragments.TrajetFragment">
+    android:orientation="vertical"
+    android:layout_height="wrap_content"
+    tools:context="fr.ibragim.e_expense.Fragments.TrajetFragment"
+    android:background="#fff"
+    android:paddingHorizontal="30dp">
 
-    <TextView
+
+    <EditText
+        android:id="@+id/distanceTrajet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TRAJET"/>
+        android:hint="Distance KM"
+        android:paddingLeft="10dp"/>
 
-</RelativeLayout>
+    <EditText
+        android:id="@+id/dureeTrajet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Durée"
+        android:paddingLeft="10dp"/>
+
+
+    <EditText
+        android:id="@+id/dateAllerTrajet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:drawableRight="@drawable/ic_arrow_drop_down_black_24dp"
+        android:editable="false"
+        android:hint="Date aller"
+        android:paddingLeft="10dp"
+        android:textIsSelectable="false" />
+
+
+    <EditText
+        android:id="@+id/dateRetourTrajet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Date retour"
+        android:drawableRight="@drawable/ic_arrow_drop_down_black_24dp"
+        android:clickable="true"
+        android:paddingLeft="10dp"
+        android:editable="false"/>
+
+
+    <EditText
+        android:id="@+id/villeDepartTrajet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ville depart"
+        android:paddingLeft="10dp"/>
+
+    <EditText
+        android:id="@+id/villeArriveeTrajet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ville arrivee"
+        android:paddingLeft="10dp"/>
+
+</LinearLayout>

@@ -32,9 +32,10 @@
 
 
             <ImageView
+                android:layout_margin="5dp"
                 android:id="@+id/addPicture"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:src="@drawable/add_picture"/>
         </RelativeLayout>
 
@@ -53,14 +54,18 @@
                 android:orientation="vertical"
                 android:paddingHorizontal="5dp">
 
-
                 <EditText
-                    android:id="@+id/depenseMontant"
+                    android:id="@+id/Output"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Montant de la dépense"
-                    android:textAlignment="center" />
+                    android:inputType="none"
+                    android:hint="Date"
+                    android:paddingLeft="10dp"
+                    android:drawableRight="@drawable/ic_arrow_drop_down_black_24dp"
+                    android:editable="false"/>
 
+
+<<<<<<< HEAD
                 <TextView
                     android:id="@+id/Output"
                     android:layout_width="match_parent"
@@ -89,6 +94,20 @@
                     <!--/>-->
 
 
+=======
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Description"
+                    android:paddingLeft="10dp"/>
+
+                <EditText
+                    android:id="@+id/depenseMontant"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Montant TTC"
+                    android:paddingLeft="10dp"/>
+>>>>>>> master
 
 
 
@@ -101,8 +120,11 @@
     android:layout_below="@id/topContainer"
     android:id="@+id/middleContainer"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginTop="5dp">
+    android:layout_height="wrap_content"
+    android:minHeight="200dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginHorizontal="10dp"
+    >
 
 </RelativeLayout>
 

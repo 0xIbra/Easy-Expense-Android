@@ -72,9 +72,9 @@
                 android:layout_height="wrap_content"
                 android:theme="@style/Theme.MyFancyTheme"
                 android:backgroundTint="@color/txtWhite"
-
                 android:popupBackground="@drawable/non_gradient_background"
-                android:popupTheme="@style/Theme.MyFancyTheme">
+                android:popupTheme="@style/Theme.MyFancyTheme"
+                android:textAlignment="center">
 
 
 

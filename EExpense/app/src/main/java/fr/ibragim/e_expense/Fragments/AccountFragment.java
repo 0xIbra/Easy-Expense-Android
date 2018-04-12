@@ -9,17 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import fr.ibragim.e_expense.R;
-import fr.ibragim.e_expense.Views.FragmentType;
+import fr.ibragim.e_expense.Views.MainActivityFragmentType;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link FraisFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link FraisFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class FraisFragment extends Fragment implements FragmentType {
+
+public class AccountFragment extends Fragment implements MainActivityFragmentType{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -29,9 +22,9 @@ public class FraisFragment extends Fragment implements FragmentType {
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
+    //private OnFragmentInteractionListener mListener;
 
-    public FraisFragment() {
+    public AccountFragment() {
         // Required empty public constructor
     }
 
@@ -41,11 +34,11 @@ public class FraisFragment extends Fragment implements FragmentType {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment FraisFragment.
+     * @return A new instance of fragment AccountFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static FraisFragment newInstance(String param1, String param2) {
-        FraisFragment fragment = new FraisFragment();
+    public static AccountFragment newInstance(String param1, String param2) {
+        AccountFragment fragment = new AccountFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -66,36 +59,26 @@ public class FraisFragment extends Fragment implements FragmentType {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_frais, container, false);
+        return inflater.inflate(R.layout.fragment_account, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        //mListener = null;
     }
 
     @Override
-    public int getFragmentType() {
-        return FragmentType.FraisFragment;
+    public int getMenuType() {
+        return MainActivityFragmentType.AccountFragment;
+    }
+
+    @Override
+    public void init(int USERID) {
+
     }
 
     /**
@@ -108,8 +91,5 @@ public class FraisFragment extends Fragment implements FragmentType {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
+
 }
