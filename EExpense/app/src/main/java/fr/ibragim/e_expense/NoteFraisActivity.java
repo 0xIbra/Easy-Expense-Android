@@ -83,19 +83,6 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
         });
 
 
-        String[] typedepense = new String[]{
-                "Frais",
-                "Trajet"
-        };
-
-
-        Spinner spinner = findViewById(R.id.dropdownTypeDepense);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_item, typedepense);
-        adapter.setDropDownViewResource(R.layout.spinner_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
-
-
         Intent intentToDepense = getIntent();
         if (intentToDepense != null){
             this.CurrentNoteFrais = intentToDepense.getIntExtra("NOTE_FRAIS_ID", 0);
