@@ -66,13 +66,14 @@
 
 
                 <EditText
+                    android:id="@+id/depenseDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Description"
                     android:paddingLeft="10dp"/>
 
                 <EditText
-                    android:id="@+id/depenseMontant"
+                    android:id="@+id/depenseMontantField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Montant TTC"

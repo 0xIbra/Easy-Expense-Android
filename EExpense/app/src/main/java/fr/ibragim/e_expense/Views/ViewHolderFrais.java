@@ -1,11 +1,13 @@
 package fr.ibragim.e_expense.Views;
 
+import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import fr.ibragim.e_expense.AddDepenseActivity;
 import fr.ibragim.e_expense.Metier.Frais;
 import fr.ibragim.e_expense.R;
 
@@ -32,7 +34,7 @@ public class ViewHolderFrais extends ViewHolder {
     }
 
     @Override
-    public void bindType(ListItem item, AdapterView.OnItemClickListener listener) {
+    public void bindType(final ListItem item, AdapterView.OnItemClickListener listener) {
         title.setText(((Frais) item).getIntituleFrais());
         date.setText(((Frais) item).getDateDepense());
         etat.setText(((Frais) item).getEtatValidation());
@@ -40,7 +42,13 @@ public class ViewHolderFrais extends ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "TEST DEPENSE", Snackbar.LENGTH_SHORT).show();
+                Intent intent = new Intent(view.getContext(), AddDepenseActivity.class);
+                intent.putExtra("TYPE_DEPENSE", "Frais");
+                intent.putExtra("EXISTING", "TRUE");
+                intent.putExtra("DEPENSE_DATE", ((Frais) item).getDateDepense());
+                intent.putExtra("DEPENSE_LIBELLE", ((Frais) item).getIntituleFrais());
+                intent.putExtra("DEPENSE_MONTANT", ((Frais) item).getMontantDepense());
+                view.getContext().startActivity(intent);
             }
         });
     }

@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,11 +15,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -68,6 +71,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // FRAGMENTS
     private MainActivityFragmentType mainF;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,9 +145,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
+        if (this.NotesFrais.isEmpty()){
+            this.getNotes();
+        }else{
+            Log.v("VIDE", "FAUX");
+        }
+
+
+
         displaySelectedNavigation(R.id.mesNotesFrais);
-
-
     }
 
     @Override
@@ -185,6 +197,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.mesNotesFrais:
                 mainF = new MainFragment();
                 mainF.init(userid);
+                if (this.NotesFrais.isEmpty()){
+                    this.getNotes();
+                }
+                ((MainFragment) mainF).setNotes(this.NotesFrais);
                 fab.show();
                 break;
 
@@ -236,8 +252,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    public void getNotes(){
+        HttpsPostRequest newReq = new HttpsPostRequest();
+        String res = "";
+        String params = "getNotes=true&userID="+userid;
+        System.out.println("MY ID "+params);
+        try {
+            res = newReq.execute(API_URL, params).get();
+            Log.v("RETOUR ", res);
+            JSONArray cards = new JSONArray(res);
+            JSONObject currentCard;
+            for (int i = 0; i < cards.length(); i++){
+                currentCard = cards.getJSONObject(i);
+                int codeFrais = currentCard.getInt("codeFrais");
+                String libelleNote = currentCard.getString("libelleNote");
+                String dateF = currentCard.getString("dateFrais");
+                String ville = currentCard.getString("villeFrais");
+                String dateS = currentCard.getString("dateSoumission");
+                String comm = currentCard.getString("commentaireFrais");
+                String etatN = currentCard.getString("etat");
+                int idUtilisateur = currentCard.getInt("idUtilisateur");
+                int idClient = currentCard.getInt("idClient");
 
+                NotesFrais.add(new NoteFrais(codeFrais, libelleNote, dateF, ville, dateS, comm, etatN, idUtilisateur, idClient));
+            }
 
-
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

@@ -7,7 +7,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
+import fr.ibragim.e_expense.Metier.Depense;
+import fr.ibragim.e_expense.Metier.Trajet;
 import fr.ibragim.e_expense.R;
 import fr.ibragim.e_expense.Views.FragmentType;
 
@@ -30,6 +33,71 @@ public class TrajetFragment extends Fragment implements FragmentType{
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+
+    //TRAJET FIELDS
+    EditText distanceField;
+    EditText dureeField;
+    EditText dateAller;
+    EditText dateRetour;
+    EditText villeDepart;
+    EditText villeArrivee;
+
+    Trajet depense;
+
+
+    public void setDistanceField(double distanceField) {
+        this.distanceField.setText(String.valueOf(distanceField));
+    }
+
+    public void setDureeField(double dureeField) {
+        this.dureeField.setText(String.valueOf(dureeField));
+    }
+
+    public void setDateAller(String dateAller) {
+        this.dateAller.setText(dateAller);
+    }
+
+    public void setDateRetour(String dateRetour) {
+        this.dateRetour.setText(dateRetour);
+    }
+
+    public void setVilleDepart(String villeDepart) {
+        this.villeDepart.setText(villeDepart);
+    }
+
+    public void setVilleArrivee(String villeArrivee) {
+        this.villeArrivee.setText(villeArrivee);
+    }
+
+
+    public double getDistanceField() {
+        double distance = Double.parseDouble(this.distanceField.getText().toString());
+        return distance;
+    }
+
+    public double getDureeField() {
+        double duree = Double.parseDouble(this.dureeField.getText().toString());
+        return duree;
+    }
+
+    public String getDateAller() {
+        return dateAller.getText().toString();
+    }
+
+    public String getDateRetour() {
+        return dateRetour.getText().toString();
+    }
+
+    public String getVilleDepart() {
+        return villeDepart.getText().toString();
+    }
+
+    public String getVilleArrivee() {
+        return villeArrivee.getText().toString();
+    }
+
+
 
     public TrajetFragment() {
         // Required empty public constructor
@@ -66,7 +134,39 @@ public class TrajetFragment extends Fragment implements FragmentType{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_trajet, container, false);
+        View view = inflater.inflate(R.layout.fragment_trajet, container, false);
+
+        distanceField = view.findViewById(R.id.distanceTrajet);
+        dureeField = view.findViewById(R.id.dureeTrajet);
+        dateAller = view.findViewById(R.id.dateAllerTrajet);
+        dateRetour = view.findViewById(R.id.dateRetourTrajet);
+        villeDepart = view.findViewById(R.id.villeDepartTrajet);
+        villeArrivee = view.findViewById(R.id.villeArriveeTrajet);
+
+        return view;
+    }
+
+    public void initCurrentDepense(Trajet trajet){
+        this.depense = trajet;
+    }
+
+
+    @Override
+    public void onStart(){
+        super.onStart();
+
+
+        if (this.depense != null){
+            distanceField.setText(String.valueOf(this.depense.getDistanceKM()));
+            dureeField.setText(String.valueOf(this.depense.getDureeTrajet()));
+            dateAller.setText(this.depense.getDateAller());
+            dateRetour.setText(this.depense.getDateRetour());
+            villeDepart.setText(this.depense.getVilleDepart());
+            villeArrivee.setText(this.depense.getVilleArrivee());
+        }else{
+            villeDepart.setText("VIDE");
+            villeArrivee.setText("VIDE");
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
