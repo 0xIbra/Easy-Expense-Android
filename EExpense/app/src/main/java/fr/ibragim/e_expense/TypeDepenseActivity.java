@@ -31,6 +31,7 @@ public class TypeDepenseActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), AddDepenseActivity.class);
                 intent.putExtra("TYPE_DEPENSE", "Frais");
+                intent.putExtra("EXISTING", "FALSE");
                 startActivity(intent);
             }
         });
@@ -41,6 +42,7 @@ public class TypeDepenseActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), AddDepenseActivity.class);
                 intent.putExtra("TYPE_DEPENSE", "Trajet");
+                intent.putExtra("EXISTING", "FALSE");
                 startActivity(intent);
             }
         });

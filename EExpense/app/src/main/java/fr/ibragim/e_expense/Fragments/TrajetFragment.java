@@ -163,9 +163,6 @@ public class TrajetFragment extends Fragment implements FragmentType{
             dateRetour.setText(this.depense.getDateRetour());
             villeDepart.setText(this.depense.getVilleDepart());
             villeArrivee.setText(this.depense.getVilleArrivee());
-        }else{
-            villeDepart.setText("VIDE");
-            villeArrivee.setText("VIDE");
         }
     }
 
