@@ -61,7 +61,7 @@
                     android:inputType="none"
                     android:hint="Date"
                     android:paddingLeft="10dp"
-                    android:drawableRight="@drawable/ic_arrow_drop_down_black_24dp"
+                    android:drawableRight="@drawable/date"
                     android:editable="false"/>
 
 

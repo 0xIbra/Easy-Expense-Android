@@ -82,6 +82,7 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
         });
 
 
+
         Intent intentToDepense = getIntent();
         if (intentToDepense != null){
             this.CurrentNoteFrais = intentToDepense.getIntExtra("NOTE_FRAIS_ID", 0);
