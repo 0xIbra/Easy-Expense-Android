@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/EExpense.iml" filepath="$PROJECT_DIR$/EExpense.iml" />
+      <module fileurl="file://C:\Users\Vince\Desktop\Projet\E_EXPENSE\EExpense\EExpense.iml" filepath="C:\Users\Vince\Desktop\Projet\E_EXPENSE\EExpense\EExpense.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\Vince\Desktop\Projet\E_EXPENSE\EExpense\app\app.iml" filepath="C:\Users\Vince\Desktop\Projet\E_EXPENSE\EExpense\app\app.iml" />
     </modules>
   </component>
 </project>
