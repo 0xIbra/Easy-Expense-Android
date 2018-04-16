@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,11 +32,14 @@ import java.io.File;
 
 import fr.ibragim.e_expense.Fragments.FraisFragment;
 import fr.ibragim.e_expense.Fragments.TrajetFragment;
+import fr.ibragim.e_expense.Metier.Depense;
+import fr.ibragim.e_expense.Metier.Trajet;
 import fr.ibragim.e_expense.Views.FragmentType;
+import fr.ibragim.e_expense.Views.ListItem;
 
 public class AddDepenseActivity extends AppCompatActivity implements FraisFragment.OnFragmentInteractionListener, TrajetFragment.OnFragmentInteractionListener{
 
-    private TextView Output;
+
     private int year;
     private int month;
     private int day;
@@ -54,6 +58,33 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
 
 
     private String selectedFragmentType;
+    private FragmentType test = null;
+
+
+    //Depense Fields
+    private EditText Output;
+    EditText depenseDescriptionField;
+    EditText depenseMontantField;
+
+
+
+    //DEPENSE VARIABLES
+    private int depenseId;
+    private String depenseLibelle;
+    private String depenseDate;
+    private String depenseEtat;
+    private double depenseDistance;
+    private double depenseDuree;
+    private String depenseDateAller;
+    private String depenseDateRetour;
+    private String depenseVilleDepart;
+    private String depenseVilleArrivee;
+    private int codeFrais;
+    private double depenseMontant;
+    private String depenseDetails;
+
+
+    ListItem depense = null;
 
 
     //@RequiresApi(api = Build.VERSION_CODES.N)
@@ -70,8 +101,9 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         addPicture = findViewById(R.id.addPicture);
-
         Output =  findViewById(R.id.Output);
+        depenseDescriptionField = findViewById(R.id.depenseDescription);
+        depenseMontantField = findViewById(R.id.depenseMontantField);
 
         // Get current date by calender
         final Calendar c = Calendar.getInstance();
@@ -86,26 +118,55 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
         Intent intent = getIntent();
         if (intent != null){
             selectedFragmentType = intent.getStringExtra("TYPE_DEPENSE");
+            String intentEx = intent.getStringExtra("EXISTING");
+            System.out.println("TEST INTENT "+selectedFragmentType);
+            System.out.println("SELECTEDTYPE "+ selectedFragmentType);
+            System.out.println("EXISTING "+intentEx);
+            if (intentEx.equals("TRUE")){
+                if (selectedFragmentType.equals("Trajet")){
+                    depenseId = intent.getIntExtra("DEPENSE_ID", 0);
+                    codeFrais = intent.getIntExtra("DEPENSE_CODEFRAIS", 0);
+                    depenseLibelle = intent.getStringExtra("DEPENSE_LIBELLE");
+                    depenseDate = intent.getStringExtra("DEPENSE_DATE");
+                    depenseEtat = intent.getStringExtra("DEPENSE_ETAT");
+                    depenseDistance = intent.getDoubleExtra("DEPENSE_DISTANCE", 0);
+                    depenseDuree = intent.getDoubleExtra("DEPENSE_DUREE", 0);
+                    depenseDateAller = intent.getStringExtra("DEPENSE_DATE_ALLER");
+                    depenseDateRetour = intent.getStringExtra("DEPENSE_DATE_RETOUR");
+                    depenseVilleDepart = intent.getStringExtra("DEPENSE_VILLE_DEPART");
+                    depenseVilleArrivee = intent.getStringExtra("DEPENSE_VILLE_ARRIVEE");
+                    depenseMontant = intent.getDoubleExtra("DEPENSE_MONTANT", 0);
+                    this.depense = new Trajet(depenseId, depenseLibelle, depenseDate, 0, depenseEtat, null, depenseMontant, codeFrais, 0, depenseDuree, depenseVilleDepart, depenseVilleArrivee, depenseDateAller, depenseDateRetour, depenseDistance, depenseId, codeFrais);
+                    System.out.println("TOSTRING " + this.depense.toString());
+                }else if (selectedFragmentType.equals("Frais")){
+                    depenseLibelle = intent.getStringExtra("DEPENSE_LIBELLE");
+                    depenseDetails = intent.getStringExtra("DEPENSE_DETAILS");
+                    depenseDate = intent.getStringExtra("DEPENSE_DATE");
+                    ifExistsInitDepense(selectedFragmentType);
+                }
+            }
         }
+
+
+        //System.out.println("DEPENSE_LIBELLE " + depenseLibelle);
 
 
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-        FragmentType test = null;
+
 
         switch (selectedFragmentType){
             case "Frais":
                 test = new FraisFragment();
-                transaction.add(R.id.middleContainer, (Fragment) test);
+                //transaction.add(R.id.middleContainer, (Fragment) test);
                 break;
             case "Trajet":
                 test = new TrajetFragment();
+                ((TrajetFragment) test).initCurrentDepense((Trajet) this.depense);
                 transaction.add(R.id.middleContainer, (Fragment) test);
                 break;
         }
-
-
         transaction.commit();
 
 
@@ -113,7 +174,6 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
             @Override
             public void onClick(View view) {
                 showDialog(DATE_PICKER_ID);
-                Toast.makeText(getApplicationContext(), Output.getText(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -142,6 +202,29 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
 
             }
         });
+    }
+
+    //public void setTrajetFields(TrajetFragment fragment){
+    //    fragment.fillTrajetFieldsByObject(depenseDistance, depenseDuree, depenseDateAller, depenseDateRetour, depenseVilleDepart, depenseVilleArrivee);
+    //}
+
+
+    public void ifExistsInitDepense(String typeFragment){
+        switch (typeFragment){
+            case "Frais":
+                this.Output.setText(depenseDate);
+                depenseDescriptionField.setText(depenseDetails);
+                depenseMontantField.setText(String.valueOf(depenseMontant));
+                break;
+
+            case "Trajet":
+                Output.setText(depenseDate);
+                depenseDescriptionField.setText("");
+                depenseMontantField.setText(String.valueOf(depenseMontant));
+                break;
+        }
+
+
     }
 
 

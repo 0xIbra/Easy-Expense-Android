@@ -45,6 +45,11 @@ public class Trajet extends Depense implements ListItem{
     }
 
 
+    public String toString(){
+        return this.getLibelleTrajet() +" - " + this.getId();
+    }
+
+
     public String getLibelleTrajet() {
         return libelleTrajet;
     }
