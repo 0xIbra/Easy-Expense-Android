@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // FRAGMENTS
     private MainActivityFragmentType mainF;
 
-
+    private ProgressBar progressBar;
 
 
     @Override
@@ -82,13 +83,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        progressBar = findViewById(R.id.mainProgress);
+        //progressBar.setVisibility(View.INVISIBLE);
+
         Intent intent = getIntent();
         if (intent != null){
 
             userToken = intent.getStringExtra(USER_TOKEN);
             userid = intent.getIntExtra(USER_ID, 0);
 
-            getRequest = new HttpsPostRequest();
+            getRequest = new HttpsPostRequest(this);
             try {
                 String params = "getUserSession=true&token="+userToken+"&userid="+userid;
                 result = getRequest.execute(API_URL, params).get();
@@ -253,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void getNotes(){
-        HttpsPostRequest newReq = new HttpsPostRequest();
+        HttpsPostRequest newReq = new HttpsPostRequest(this);
         String res = "";
         String params = "getNotes=true&userID="+userid;
         System.out.println("MY ID "+params);

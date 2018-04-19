@@ -6,17 +6,17 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -46,6 +46,9 @@ public class LoginActivity extends AppCompatActivity {
     EditText passField;
     Button btn ;
     Switch rememberSw ;
+    ProgressBar progressBar;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +57,12 @@ public class LoginActivity extends AppCompatActivity {
         userPrefs = getSharedPreferences(this.USER_SESSION, MODE_PRIVATE);
         API_URL = "https://api.ibragim.fr/Android.php";
 
+        progressBar = findViewById(R.id.progressDialog);
+
         emailField = findViewById(R.id.loginField);
         passField  = findViewById(R.id.passField);
         btn = findViewById(R.id.btnconnect);
         rememberSw = findViewById(R.id.rememberSwitch);
-
 
         SessionCheckAndConnect();
 
@@ -68,6 +72,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Authentification(view);
             }
+
+
         });
 
     }
@@ -80,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
         if (connectionDetector.isConnected()){
             int userid = 0;
             try {
-                getRequest = new HttpsPostRequest();
+                getRequest = new HttpsPostRequest(this);
                 String base = emailField.getText().toString() + ":" + passField.getText().toString();
                 AuthHeader = Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
 
@@ -166,7 +172,7 @@ public class LoginActivity extends AppCompatActivity {
                 System.out.println("PARAMS "+params);
 
                 try {
-                    getRequest = new HttpsPostRequest();
+                    getRequest = new HttpsPostRequest(this);
                     result = getRequest.execute(API_URL, params).get();
                     System.out.println("PASS "+result);
                 } catch (InterruptedException e) {

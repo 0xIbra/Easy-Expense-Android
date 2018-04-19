@@ -72,8 +72,8 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
         noteLibelle.setSelected(false);
         noteComment.setSelected(false);
 
-        FloatingActionButton noteSubmit = (FloatingActionButton) findViewById(R.id.noteSubmit);
-        noteSubmit.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton addDepense = (FloatingActionButton) findViewById(R.id.addDepense);
+        addDepense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(NoteFraisActivity.this, TypeDepenseActivity.class);
@@ -82,6 +82,14 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
         });
 
 
+        // Validation de la note de frais
+        FloatingActionButton noteSubmit = findViewById(R.id.noteSubmit);
+        noteSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         Intent intentToDepense = getIntent();
         if (intentToDepense != null){
@@ -101,7 +109,7 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
 
 
     public void getDepensesForNote(){
-        request = new HttpsPostRequest();
+        request = new HttpsPostRequest(NoteFraisActivity.this);
         String result = null;
         String params = "getDepensesForNoteFrais=true&codeFrais="+this.CurrentNoteFrais;
 

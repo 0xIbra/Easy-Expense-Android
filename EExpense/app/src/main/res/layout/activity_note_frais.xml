@@ -86,14 +86,24 @@
         android:layout_alignParentBottom="true">
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/noteSubmit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/addDepense"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_gravity="bottom|center"
             android:layout_margin="@dimen/fab_margin"
             android:src="@drawable/ic_add_black_24dp"
-            app:backgroundTint="@color/cardview_dark_background"
+            app:backgroundTint="@color/colorPrimary"
              />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/noteSubmit"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_check_black_24dp"
+            android:backgroundTint="@color/success"
+            />
 
     </android.support.design.widget.CoordinatorLayout>
 

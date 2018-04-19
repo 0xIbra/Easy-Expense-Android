@@ -100,6 +100,21 @@
 
 
 
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/depenseBottomContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true">
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/depenseSubmit"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_check_black_24dp"
+        android:backgroundTint="@color/success"/>
+
+</android.support.design.widget.CoordinatorLayout>
 
 </RelativeLayout>
