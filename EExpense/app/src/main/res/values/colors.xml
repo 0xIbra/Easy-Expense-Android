@@ -7,4 +7,6 @@
     <color name="noteViewColor">#d1d1d1</color>
     <color name="txtWhite">#ededed</color>
     <color name="appMainColor">#374761</color>
+    <color name="success">#5cb85c</color>
+    <color name="danger">#d9534f</color>
 </resources>

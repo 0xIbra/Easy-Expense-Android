@@ -1,5 +1,6 @@
 package fr.ibragim.e_expense.network;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 
 import java.io.BufferedReader;
@@ -9,8 +10,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import javax.net.ssl.HttpsURLConnection;
+
 
 /**
  * Created by ibragim.abubakarov on 15/03/2018.
@@ -22,6 +23,16 @@ public class HttpsPostRequest extends AsyncTask<String, Void, String> {
     public static final int CONNECTION_TIMEOUT = 15000;
     private HttpsURLConnection conn;
 
+    private Activity activity;
+
+    public HttpsPostRequest(Activity activity){
+        this.activity = activity;
+    }
+
+
+    public HttpsPostRequest(){
+
+    }
 
     @Override
     protected String doInBackground(String... strings) {
@@ -65,5 +76,6 @@ public class HttpsPostRequest extends AsyncTask<String, Void, String> {
 
         return null;
     }
+
 
 }

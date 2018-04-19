@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -86,6 +87,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
 
 
     ListItem depense = null;
+    private FloatingActionButton depenseSubmit;
 
 
     //@RequiresApi(api = Build.VERSION_CODES.N)
@@ -105,6 +107,17 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
         Output =  findViewById(R.id.Output);
         depenseDescriptionField = findViewById(R.id.depenseDescription);
         depenseMontantField = findViewById(R.id.depenseMontantField);
+
+        depenseSubmit = findViewById(R.id.depenseSubmit);
+
+
+        // Validation de la depense
+        depenseSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         // Get current date by calender
         final Calendar c = Calendar.getInstance();
