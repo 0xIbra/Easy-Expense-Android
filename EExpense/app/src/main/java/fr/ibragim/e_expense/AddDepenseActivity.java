@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 
 import java.io.File;
+import java.util.Locale;
 
 import fr.ibragim.e_expense.Fragments.FraisFragment;
 import fr.ibragim.e_expense.Fragments.TrajetFragment;
@@ -276,6 +277,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
 
     @Override
     protected Dialog onCreateDialog(int id) {
+        Locale.setDefault(Locale.FRANCE);
         switch (id) {
             case DATE_PICKER_ID:
 
@@ -292,6 +294,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
         // when dialog box is closed, below method will be called.
         @Override
         public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+
             year = selectedYear;
             month = selectedMonth;
             day = selectedDay;

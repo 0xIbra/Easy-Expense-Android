@@ -1,15 +1,24 @@
 package fr.ibragim.e_expense.Fragments;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
+
+import android.icu.util.Calendar;
+
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.EditText;
 
-import fr.ibragim.e_expense.Metier.Depense;
+
+import java.util.Locale;
+
 import fr.ibragim.e_expense.Metier.Trajet;
 import fr.ibragim.e_expense.R;
 import fr.ibragim.e_expense.Views.FragmentType;
@@ -22,7 +31,7 @@ import fr.ibragim.e_expense.Views.FragmentType;
  * Use the {@link TrajetFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TrajetFragment extends Fragment implements FragmentType{
+public class TrajetFragment extends Fragment implements FragmentType {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -38,12 +47,16 @@ public class TrajetFragment extends Fragment implements FragmentType{
     //TRAJET FIELDS
     EditText distanceField;
     EditText dureeField;
-    EditText dateAller;
     EditText dateRetour;
     EditText villeDepart;
     EditText villeArrivee;
 
     Trajet depense;
+
+
+    private Calendar mcalendar;
+    private EditText dateAller;
+    private int day, month, year;
 
 
     public void setDistanceField(double distanceField) {
@@ -98,7 +111,6 @@ public class TrajetFragment extends Fragment implements FragmentType{
     }
 
 
-
     public TrajetFragment() {
         // Required empty public constructor
     }
@@ -130,10 +142,13 @@ public class TrajetFragment extends Fragment implements FragmentType{
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_trajet, container, false);
 
         distanceField = view.findViewById(R.id.distanceTrajet);
@@ -143,29 +158,92 @@ public class TrajetFragment extends Fragment implements FragmentType{
         villeDepart = view.findViewById(R.id.villeDepartTrajet);
         villeArrivee = view.findViewById(R.id.villeArriveeTrajet);
 
+
+
+        //Locale locale = getResources().getConfiguration().locale;
+
+
+        final Calendar c = Calendar.getInstance();
+
+        year = c.get(Calendar.YEAR);
+        month = c.get(Calendar.MONTH);
+        day = c.get(Calendar.DAY_OF_MONTH);
+
+
+
+        dateAller.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DateDialog();
+            }
+
+            public void DateDialog() {
+                Locale.setDefault(Locale.FRANCE);
+                DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+                        year = selectedYear;
+                        month = selectedMonth;
+                        day = selectedDay;
+                        dateAller.setText("Date aller: "+new StringBuilder().append(day).append("/").append(month + 1).append("/").append(year));
+                    }
+                };
+
+                DatePickerDialog dpDialog = new DatePickerDialog(getActivity(), listener, year, month, day);
+                //dpDialog.setTitle(" ");
+                //dpDialog.setIcon(R.drawable.easy_expense_logo_round);
+                dpDialog.show();
+            }
+
+        });
+        dateRetour.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DateDialog();
+            }
+
+            public void DateDialog() {
+                Locale.setDefault(Locale.FRANCE);
+                DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+                        year = selectedYear;
+                        month = selectedMonth;
+                        day = selectedDay;
+                        dateRetour.setText("Date Retour: "+new StringBuilder().append(day).append("/").append(month + 1).append("/").append(year));
+                    }
+                };
+                DatePickerDialog dpDialog = new DatePickerDialog(getActivity(), listener, year, month, day);
+                dpDialog.show();
+            }
+
+        });
         return view;
+
     }
 
-    public void initCurrentDepense(Trajet trajet){
+
+    public void initCurrentDepense(Trajet trajet) {
         this.depense = trajet;
     }
 
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
 
 
-        if (this.depense != null){
-            distanceField.setText(String.valueOf(this.depense.getDistanceKM()));
-            dureeField.setText(String.valueOf(this.depense.getDureeTrajet()));
-            dateAller.setText(this.depense.getDateAller());
-            dateRetour.setText(this.depense.getDateRetour());
+        if (this.depense != null) {
+            distanceField.setText(String.valueOf(this.depense.getDistanceKM()+" kilomètre(s)"));
+            dureeField.setText(String.valueOf(this.depense.getDureeTrajet()+" heure(s)"));
+
+            //final SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+            //final SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+            dateAller.setText("Date aller: "+this.depense.getDateAller());
+            dateRetour.setText("Date retour: "+this.depense.getDateRetour());
             villeDepart.setText(this.depense.getVilleDepart());
             villeArrivee.setText(this.depense.getVilleArrivee());
-        }else{
-            villeDepart.setText("VIDE");
-            villeArrivee.setText("VIDE");
         }
     }
 
