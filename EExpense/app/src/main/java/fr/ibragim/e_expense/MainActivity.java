@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             userToken = intent.getStringExtra(USER_TOKEN);
             userid = intent.getIntExtra(USER_ID, 0);
 
-            getRequest = new HttpsPostRequest(this);
+            getRequest = new HttpsPostRequest(this, progressBar);
             try {
                 String params = "getUserSession=true&token="+userToken+"&userid="+userid;
                 result = getRequest.execute(API_URL, params).get();
@@ -143,6 +143,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 //        .setAction("Action", null).show();
 
                 Intent i = new Intent(getApplicationContext(), NoteFraisActivity.class);
+                i.putExtra("EXISTING", false);
+                i.putExtra("USER_ID", userid);
+                i.putExtra("INIT_NOTE_FRAIS",userprenom + " "+usernom);
                 startActivity(i);
             }
         });
@@ -151,8 +154,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (this.NotesFrais.isEmpty()){
             this.getNotes();
-        }else{
-            Log.v("VIDE", "FAUX");
         }
 
 
@@ -257,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void getNotes(){
-        HttpsPostRequest newReq = new HttpsPostRequest(this);
+        HttpsPostRequest newReq = new HttpsPostRequest(this, progressBar);
         String res = "";
         String params = "getNotes=true&userID="+userid;
         System.out.println("MY ID "+params);

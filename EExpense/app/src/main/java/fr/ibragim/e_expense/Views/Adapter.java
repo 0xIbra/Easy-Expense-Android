@@ -55,6 +55,7 @@ public class Adapter extends RecyclerView.Adapter<BasicViewHolder> {
                 intentToDepense.putExtra("NOTE_FRAIS_ID", n.getId());
                 intentToDepense.putExtra("NOTE_FRAIS_LIBELLE", n.getLibelle());
                 intentToDepense.putExtra("NOTE_FRAIS_COMMENTAIRE", n.getCommentaireFrais());
+                intentToDepense.putExtra("EXISTING", true);
                 v.getContext().startActivity(intentToDepense);
             }
         });

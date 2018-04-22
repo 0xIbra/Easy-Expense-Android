@@ -6,6 +6,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,6 +72,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Authentification(view);
+                //progressBar.setVisibility(View.VISIBLE);
             }
 
 
@@ -86,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
         if (connectionDetector.isConnected()){
             int userid = 0;
             try {
-                getRequest = new HttpsPostRequest(this);
+                getRequest = new HttpsPostRequest(this, this.progressBar);
                 String base = emailField.getText().toString() + ":" + passField.getText().toString();
                 AuthHeader = Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
 
@@ -101,12 +103,14 @@ public class LoginActivity extends AppCompatActivity {
                 //String decodedTest2 = new String(decoded);
                 //userEmail = decodedTest2.substring(0, emailField.getText().length());
                 //String pass = decodedTest2.substring(emailField.getText().length() + 1, decodedTest2.length());
-                result = getRequest.execute(API_URL,"AuthToken=true&token="+AuthHeader+"&mail="+emailField.getText().toString() +"&password="+ passField.getText().toString()).get(); // Exécution du Thread pour connexion.
+                result = getRequest.execute(API_URL,"AuthToken=true&token="+AuthHeader+"&mail="+emailField.getText().toString() +"&password="+ passField.getText().toString()).get();
+                Log.v("RETOUR ", result);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
+
 
             try {
                 JSONObject user = new JSONObject(result);
@@ -172,7 +176,7 @@ public class LoginActivity extends AppCompatActivity {
                 System.out.println("PARAMS "+params);
 
                 try {
-                    getRequest = new HttpsPostRequest(this);
+                    getRequest = new HttpsPostRequest(this, progressBar);
                     result = getRequest.execute(API_URL, params).get();
                     System.out.println("PASS "+result);
                 } catch (InterruptedException e) {
