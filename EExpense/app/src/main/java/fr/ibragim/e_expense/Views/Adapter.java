@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView.OnItemClickListener;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 import fr.ibragim.e_expense.AddDepenseActivity;
@@ -25,15 +27,14 @@ public class Adapter extends RecyclerView.Adapter<BasicViewHolder> {
 
     private List<NoteFrais> list;
     private final OnItemClickListener listener;
+    private JSONObject user;
     //private Context context;
 
-    public Adapter(List<NoteFrais> list, OnItemClickListener listener) {
+    public Adapter(List<NoteFrais> list, JSONObject user, OnItemClickListener listener) {
         this.list = list;
         this.listener = listener;
-        //this.context = context;
+        this.user = user;
     }
-
-
 
 
 
@@ -52,10 +53,9 @@ public class Adapter extends RecyclerView.Adapter<BasicViewHolder> {
             @Override
             public void onItemClick(View v, int pos) {
                 Intent intentToDepense = new Intent(v.getContext(), NoteFraisActivity.class);
-                intentToDepense.putExtra("NOTE_FRAIS_ID", n.getId());
-                intentToDepense.putExtra("NOTE_FRAIS_LIBELLE", n.getLibelle());
-                intentToDepense.putExtra("NOTE_FRAIS_COMMENTAIRE", n.getCommentaireFrais());
                 intentToDepense.putExtra("EXISTING", true);
+                intentToDepense.putExtra("USER_JSON", user.toString());
+                intentToDepense.putExtra("NOTEFRAIS_JSON", n.toJSON());
                 v.getContext().startActivity(intentToDepense);
             }
         });

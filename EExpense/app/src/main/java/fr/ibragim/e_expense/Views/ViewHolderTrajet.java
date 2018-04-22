@@ -38,7 +38,7 @@ public class ViewHolderTrajet extends ViewHolder {
     public void bindType(final ListItem item, final AdapterView.OnItemClickListener listener) {
         title.setText(((Trajet) item).getLibelleTrajet());
         date.setText(((Trajet) item).getDateDepense());
-        etat.setText(((Trajet) item).getEtatValidation());
+        setBackground(((Trajet) item).getEtatValidation());
 
         final Trajet trajet = ((Trajet) item);
 
@@ -63,6 +63,25 @@ public class ViewHolderTrajet extends ViewHolder {
                 view.getContext().startActivity(intent);
             }
         });
+    }
+
+
+    public void setBackground(String etat){
+        switch (etat){
+            case "En cours":
+                this.etat.setBackgroundResource(R.drawable.etatbackground);
+                this.etat.setText(etat);
+                break;
+            case "Validé":
+                this.etat.setBackgroundResource(R.drawable.etat_validated_background);
+                this.etat.setText(etat);
+                break;
+
+            case "Refusé":
+                this.etat.setBackgroundResource(R.drawable.etat_refused_background);
+                this.etat.setText(etat);
+                break;
+        }
     }
 
 

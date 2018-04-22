@@ -1,5 +1,8 @@
 package fr.ibragim.e_expense.Metier;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import fr.ibragim.e_expense.Views.ListItem;
 
 /**
@@ -17,6 +20,23 @@ public class Trajet extends Depense implements ListItem{
     private int idDepense;
     private int codeFrais;
 
+
+    public Trajet(JSONObject depense){
+        super(depense);
+        try {
+            this.libelleTrajet = depense.getString("libelleTrajet");
+            this.dureeTrajet = depense.getDouble("dureeTrajet");
+            this.villeDepart = depense.getString("villeDepart");
+            this.villeArrivee = depense.getString("villeArrivee");
+            this.dateAller = depense.getString("dateAller");
+            this.dateRetour = depense.getString("dateRetour");
+            this.distanceKM = depense.getDouble("distanceKilometres");
+            this.idDepense = depense.getInt("idDepense");
+            this.codeFrais = depense.getInt("codeFrais");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     public Trajet(int id, String libelle, String datePaiement, double montantRemboursement, String etatValidation, String dateValidation, double montantDepense, int codeF, int idU, double dureeTrajet, String villeDepart, String villeArrivee, String dateAller, String dateRetour, double distanceKM, int idDepense, int codeFrais) {
         super(id, datePaiement, montantRemboursement, etatValidation, dateValidation, montantDepense, codeF, idU);

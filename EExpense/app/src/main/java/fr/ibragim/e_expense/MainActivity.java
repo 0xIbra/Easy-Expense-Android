@@ -36,28 +36,27 @@ import fr.ibragim.e_expense.Fragments.StatFragment;
 import fr.ibragim.e_expense.Metier.NoteFrais;
 import fr.ibragim.e_expense.Views.MainActivityFragmentType;
 import fr.ibragim.e_expense.network.ConnectionDetector;
-import fr.ibragim.e_expense.network.HttpsPostRequest;
+import fr.ibragim.e_expense.network.HttpsGetRequest;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
-    protected final String USER_TOKEN = "";
     private final String USER_ID = "USER_ID";
+    private final String USER_JSON = "USER_JSON";
     String result = "";
     String login;
-    String pass;
+
     private final String USER_SESSION = "USER_SESSION";
     SharedPreferences userPrefs;
-    protected String API_URL = "https://api.ibragim.fr/Android.php";
-    protected HttpsPostRequest getRequest;
+    protected String API_URL = "http://easy-expense.tk/public/api/";
+    protected HttpsGetRequest getRequest;
     protected ConnectionDetector connectionDetector;
     protected String user_email;
 
     //CURRENT USER
     protected int userid;
     protected String useremail;
-    protected String userToken;
     protected String usernom;
     protected String userprenom;
+    protected String userpass;
 
     protected List<NoteFrais> NotesFrais = new ArrayList<NoteFrais>();
     RecyclerView r;
@@ -75,6 +74,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private ProgressBar progressBar;
 
+    // Current user
+    JSONObject user;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,24 +90,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Intent intent = getIntent();
         if (intent != null){
-
-            userToken = intent.getStringExtra(USER_TOKEN);
-            userid = intent.getIntExtra(USER_ID, 0);
-
-            getRequest = new HttpsPostRequest(this, progressBar);
             try {
-                String params = "getUserSession=true&token="+userToken+"&userid="+userid;
-                result = getRequest.execute(API_URL, params).get();
-                JSONObject user = new JSONObject(result);
-                userid = user.getInt("id");
-                usernom = user.getString("nom");
-                userprenom = user.getString("prenom");
-                useremail = user.getString("email");
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+                user = new JSONObject(intent.getStringExtra(USER_JSON));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -132,8 +118,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TextView navname = headerView.findViewById(R.id.navNameView);
         TextView navemail = headerView.findViewById(R.id.navEmailView);
 
-        navname.setText(userprenom + " " + usernom);
-        navemail.setText(useremail);
+        try {
+            navname.setText(user.getString("prenomUtilisateur") + " " + user.getString("nomUtilisateur"));
+            navemail.setText(user.getString("mailUtilisateur"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -144,8 +135,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 Intent i = new Intent(getApplicationContext(), NoteFraisActivity.class);
                 i.putExtra("EXISTING", false);
-                i.putExtra("USER_ID", userid);
-                i.putExtra("INIT_NOTE_FRAIS",userprenom + " "+usernom);
+                i.putExtra(USER_JSON, user.toString());
                 startActivity(i);
             }
         });
@@ -201,11 +191,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (id){
             case R.id.mesNotesFrais:
                 mainF = new MainFragment();
-                mainF.init(userid);
                 if (this.NotesFrais.isEmpty()){
                     this.getNotes();
                 }
                 ((MainFragment) mainF).setNotes(this.NotesFrais);
+                ((MainFragment) mainF).setUser(this.user);
                 fab.show();
                 break;
 
@@ -226,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.deconnexion:
                 SharedPreferences.Editor editor = userPrefs.edit();
                 editor.remove("USER_EMAIL");
-                editor.remove("USER_TOKEN");
+                editor.remove("USER_PASS");
                 editor.apply();
                 Intent deco = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(deco);
@@ -258,28 +248,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void getNotes(){
-        HttpsPostRequest newReq = new HttpsPostRequest(this, progressBar);
+        getRequest = new HttpsGetRequest();
         String res = "";
-        String params = "getNotes=true&userID="+userid;
-        System.out.println("MY ID "+params);
         try {
-            res = newReq.execute(API_URL, params).get();
-            Log.v("RETOUR ", res);
+            String API = API_URL;
+            API = API+"notesdefrais/get/"+user.getInt("idUtilisateur");
+            System.out.println("API URL : " + API);
+            res = getRequest.execute(API).get();
+            Log.v("RETOUR ", res+"");
             JSONArray cards = new JSONArray(res);
             JSONObject currentCard;
+            NoteFrais noteFrais;
             for (int i = 0; i < cards.length(); i++){
                 currentCard = cards.getJSONObject(i);
-                int codeFrais = currentCard.getInt("codeFrais");
-                String libelleNote = currentCard.getString("libelleNote");
-                String dateF = currentCard.getString("dateFrais");
-                String ville = currentCard.getString("villeFrais");
-                String dateS = currentCard.getString("dateSoumission");
-                String comm = currentCard.getString("commentaireFrais");
-                String etatN = currentCard.getString("etat");
-                int idUtilisateur = currentCard.getInt("idUtilisateur");
-                int idClient = currentCard.getInt("idClient");
-
-                NotesFrais.add(new NoteFrais(codeFrais, libelleNote, dateF, ville, dateS, comm, etatN, idUtilisateur, idClient));
+                noteFrais = new NoteFrais(currentCard);
+                NotesFrais.add(noteFrais);
             }
 
         } catch (InterruptedException e) {

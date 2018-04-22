@@ -5,13 +5,19 @@ import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
+
 import javax.net.ssl.HttpsURLConnection;
 
 
@@ -23,48 +29,35 @@ public class HttpsPostRequest extends AsyncTask<String, Void, String> {
     public static final String REQUEST_METHOD = "POST";
     public static final int READ_TIMEOUT = 15000;
     public static final int CONNECTION_TIMEOUT = 15000;
-    private HttpsURLConnection conn;
+    private HttpURLConnection conn;
 
-    //private Activity activity;
-    //private ProgressBar progressBar;
-
-    public HttpsPostRequest(Activity activity, ProgressBar progressBar){
-        //this.activity = activity;
-        //this.progressBar = progressBar;
-    }
-
-
-    public HttpsPostRequest(){
-
-    }
-
-
-    /*@Override
-    protected void onPostExecute(String s) {
-        super.onPostExecute(s);
-        progressBar.setVisibility(View.INVISIBLE);
-    }*/
 
     @Override
     protected String doInBackground(String... strings) {
 
         String targetUrl = strings[0];
-        String parametres = strings[1];
+        JSONObject json = null;
+        try {
+            json = new JSONObject(strings[1]);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         URL url;
         conn = null;
         try{
             url = new URL(targetUrl);
-            conn = (HttpsURLConnection) url.openConnection();
+            conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(REQUEST_METHOD);
             conn.setReadTimeout(READ_TIMEOUT);
             conn.setConnectTimeout(CONNECTION_TIMEOUT);
-
-            conn.setUseCaches(true);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setUseCaches(false);
             conn.setDoInput(true);
             conn.setDoOutput(true);
+            conn.connect();
 
             DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-            wr.writeBytes(parametres);
+            wr.writeBytes(json.toString());
             wr.flush();
             wr.close();
 
@@ -78,6 +71,7 @@ public class HttpsPostRequest extends AsyncTask<String, Void, String> {
             }
             reader.close();
 
+            conn.disconnect();
             return response.toString();
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -88,9 +82,4 @@ public class HttpsPostRequest extends AsyncTask<String, Void, String> {
         return null;
     }
 
-
-    @Override
-    protected void onPostExecute(String s) {
-        super.onPostExecute(s);
-    }
 }

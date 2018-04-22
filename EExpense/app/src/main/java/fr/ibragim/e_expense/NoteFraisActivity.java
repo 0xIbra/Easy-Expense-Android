@@ -22,18 +22,26 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import fr.ibragim.e_expense.Metier.Depense;
 import fr.ibragim.e_expense.Metier.Frais;
+import fr.ibragim.e_expense.Metier.NoteFrais;
 import fr.ibragim.e_expense.Metier.Trajet;
 import fr.ibragim.e_expense.Views.FraisAdapter;
 import fr.ibragim.e_expense.Views.ListItem;
+import fr.ibragim.e_expense.network.HttpsGetRequest;
 import fr.ibragim.e_expense.network.HttpsPostRequest;
 
 public class NoteFraisActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
+    private final String USER_JSON = "USER_JSON";
+    private final String NOTEFRAIS_JSON = "NOTEFRAIS_JSON";
+
+
     private EditText noteDate;
     private EditText noteComment;
     private EditText noteLibelle;
     private Button noteSubmit;
-    private final String API_URL = "https://api.ibragim.fr/Android.php";
+    private final String API_URL = "http://easy-expense.tk/public/api/";
     private HttpsPostRequest request;
 
     private String selectedType;
@@ -53,6 +61,9 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
     private String currentNoteFraisTitle;
     private int countNote;
 
+    private JSONObject currentNote = null;
+    private JSONObject currentUser = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +80,20 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
         //Menu menu = findViewById(R.menu.note_frais_menu);
 
         noteLibelle = findViewById(R.id.noteLibelle);
+        noteDate = findViewById(R.id.noteDate);
         noteComment = findViewById(R.id.noteComment);
         //noteSubmit = findViewById(R.id.noteSubmit);
 
         noteLibelle.setSelected(false);
         noteComment.setSelected(false);
+
+
+        noteDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //DATE
+            }
+        });
 
 
         FloatingActionButton addDepense = (FloatingActionButton) findViewById(R.id.addDepense);
@@ -98,65 +118,83 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
         Intent intentToDepense = getIntent();
         if (intentToDepense != null){
             existing = intentToDepense.getBooleanExtra("EXISTING", false);
-            this.CurrentNoteFrais = intentToDepense.getIntExtra("NOTE_FRAIS_ID", 0);
-            noteFraisLibelle = intentToDepense.getStringExtra("NOTE_FRAIS_LIBELLE");
-            noteLibelle.setText(noteFraisLibelle);
-            this.currentNoteFraisTitle = intentToDepense.getStringExtra("INIT_NOTE_FRAIS");
-            this.currentUserId = intentToDepense.getIntExtra("USER_ID", 0);
-            noteFraisCommentaire = intentToDepense.getStringExtra("NOTE_FRAIS_COMMENTAIRE");
-            noteComment.setText(noteFraisCommentaire);
+            String json = intentToDepense.getStringExtra(USER_JSON);
+            System.out.println("EXTRAJSON : "  + json);
+            try {
+                currentUser = new JSONObject(json.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (existing){
+                try {
+                    currentNote = new JSONObject(intentToDepense.getStringExtra(NOTEFRAIS_JSON));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         //System.out.println("USER ID : " + currentUserId);
 
 
-        if (this.CurrentNoteFrais != 0){
+        if (this.currentNote != null){
             if (this.existing == true){
-                this.getDepensesForNote();
+                try {
+                    this.getDepensesForNote();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }else {
-            initNewNoteFrais();
+            if (currentUser != null){
+                try {
+                    initNewNoteFrais();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
         }
 
-        getCountNote();
-
-        currentNoteFraisTitle = currentNoteFraisTitle+" #"+countNote;
-        this.noteLibelle.setText(currentNoteFraisTitle);
-        System.out.println("LIBELLE TEST : " + currentNoteFraisTitle);
-
-    }
-
-
-
-
-    public void getCountNote(){
-        request = new HttpsPostRequest();
-
-        String params = "getCountFrais=true&idUtilisateur="+currentUserId;
-        String res ;
-
         try {
-            res = request.execute(API_URL, params).get();
-            Log.v("RETOUR ", res);
-            JSONObject count = new JSONObject(res);
-            countNote = count.getInt("nbNotesFrais");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+            noteLibelle.setText(currentNote.getString("libelleNote"));
+            noteDate.setText(currentNote.getString("dateFrais"));
+            if (noteComment.getText() == null || noteComment.getText().equals("") || noteComment.equals("null")){
+                noteComment.setText("merci de modifier ceci");
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        if (currentUser != null){
+            try {
+                if (currentUser.getString("etat").equals("Validé") || currentUser.getString("etat").equals("Refusé")){
+                    noteLibelle.setEnabled(false);
+                    noteDate.setEnabled(false);
+                    noteComment.setEnabled(false);
+                    Toast.makeText(this, "NOTE DE FRAIS VALIDEE", Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
-    public void initNewNoteFrais(){
-        System.out.println("USER ID : " + currentUserId);
-        System.out.println("LIBELLE : " + currentNoteFraisTitle);
+    public void initNewNoteFrais() throws JSONException {
+        String result = null;
         request = new HttpsPostRequest();
-        String params = "putNoteFrais=true&libelleNote="+currentNoteFraisTitle+"&idUtilisateur="+currentUserId;
-        System.out.println("PARAMS " +params);
+        String API = API_URL;
+        API = API + "notesdefrais/add";
+        JSONObject note = new JSONObject();
+        String libelle = currentUser.getString("prenomUtilisateur") + " "+ currentUser.getString("nomUtilisateur");
         try {
-            request.execute(API_URL, params).get();
+            note.put("libelleNote", libelle);
+            note.put("idUtilisateur", currentUser.getString("idUtilisateur"));
+            result = request.execute(API, note.toString()).get();
+            currentNote = new JSONObject(result);
+        } catch (JSONException e) {
+            e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -166,55 +204,30 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
     }
 
 
-    public void getDepensesForNote(){
-        request = new HttpsPostRequest();
+    public void getDepensesForNote() throws JSONException {
+        HttpsGetRequest request = new HttpsGetRequest();
         String result = null;
-        String params = "getDepensesForNoteFrais=true&codeFrais="+this.CurrentNoteFrais;
-
+        String API = API_URL;
+        API = API+"depenses/get/"+currentNote.getInt("codeFrais");
         try{
-            result = request.execute(API_URL, params).get();
-            Log.v("RETOUR DEPENSES", result);
+            result = request.execute(API).get();
+            Log.v("RETOUR DEPENSES", result+"");
             JSONObject depenseArray = new JSONObject(result);
             JSONArray FraisType = depenseArray.getJSONArray("Frais");
             JSONArray Trajet = depenseArray.getJSONArray("Trajet");
             JSONObject currentDepense;
+            Depense currentD;
             for (int i = 0; i < FraisType.length(); i++){
                 currentDepense = FraisType.getJSONObject(i);
-                int idD = currentDepense.getInt("idDepense");
-                String dateD = currentDepense.getString("dateDepense");
-                double montantR = currentDepense.getDouble("montantRemboursement");
-                String etat = currentDepense.getString("etatValidation");
-                String dateValidation = currentDepense.getString("dateValidation");
-                double montantD = currentDepense.getDouble("montantDepense");
-                int codeF = currentDepense.getInt("codeFrais");
-                int idU = currentDepense.getInt("idUtilisateur");
-                String libelle = currentDepense.getString("libelleFrais");
-                String details = currentDepense.getString("detailsFrais");
-                String dateF = currentDepense.getString("dateFrais");
-
-
-                this.DepensesList.add(new Frais(idD, dateD, montantR, etat, dateValidation, montantD, codeF, idU, libelle, details, dateF, idD, codeF));
+                currentD= new Frais(currentDepense);
+                this.DepensesList.add((Frais) currentD);
             }
 
             for (int i = 0; i < Trajet.length(); i++){
                 currentDepense = Trajet.getJSONObject(i);
-                int idD = currentDepense.getInt("idDepense");
-                String libelle = currentDepense.getString("libelleTrajet");
-                String dateD = currentDepense.getString("dateDepense");
-                double montantR = currentDepense.getDouble("montantRemboursement");
-                String etat = currentDepense.getString("etatValidation");
-                String dateValidation = currentDepense.getString("dateValidation");
-                double montantD = currentDepense.getDouble("montantDepense");
-                int codeF = currentDepense.getInt("codeFrais");
-                int idU = currentDepense.getInt("idUtilisateur");
-                double dureeT = currentDepense.getDouble("dureeTrajet");
-                String villeD = currentDepense.getString("villeDepart");
-                String villeA = currentDepense.getString("villeArrivee");
-                String dateA = currentDepense.getString("dateAller");
-                String dateR = currentDepense.getString("dateRetour");
-                double distance = currentDepense.getDouble("distanceKilometres");
+                currentD = new Trajet(currentDepense);
 
-                this.DepensesList.add(new Trajet(idD, libelle, dateD, montantR, etat, dateValidation, montantD, codeF, idU, dureeT, villeD, villeA, dateA, dateR, distance, idD, codeF));
+                this.DepensesList.add((Trajet) currentD);
             }
 
             this.depenseRecyclerview = findViewById(R.id.depenseRecycler);

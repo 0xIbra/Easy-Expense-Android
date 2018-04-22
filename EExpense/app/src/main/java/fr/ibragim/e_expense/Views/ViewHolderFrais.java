@@ -37,7 +37,7 @@ public class ViewHolderFrais extends ViewHolder {
     public void bindType(final ListItem item, AdapterView.OnItemClickListener listener) {
         title.setText(((Frais) item).getIntituleFrais());
         date.setText(((Frais) item).getDateDepense());
-        etat.setText(((Frais) item).getEtatValidation());
+        setBackground(((Frais) item).getEtatValidation());
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,6 +52,26 @@ public class ViewHolderFrais extends ViewHolder {
             }
         });
     }
+
+
+    public void setBackground(String etat){
+        switch (etat){
+            case "En cours":
+                this.etat.setBackgroundResource(R.drawable.etatbackground);
+                this.etat.setText(etat);
+                break;
+            case "Validé":
+                this.etat.setBackgroundResource(R.drawable.etat_validated_background);
+                this.etat.setText(etat);
+                break;
+
+            case "Refusé":
+                this.etat.setBackgroundResource(R.drawable.etat_refused_background);
+                this.etat.setText(etat);
+                break;
+        }
+    }
+
 
     @Override
     public void onClick(View view) {

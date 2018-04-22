@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -23,23 +22,27 @@ import java.util.concurrent.ExecutionException;
 
 import fr.ibragim.e_expense.Session.UserSession;
 import fr.ibragim.e_expense.network.ConnectionDetector;
-import fr.ibragim.e_expense.network.HttpsPostRequest;
+import fr.ibragim.e_expense.network.HttpsGetRequest;
 
 public class LoginActivity extends AppCompatActivity {
-    private final String USER_TOKEN = "";
     private final String USER_ID = "USER_ID";
+    private final String USER_EMAIL = "USER_EMAIL";
+    private final String USER_PASS = "USER_PASS";
+    private final String USER_JSON = "USER_JSON";
 
     private String result = "";
-    private String authToken = "";
+    private String userPass = "";
     private String userEmail = "";
-    private String AuthHeader;
     private final String USER_SESSION = "USER_SESSION";
     SharedPreferences userPrefs;
     protected String API_URL;
-    protected HttpsPostRequest getRequest;
+    protected HttpsGetRequest getRequest;
     private int userID;
 
     ConnectionDetector connectionDetector;
+
+    // Current user
+    JSONObject user;
 
 
     //Layout resources
@@ -56,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         userPrefs = getSharedPreferences(this.USER_SESSION, MODE_PRIVATE);
-        API_URL = "https://api.ibragim.fr/Android.php";
+        API_URL = "http://easy-expense.tk/public/index.php/api/utilisateur/auth/{mail}/{password}";
 
         progressBar = findViewById(R.id.progressDialog);
 
@@ -87,24 +90,15 @@ public class LoginActivity extends AppCompatActivity {
 
         if (connectionDetector.isConnected()){
             int userid = 0;
+            String userEmail = null;
+            String userPass = null;
             try {
-                getRequest = new HttpsPostRequest(this, this.progressBar);
-                String base = emailField.getText().toString() + ":" + passField.getText().toString();
-                AuthHeader = Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-
-                byte[] decoding = AuthHeader.getBytes();
-                String decoded = new String(decoding);
-                userEmail = decoded.substring(0, emailField.getText().length());
-
-
-                //byte[] test = AuthHeader.getBytes();
-                //String test2 = new String(test);
-                //byte[] decoded = Base64.decode(test2, Base64.NO_WRAP);
-                //String decodedTest2 = new String(decoded);
-                //userEmail = decodedTest2.substring(0, emailField.getText().length());
-                //String pass = decodedTest2.substring(emailField.getText().length() + 1, decodedTest2.length());
-                result = getRequest.execute(API_URL,"AuthToken=true&token="+AuthHeader+"&mail="+emailField.getText().toString() +"&password="+ passField.getText().toString()).get();
-                Log.v("RETOUR ", result);
+                getRequest = new HttpsGetRequest();
+                API_URL = API_URL.replace("{mail}", emailField.getText().toString());
+                API_URL = API_URL.replace("{password}", passField.getText().toString());
+                System.out.println("GET API URL : " + API_URL);
+                result = getRequest.execute(API_URL).get();
+                Log.v("RETOUR ", result+"");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
@@ -113,31 +107,27 @@ public class LoginActivity extends AppCompatActivity {
 
 
             try {
-                JSONObject user = new JSONObject(result);
-                authToken = user.getString("AuthToken").toString();
-                userid = user.getInt("id");
+                user = new JSONObject(result);
+                userEmail = user.getString("mailUtilisateur");
+                userPass = user.getString("mdpUtilisateur");
+                userid = user.getInt("idUtilisateur");
 
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            if (AuthHeader.equals(authToken)){
-                byte[] decoding = AuthHeader.getBytes();
-                String decoded = new String(decoding);
-                userEmail = decoded.substring(0, emailField.getText().length());
+            if (userEmail.equals(emailField.getText().toString()) && userPass.equals(passField.getText().toString())){
 
                 if (rememberSw.isChecked()){
-                    UserSession.setSharedPrefs(userPrefs, authToken, userEmail);
+                    UserSession.setSharedPrefs(userPrefs, userEmail, userPass);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra(USER_TOKEN, authToken);
-                    intent.putExtra(USER_ID, userid);
+                    intent.putExtra(USER_JSON, user.toString());
                     startActivity(intent);
                     finish();
                 }else {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra(USER_TOKEN, authToken);
-                    intent.putExtra(USER_ID, userid);
+                    intent.putExtra(USER_JSON, user.toString());
                     startActivity(intent);
                     finish();
                 }
@@ -159,26 +149,17 @@ public class LoginActivity extends AppCompatActivity {
             if (connectionDetector.isConnected()){
                 Map<String, ?> userS = UserSession.getUserSession(userPrefs);
                 String params;
-                String sharedToken = userS.get("USER_TOKEN").toString();
                 String sharedEmail = userS.get("USER_EMAIL").toString();
+                String sharedPass = userS.get("USER_PASS").toString();
 
-                System.out.println("TOKEN " + sharedToken);
-                System.out.println("SHAREDEMAIL " + sharedEmail);
-
-                byte[] tokenBytes = sharedToken.getBytes();
-
-                byte[] decoded = Base64.decode(tokenBytes, Base64.NO_WRAP);
-                String decodedTest2 = new String(decoded);
-                userEmail = decodedTest2.substring(0, sharedEmail.length());
-                String pass = decodedTest2.substring(sharedEmail.length() + 1, decodedTest2.length());
-
-                params = "AuthToken=true&token="+sharedToken+"&mail="+userEmail+"&password="+pass;
-                System.out.println("PARAMS "+params);
 
                 try {
-                    getRequest = new HttpsPostRequest(this, progressBar);
-                    result = getRequest.execute(API_URL, params).get();
-                    System.out.println("PASS "+result);
+                    API_URL = API_URL.replace("{mail}", sharedEmail);
+                    API_URL = API_URL.replace("{password}", sharedPass);
+                    System.out.println("SESSION API URL : " + API_URL);
+                    getRequest = new HttpsGetRequest();
+                    result = getRequest.execute(API_URL).get();
+                    System.out.println("SESSION RETOUR : "+result+"");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
@@ -186,16 +167,16 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 try {
-                    JSONObject user = new JSONObject(result);
-                    authToken = user.getString("AuthToken");
-                    userID = user.getInt("id");
+                    user = new JSONObject(result);
+                    userEmail = user.getString("mailUtilisateur");
+                    userPass = user.getString("mdpUtilisateur");
+                    userID = user.getInt("idUtilisateur");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                if (sharedToken.equals(authToken)){
+                if (userEmail.equals(sharedEmail) && userPass.equals(sharedPass)){
                     Intent reco = new Intent(getApplicationContext(), MainActivity.class);
-                    reco.putExtra(USER_TOKEN, authToken);
-                    reco.putExtra(USER_ID, userID);
+                    reco.putExtra(USER_JSON, user.toString());
                     startActivity(reco);
                     finish();
                 }

@@ -1,5 +1,8 @@
 package fr.ibragim.e_expense.Metier;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by ibragim.abubakarov on 03/04/2018.
  */
@@ -13,6 +16,22 @@ public abstract class Depense {
     private double montantDepense;
     private int codeFrais;
     private int idUtilisateur;
+
+
+    public Depense(JSONObject depense){
+        try {
+            this.id = depense.getInt("idDepense");
+            this.dateDepense = depense.getString("dateDepense");
+            this.MontantRemboursement = depense.getDouble("montantRemboursement");
+            this.etatValidation = depense.getString("etatValidation");
+            this.dateValidation = depense.getString("dateValidation");
+            this.montantDepense = depense.getDouble("montantDepense");
+            this.codeFrais = depense.getInt("codeFrais");
+            this.idUtilisateur = depense.getInt("idUtilisateur");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public Depense(int id, String datePaiement, double montantRemboursement, String etatValidation, String dateValidation, double montantDepense,int codeF, int idU) {

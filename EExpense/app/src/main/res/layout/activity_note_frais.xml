@@ -56,6 +56,19 @@
                 />
 
             <EditText
+                android:id="@+id/noteDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#fff"
+                android:textColorHint="@color/colorAccent"
+                android:backgroundTint="@color/txtWhite"
+                android:paddingHorizontal="10dp"
+                android:drawableRight="@drawable/ic_white_date_logo"
+                android:editable="false"
+                android:inputType="none"
+                />
+
+            <EditText
                 android:id="@+id/noteComment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

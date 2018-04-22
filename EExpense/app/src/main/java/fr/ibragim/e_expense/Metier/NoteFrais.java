@@ -1,5 +1,8 @@
 package fr.ibragim.e_expense.Metier;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 /**
@@ -17,6 +20,29 @@ public class NoteFrais {
     private int idUtilisateur;
     private int idClient;
     private ArrayList<Depense> listeDepenses;
+
+
+    public String toJSON(){
+        return "{\"codeFrais\" : \""+this.id+"\", \"libelleNote\" : \""+this.libelle+"\", \"dateFrais\" : \""+this.DateFrais+"\", \"villeFrais\" : \""+this.Ville+"\"," +
+                "\"dateSoumission\" : \""+this.dateSoumission+"\", \"commentaireFrais\" : \""+this.commentaireFrais+"\", \"etat\" : \""+this.etat+"\", " +
+                "\"idUtilisateur\" : \""+this.idUtilisateur+"\", \"idClient\" : \""+this.idClient+"\"}";
+    }
+
+    public NoteFrais(JSONObject note){
+        try {
+            this.id = note.getInt("codeFrais");
+            this.libelle = note.getString("libelleNote");
+            this.DateFrais = note.getString("dateFrais");
+            this.Ville = note.getString("villeFrais");
+            this.dateSoumission = note.getString("dateSoumission");
+            this.commentaireFrais = note.getString("commentaireFrais");
+            this.etat = note.getString("etat");
+            this.idUtilisateur = note.getInt("idUtilisateur");
+            this.idClient = note.getInt("idClient");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public NoteFrais(int id, String libelle, String dateFrais, String ville, String dateSoumission, String commentaireFrais,int idU) {
@@ -49,7 +75,6 @@ public class NoteFrais {
         this.dateSoumission = dateSoumission;
         this.commentaireFrais = commentaireFrais;
     }
-
 
 
 
