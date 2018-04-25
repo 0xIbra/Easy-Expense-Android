@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.json.JSONObject;
+
 import fr.ibragim.e_expense.R;
 import fr.ibragim.e_expense.Views.FragmentType;
 
@@ -31,6 +33,8 @@ public class FraisFragment extends Fragment implements FragmentType {
 
     private OnFragmentInteractionListener mListener;
 
+    private JSONObject currentFrais;
+
     public FraisFragment() {
         // Required empty public constructor
     }
@@ -51,6 +55,15 @@ public class FraisFragment extends Fragment implements FragmentType {
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public void initCurrentDepense(JSONObject currentFrais){
+        this.currentFrais = currentFrais;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @Override

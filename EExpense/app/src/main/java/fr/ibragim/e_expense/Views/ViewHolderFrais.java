@@ -37,7 +37,8 @@ public class ViewHolderFrais extends ViewHolder {
     public void bindType(final ListItem item, AdapterView.OnItemClickListener listener) {
         title.setText(((Frais) item).getIntituleFrais());
         date.setText(((Frais) item).getDateDepense());
-        setBackground(((Frais) item).getEtatValidation());
+        System.out.println("ETATVAL : " + ((Frais) item).getEtatValidation());
+        //setBackground(((Frais) item).getEtatValidation());
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,9 +46,10 @@ public class ViewHolderFrais extends ViewHolder {
                 Intent intent = new Intent(view.getContext(), AddDepenseActivity.class);
                 intent.putExtra("TYPE_DEPENSE", "Frais");
                 intent.putExtra("EXISTING", "TRUE");
-                intent.putExtra("DEPENSE_DATE", ((Frais) item).getDateDepense());
-                intent.putExtra("DEPENSE_LIBELLE", ((Frais) item).getIntituleFrais());
-                intent.putExtra("DEPENSE_MONTANT", ((Frais) item).getMontantDepense());
+                intent.putExtra("DEPENSE_JSON", ((Frais) item).toJSON());
+                //intent.putExtra("DEPENSE_DATE", ((Frais) item).getDateDepense());
+                //intent.putExtra("DEPENSE_LIBELLE", ((Frais) item).getIntituleFrais());
+                //intent.putExtra("DEPENSE_MONTANT", ((Frais) item).getMontantDepense());
                 view.getContext().startActivity(intent);
             }
         });

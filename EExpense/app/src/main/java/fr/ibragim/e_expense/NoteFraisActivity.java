@@ -25,7 +25,6 @@ import java.util.concurrent.ExecutionException;
 
 import fr.ibragim.e_expense.Metier.Depense;
 import fr.ibragim.e_expense.Metier.Frais;
-import fr.ibragim.e_expense.Metier.NoteFrais;
 import fr.ibragim.e_expense.Metier.Trajet;
 import fr.ibragim.e_expense.Views.FraisAdapter;
 import fr.ibragim.e_expense.Views.ListItem;
@@ -41,7 +40,7 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
     private EditText noteComment;
     private EditText noteLibelle;
     private Button noteSubmit;
-    private final String API_URL = "http://easy-expense.tk/public/api/";
+    private final String API_URL = "https://api.ibragim.fr/public/api/";
     private HttpsPostRequest request;
 
     private String selectedType;
@@ -168,11 +167,12 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
 
         if (currentUser != null){
             try {
-                if (currentUser.getString("etat").equals("Validé") || currentUser.getString("etat").equals("Refusé")){
+                if (currentNote.getString("etat").equals("Validé") || currentNote.getString("etat").equals("Refusé")){
                     noteLibelle.setEnabled(false);
                     noteDate.setEnabled(false);
                     noteComment.setEnabled(false);
-                    Toast.makeText(this, "NOTE DE FRAIS VALIDEE", Toast.LENGTH_SHORT).show();
+                    noteSubmit.hide();
+                    addDepense.hide();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -214,12 +214,15 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
             Log.v("RETOUR DEPENSES", result+"");
             JSONObject depenseArray = new JSONObject(result);
             JSONArray FraisType = depenseArray.getJSONArray("Frais");
+            //System.out.println("FRAIS ARRAY : "+ FraisType.toString()) ;
             JSONArray Trajet = depenseArray.getJSONArray("Trajet");
+            //System.out.println("TRAJET ARRAY : " + Trajet.toString());
             JSONObject currentDepense;
             Depense currentD;
+
             for (int i = 0; i < FraisType.length(); i++){
                 currentDepense = FraisType.getJSONObject(i);
-                currentD= new Frais(currentDepense);
+                currentD = new Frais(currentDepense);
                 this.DepensesList.add((Frais) currentD);
             }
 
@@ -271,7 +274,15 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
 
 
             case R.id.action_delete:
-                Toast.makeText(getApplicationContext(), "SUPPRIMER", Toast.LENGTH_SHORT).show();
+                try {
+                    if (this.currentNote.getString("etat").equals("En Cours")){
+                        //ACTION
+                    }else{
+                        Toast.makeText(this, "Note de frais déjà traitée", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 return true;
 
         }

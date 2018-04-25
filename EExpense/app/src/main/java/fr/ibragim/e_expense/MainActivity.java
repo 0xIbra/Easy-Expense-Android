@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private final String USER_SESSION = "USER_SESSION";
     SharedPreferences userPrefs;
-    protected String API_URL = "http://easy-expense.tk/public/api/";
+    protected String API_URL = "https://api.ibragim.fr/public/api/";
     protected HttpsGetRequest getRequest;
     protected ConnectionDetector connectionDetector;
     protected String user_email;

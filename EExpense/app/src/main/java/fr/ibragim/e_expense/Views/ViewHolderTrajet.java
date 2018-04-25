@@ -48,18 +48,7 @@ public class ViewHolderTrajet extends ViewHolder {
                 Intent intent = new Intent(view.getContext(), AddDepenseActivity.class);
                 intent.putExtra("TYPE_DEPENSE", "Trajet");
                 intent.putExtra("EXISTING", "TRUE");
-                intent.putExtra("DEPENSE_ID", trajet.getIdDepense());
-                intent.putExtra("DEPENSE_CODEFRAIS", trajet.getCodeFrais());
-                intent.putExtra("DEPENSE_LIBELLE",trajet.getLibelleTrajet());
-                intent.putExtra("DEPENSE_DATE", trajet.getDateDepense());
-                intent.putExtra("DEPENSE_ETAT", trajet.getEtatValidation());
-                intent.putExtra("DEPENSE_DISTANCE", trajet.getDistanceKM());
-                intent.putExtra("DEPENSE_DUREE", trajet.getDureeTrajet());
-                intent.putExtra("DEPENSE_DATE_ALLER", trajet.getDateAller());
-                intent.putExtra("DEPENSE_DATE_RETOUR", trajet.getDateRetour());
-                intent.putExtra("DEPENSE_VILLE_DEPART", trajet.getVilleDepart());
-                intent.putExtra("DEPENSE_VILLE_ARRIVEE", trajet.getVilleArrivee());
-                intent.putExtra("DEPENSE_MONTANT", trajet.getMontantDepense());
+                intent.putExtra("DEPENSE_JSON", ((Trajet) item).toJSON());
                 view.getContext().startActivity(intent);
             }
         });

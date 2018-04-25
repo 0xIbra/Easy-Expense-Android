@@ -33,6 +33,12 @@ public abstract class Depense {
         }
     }
 
+    public String getJSON(){
+        return "\"idDepense\" : \""+this.id+"\", \"dateDepense\" : \""+this.dateDepense+"\", \"montantRemboursement\" : \""+this.MontantRemboursement+"\", " +
+                "\"etatValidation\" : \""+this.etatValidation+"\", \"dateValidation\" : \""+this.dateValidation+"\", \"montantDepense\" : \""+this.montantDepense+"\"," +
+                "\"codeFrais\" : \""+this.codeFrais+"\", \"idUtilisateur\" : \""+this.idUtilisateur+"\",";
+    }
+
 
     public Depense(int id, String datePaiement, double montantRemboursement, String etatValidation, String dateValidation, double montantDepense,int codeF, int idU) {
         this.id = id;
@@ -55,6 +61,10 @@ public abstract class Depense {
         this.codeFrais = codeF;
         this.idUtilisateur = idU;
     }
+
+    public abstract String toJSON();
+
+
 
     public int getId() {
         return id;

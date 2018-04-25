@@ -30,6 +30,12 @@ public class Frais extends Depense implements ListItem{
         }
     }
 
+    @Override
+    public String toJSON() {
+        return "{ "+super.getJSON()+" \"libelleFrais\" : \""+this.intituleFrais+"\", \"detailsFrais\" : \""+this.detailsFrais+"\", \"dateFrais\" : \""+this.dateFrais+"\", " +
+                "\"idDepense\" : \""+this.idDepense+"\", \"codeFrais\" : \""+this.codeFrais+"\"}";
+    }
+
 
     public Frais(int id, String datePaiement, double montantRemboursement, String etatValidation, String dateValidation, double montantDepense, int codeF, int idU, String intituleFrais, String detailsFrais, String dateFrais, int idDepense, int codeFrais) {
         super(id, datePaiement, montantRemboursement, etatValidation, dateValidation, montantDepense, codeF, idU);
@@ -74,13 +80,13 @@ public class Frais extends Depense implements ListItem{
         this.dateFrais = dateFrais;
     }
 
-    public int getIdDepense() {
-        return idDepense;
-    }
+    //public int getIdDepense() {
+     //   return idDepense;
+    //}
 
-    public void setIdDepense(int idDepense) {
-        this.idDepense = idDepense;
-    }
+   /// public void setIdDepense(int idDepense) {
+    //    this.idDepense = idDepense;
+   // }
 
     @Override
     public int getCodeFrais() {

@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import fr.ibragim.e_expense.Metier.Depense;
 import fr.ibragim.e_expense.Metier.Trajet;
 import fr.ibragim.e_expense.R;
@@ -36,14 +39,14 @@ public class TrajetFragment extends Fragment implements FragmentType{
 
 
     //TRAJET FIELDS
-    EditText distanceField;
-    EditText dureeField;
-    EditText dateAller;
-    EditText dateRetour;
-    EditText villeDepart;
-    EditText villeArrivee;
+    private EditText distanceField;
+    private EditText dureeField;
+    private EditText dateAller;
+    private EditText dateRetour;
+    private EditText villeDepart;
+    private EditText villeArrivee;
 
-    Trajet depense;
+    private JSONObject currentTrajet;
 
 
     public void setDistanceField(double distanceField) {
@@ -146,8 +149,8 @@ public class TrajetFragment extends Fragment implements FragmentType{
         return view;
     }
 
-    public void initCurrentDepense(Trajet trajet){
-        this.depense = trajet;
+    public void initCurrentDepense(JSONObject trajet){
+        this.currentTrajet = trajet;
     }
 
 
@@ -156,13 +159,27 @@ public class TrajetFragment extends Fragment implements FragmentType{
         super.onStart();
 
 
-        if (this.depense != null){
-            distanceField.setText(String.valueOf(this.depense.getDistanceKM()));
-            dureeField.setText(String.valueOf(this.depense.getDureeTrajet()));
-            dateAller.setText(this.depense.getDateAller());
-            dateRetour.setText(this.depense.getDateRetour());
-            villeDepart.setText(this.depense.getVilleDepart());
-            villeArrivee.setText(this.depense.getVilleArrivee());
+        if (this.currentTrajet != null){
+            try {
+                distanceField.setText(String.valueOf(currentTrajet.getDouble("distanceKilometres")));
+                dureeField.setText(String.valueOf(currentTrajet.getDouble("dureeTrajet")));
+                dateAller.setText(currentTrajet.getString("dateAller"));
+                dateRetour.setText(currentTrajet.getString("dateRetour"));
+                villeDepart.setText(currentTrajet.getString("villeDepart"));
+                villeArrivee.setText(currentTrajet.getString("villeArrivee"));
+
+                if (this.currentTrajet.getString("etatValidation").equals("Validé") || currentTrajet.getString("etatValidation").equals("Refusé")){
+                    distanceField.setEnabled(false);
+                    dureeField.setEnabled(false);
+                    dateAller.setEnabled(false);
+                    dateRetour.setEnabled(false);
+                    villeDepart.setEnabled(false);
+                    villeArrivee.setEnabled(false);
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 

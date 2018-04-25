@@ -1,23 +1,15 @@
 package fr.ibragim.e_expense.network;
 
-import android.app.Activity;
 import android.os.AsyncTask;
-import android.view.View;
-import android.widget.ProgressBar;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
-
 import javax.net.ssl.HttpsURLConnection;
 
 
@@ -29,7 +21,7 @@ public class HttpsPostRequest extends AsyncTask<String, Void, String> {
     public static final String REQUEST_METHOD = "POST";
     public static final int READ_TIMEOUT = 15000;
     public static final int CONNECTION_TIMEOUT = 15000;
-    private HttpURLConnection conn;
+    private HttpsURLConnection conn;
 
 
     @Override
@@ -46,7 +38,7 @@ public class HttpsPostRequest extends AsyncTask<String, Void, String> {
         conn = null;
         try{
             url = new URL(targetUrl);
-            conn = (HttpURLConnection) url.openConnection();
+            conn = (HttpsURLConnection) url.openConnection();
             conn.setRequestMethod(REQUEST_METHOD);
             conn.setReadTimeout(READ_TIMEOUT);
             conn.setConnectTimeout(CONNECTION_TIMEOUT);
