@@ -28,6 +28,7 @@ import fr.ibragim.e_expense.Metier.Frais;
 import fr.ibragim.e_expense.Metier.Trajet;
 import fr.ibragim.e_expense.Views.FraisAdapter;
 import fr.ibragim.e_expense.Views.ListItem;
+import fr.ibragim.e_expense.network.HttpsDeleteRequest;
 import fr.ibragim.e_expense.network.HttpsGetRequest;
 import fr.ibragim.e_expense.network.HttpsPostRequest;
 
@@ -40,7 +41,7 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
     private EditText noteComment;
     private EditText noteLibelle;
     private Button noteSubmit;
-    private final String API_URL = "https://api.ibragim.fr/public/api/";
+    private String API_URL = "http://api.ibragim.fr/public/api/";
     private HttpsPostRequest request;
 
     private String selectedType;
@@ -276,7 +277,7 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
             case R.id.action_delete:
                 try {
                     if (this.currentNote.getString("etat").equals("En Cours")){
-                        //ACTION
+                        this.DeleteNoteDeFrais();
                     }else{
                         Toast.makeText(this, "Note de frais déjà traitée", Toast.LENGTH_SHORT).show();
                     }
@@ -301,4 +302,34 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
+
+
+    public void DeleteNoteDeFrais(){
+        API_URL += "notesdefrais/delete";
+        HttpsDeleteRequest deleteRequest = new HttpsDeleteRequest();
+        String response = "";
+
+        try {
+            response = deleteRequest.execute(API_URL, currentNote.toString()).get();
+            JSONObject JsonResponse = new JSONObject(response);
+            if (JsonResponse.getBoolean("response") == true){
+                Toast.makeText(getApplicationContext(), "Note de frais supprimée", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.putExtra("USER_JSON", currentUser.toString());
+                startActivity(intent);
+                finish();
+
+            }else{
+                Toast.makeText(this, "Erreur de suppréssion !", Toast.LENGTH_SHORT).show();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

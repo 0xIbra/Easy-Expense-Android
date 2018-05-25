@@ -1,8 +1,10 @@
 package fr.ibragim.e_expense.network;
 
 import android.os.AsyncTask;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -12,13 +14,13 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-
 /**
- * Created by ibragim.abubakarov on 15/03/2018.
+ * Created by ibragim.abubakarov on 25/05/2018.
  */
 
-public class HttpsPostRequest extends AsyncTask<String, Void, String> {
-    public static final String REQUEST_METHOD = "POST";
+public class HttpsDeleteRequest extends AsyncTask<String, Void, String> {
+
+    public static final String REQUEST_METHOD = "DELETE";
     public static final int READ_TIMEOUT = 15000;
     public static final int CONNECTION_TIMEOUT = 15000;
     private HttpURLConnection conn;

@@ -5,11 +5,10 @@ import android.os.AsyncTask;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by ibragim.abubakarov on 22/04/2018.
@@ -19,13 +18,13 @@ public class HttpsGetRequest extends AsyncTask<String, Void, String> {
     public static final String REQUEST_METHOD = "GET";
     public static final int READ_TIMEOUT = 15000;
     public static final int CONNECTION_TIMEOUT = 15000;
-    private HttpsURLConnection conn;
+    private HttpURLConnection conn;
 
     @Override
     protected String doInBackground(String... params) {
         try {
             URL apiUrl = new URL(params[0]);
-            conn = (HttpsURLConnection) apiUrl.openConnection();
+            conn = (HttpURLConnection) apiUrl.openConnection();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

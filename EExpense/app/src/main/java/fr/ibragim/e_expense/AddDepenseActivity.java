@@ -94,6 +94,8 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
     ListItem depense = null;
     private FloatingActionButton depenseSubmit;
 
+    private String existing;
+
 
     //@RequiresApi(api = Build.VERSION_CODES.N)
     @TargetApi(Build.VERSION_CODES.N)
@@ -138,6 +140,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
         if (intent != null){
             selectedFragmentType = intent.getStringExtra("TYPE_DEPENSE");
             String intentEx = intent.getStringExtra("EXISTING");
+            existing = intentEx;
             if (intentEx.equals("TRUE")){
 
                 if (selectedFragmentType.equals("Trajet")){
@@ -226,16 +229,17 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
             }
         });
 
-
-        try {
-            if (currentDepense.getString("etatValidation").equals("Validé") || currentDepense.getString("etatValidation").equals("Refusé")){
-                Output.setEnabled(false);
-                depenseDescriptionField.setEnabled(false);
-                depenseMontantField.setEnabled(false);
-                depenseSubmit.hide();
+        if (existing.equals("TRUE")){
+            try {
+                if (currentDepense.getString("etatValidation").equals("Validé") || currentDepense.getString("etatValidation").equals("Refusé")){
+                    Output.setEnabled(false);
+                    depenseDescriptionField.setEnabled(false);
+                    depenseMontantField.setEnabled(false);
+                    depenseSubmit.hide();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
 
     }
