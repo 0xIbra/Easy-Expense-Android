@@ -2,6 +2,8 @@ package fr.ibragim.e_expense.network;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -23,10 +25,12 @@ public class HttpsPostRequest extends AsyncTask<String, Void, String> {
     public static final int CONNECTION_TIMEOUT = 15000;
     private HttpsURLConnection conn;
 
-    private Activity activity;
+    //private Activity activity;
+    //private ProgressBar progressBar;
 
-    public HttpsPostRequest(Activity activity){
-        this.activity = activity;
+    public HttpsPostRequest(Activity activity, ProgressBar progressBar){
+        //this.activity = activity;
+        //this.progressBar = progressBar;
     }
 
 
@@ -34,13 +38,20 @@ public class HttpsPostRequest extends AsyncTask<String, Void, String> {
 
     }
 
+
+    /*@Override
+    protected void onPostExecute(String s) {
+        super.onPostExecute(s);
+        progressBar.setVisibility(View.INVISIBLE);
+    }*/
+
     @Override
     protected String doInBackground(String... strings) {
 
         String targetUrl = strings[0];
         String parametres = strings[1];
         URL url;
-        HttpsURLConnection conn = null;
+        conn = null;
         try{
             url = new URL(targetUrl);
             conn = (HttpsURLConnection) url.openConnection();
@@ -78,4 +89,8 @@ public class HttpsPostRequest extends AsyncTask<String, Void, String> {
     }
 
 
+    @Override
+    protected void onPostExecute(String s) {
+        super.onPostExecute(s);
+    }
 }

@@ -13,21 +13,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
-import fr.ibragim.e_expense.Metier.Depense;
 import fr.ibragim.e_expense.Metier.Frais;
 import fr.ibragim.e_expense.Metier.Trajet;
 import fr.ibragim.e_expense.Views.FraisAdapter;
@@ -52,18 +46,27 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
     private String noteFraisLibelle = null;
     private String noteFraisCommentaire = null;
 
+    // Verif si la note de frais est existante ou pas
+    private boolean existing;
+
+    private int currentUserId;
+    private String currentNoteFraisTitle;
+    private int countNote;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_frais);
         android.support.v7.widget.Toolbar toolbar = findViewById(R.id.customToolbar);
-        toolbar.setTitle("Mes dépenses");
+        toolbar.setTitle("Ma note de frais");
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+
+        //Menu menu = findViewById(R.menu.note_frais_menu);
 
         noteLibelle = findViewById(R.id.noteLibelle);
         noteComment = findViewById(R.id.noteComment);
@@ -71,6 +74,7 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
 
         noteLibelle.setSelected(false);
         noteComment.setSelected(false);
+
 
         FloatingActionButton addDepense = (FloatingActionButton) findViewById(R.id.addDepense);
         addDepense.setOnClickListener(new View.OnClickListener() {
@@ -93,23 +97,77 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
 
         Intent intentToDepense = getIntent();
         if (intentToDepense != null){
+            existing = intentToDepense.getBooleanExtra("EXISTING", false);
             this.CurrentNoteFrais = intentToDepense.getIntExtra("NOTE_FRAIS_ID", 0);
             noteFraisLibelle = intentToDepense.getStringExtra("NOTE_FRAIS_LIBELLE");
             noteLibelle.setText(noteFraisLibelle);
-
+            this.currentNoteFraisTitle = intentToDepense.getStringExtra("INIT_NOTE_FRAIS");
+            this.currentUserId = intentToDepense.getIntExtra("USER_ID", 0);
             noteFraisCommentaire = intentToDepense.getStringExtra("NOTE_FRAIS_COMMENTAIRE");
             noteComment.setText(noteFraisCommentaire);
         }
 
+        //System.out.println("USER ID : " + currentUserId);
+
+
         if (this.CurrentNoteFrais != 0){
-            this.getDepensesForNote();
+            if (this.existing == true){
+                this.getDepensesForNote();
+            }
+        }else {
+            initNewNoteFrais();
+        }
+
+        getCountNote();
+
+        currentNoteFraisTitle = currentNoteFraisTitle+" #"+countNote;
+        this.noteLibelle.setText(currentNoteFraisTitle);
+        System.out.println("LIBELLE TEST : " + currentNoteFraisTitle);
+
+    }
+
+
+
+
+    public void getCountNote(){
+        request = new HttpsPostRequest();
+
+        String params = "getCountFrais=true&idUtilisateur="+currentUserId;
+        String res ;
+
+        try {
+            res = request.execute(API_URL, params).get();
+            Log.v("RETOUR ", res);
+            JSONObject count = new JSONObject(res);
+            countNote = count.getInt("nbNotesFrais");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void initNewNoteFrais(){
+        System.out.println("USER ID : " + currentUserId);
+        System.out.println("LIBELLE : " + currentNoteFraisTitle);
+        request = new HttpsPostRequest();
+        String params = "putNoteFrais=true&libelleNote="+currentNoteFraisTitle+"&idUtilisateur="+currentUserId;
+        System.out.println("PARAMS " +params);
+        try {
+            request.execute(API_URL, params).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
 
     }
 
 
     public void getDepensesForNote(){
-        request = new HttpsPostRequest(NoteFraisActivity.this);
+        request = new HttpsPostRequest();
         String result = null;
         String params = "getDepensesForNoteFrais=true&codeFrais="+this.CurrentNoteFrais;
 
@@ -156,8 +214,6 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
                 String dateR = currentDepense.getString("dateRetour");
                 double distance = currentDepense.getDouble("distanceKilometres");
 
-
-
                 this.DepensesList.add(new Trajet(idD, libelle, dateD, montantR, etat, dateValidation, montantD, codeF, idU, dureeT, villeD, villeA, dateA, dateR, distance, idD, codeF));
             }
 
@@ -184,6 +240,10 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
 
         return true;
     }
+
+
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
