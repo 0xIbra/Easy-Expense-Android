@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         userPrefs = getSharedPreferences(this.USER_SESSION, MODE_PRIVATE);
-        API_URL = "http://api.ibragim.fr/public/api/utilisateur/auth/{mail}/{password}";
+        API_URL = "https://api.ibragim.fr/public/api/utilisateur/auth/{mail}/{password}";
 
         progressBar = findViewById(R.id.progressDialog);
 

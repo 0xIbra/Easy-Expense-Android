@@ -10,9 +10,10 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by ibragim.abubakarov on 25/05/2018.
@@ -23,7 +24,7 @@ public class HttpsDeleteRequest extends AsyncTask<String, Void, String> {
     public static final String REQUEST_METHOD = "DELETE";
     public static final int READ_TIMEOUT = 15000;
     public static final int CONNECTION_TIMEOUT = 15000;
-    private HttpURLConnection conn;
+    private HttpsURLConnection conn;
 
 
     @Override
@@ -40,7 +41,7 @@ public class HttpsDeleteRequest extends AsyncTask<String, Void, String> {
         conn = null;
         try{
             url = new URL(targetUrl);
-            conn = (HttpURLConnection) url.openConnection();
+            conn = (HttpsURLConnection) url.openConnection();
             conn.setRequestMethod(REQUEST_METHOD);
             conn.setReadTimeout(READ_TIMEOUT);
             conn.setConnectTimeout(CONNECTION_TIMEOUT);

@@ -41,7 +41,7 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
     private EditText noteComment;
     private EditText noteLibelle;
     private Button noteSubmit;
-    private String API_URL = "http://api.ibragim.fr/public/api/";
+    private String API_URL = "https://api.ibragim.fr/public/api/";
     private HttpsPostRequest request;
 
     private String selectedType;
