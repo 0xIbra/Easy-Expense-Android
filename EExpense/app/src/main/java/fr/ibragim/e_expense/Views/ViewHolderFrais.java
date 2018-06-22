@@ -97,4 +97,9 @@ public class ViewHolderFrais extends ViewHolder {
     public void setItemClickListener(ItemClickListener ic){
         this.itemClickListener = ic;
     }
+
+    @Override
+    public int getViewHolderType() {
+        return ViewHolderType.ViewHolderFrais;
+    }
 }

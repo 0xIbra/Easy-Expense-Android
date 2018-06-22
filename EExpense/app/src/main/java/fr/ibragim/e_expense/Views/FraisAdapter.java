@@ -65,7 +65,12 @@ public class FraisAdapter extends RecyclerView.Adapter<ViewHolder>  {
     public void onBindViewHolder(ViewHolder viewHolder, int pos) {
         final ListItem item = list.get(pos);
         viewHolder.bindType(item, listener);
-        ((ViewHolderFrais) viewHolder).InitUserAndNote(this.currentUser, this.currentNote);
+        if (viewHolder.getViewHolderType() == ViewHolderType.ViewHolderFrais){
+            ((ViewHolderFrais) viewHolder).InitUserAndNote(this.currentUser, this.currentNote);
+        }else if (viewHolder.getViewHolderType() == ViewHolderType.ViewHolderTrajet){
+            ((ViewHolderTrajet) viewHolder).InitUserAndNote(this.currentUser, this.currentNote);
+        }
+
         viewHolder.setItemClickListener(new ItemClickListener() {
             @Override
             public void onItemClick(View v, int pos) {

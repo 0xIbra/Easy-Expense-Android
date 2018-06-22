@@ -1,5 +1,6 @@
 package fr.ibragim.e_expense.Fragments;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -104,6 +105,11 @@ public class FraisFragment extends Fragment implements FragmentType {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public Dialog onCreateDialog(int id) {
+        return null;
     }
 
     @Override

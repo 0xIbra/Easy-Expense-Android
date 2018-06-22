@@ -43,9 +43,9 @@ public class Trajet extends Depense implements ListItem{
 
     @Override
     public String toJSON() {
-        return "{ "+super.getJSON()+" \"libelleTrajet\" : \""+this.libelleTrajet+"\", \"dureeTrajet\" : \""+this.dureeTrajet+"\", \"villeDepart\" : \""+this.villeDepart+"\", " +
+        return "{ "+super.getJSON()+" \"libelleTrajet\" : \""+this.libelleTrajet+"\", \"dureeTrajet\" : "+this.dureeTrajet+", \"villeDepart\" : \""+this.villeDepart+"\", " +
                 "\"villeArrivee\" : \""+this.villeArrivee+"\", \"dateAller\" : \""+this.dateAller+"\", \"dateRetour\" : \""+this.dateRetour+"\", " +
-                "\"distanceKilometres\" : \""+this.distanceKM+"\", \"codeFrais\" : \""+this.codeFrais+"\"}";
+                "\"distanceKilometres\" : "+this.distanceKM+", \"codeFrais\" : "+this.codeFrais+"}";
     }
 
     public Trajet(int id, String libelle, String datePaiement, double montantRemboursement, String etatValidation, String dateValidation, double montantDepense, int codeF, int idU, double dureeTrajet, String villeDepart, String villeArrivee, String dateAller, String dateRetour, double distanceKM, int idDepense, int codeFrais) {

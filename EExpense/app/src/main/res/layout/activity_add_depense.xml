@@ -116,12 +116,24 @@
     android:layout_alignParentBottom="true">
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/depenseDelete"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/danger"
+        android:src="@drawable/ic_delete_forever_black_24dp"
+        android:scaleType="center"
+        />
+
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/depenseSubmit"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_gravity="bottom|right"
         android:layout_margin="16dp"
         android:src="@drawable/ic_check_black_24dp"
+        android:scaleType="center"
         android:backgroundTint="@color/success"/>
 
 </android.support.design.widget.CoordinatorLayout>

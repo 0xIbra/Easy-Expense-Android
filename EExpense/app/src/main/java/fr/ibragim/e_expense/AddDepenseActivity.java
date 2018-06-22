@@ -44,6 +44,8 @@ import fr.ibragim.e_expense.Metier.Frais;
 import fr.ibragim.e_expense.Metier.Trajet;
 import fr.ibragim.e_expense.Views.FragmentType;
 import fr.ibragim.e_expense.Views.ListItem;
+import fr.ibragim.e_expense.Widgets.DateFormat;
+import fr.ibragim.e_expense.network.HttpsDeleteRequest;
 import fr.ibragim.e_expense.network.HttpsPostRequest;
 import fr.ibragim.e_expense.network.HttpsPutRequest;
 
@@ -61,7 +63,12 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
     private int day;
 
     private ImageView addPicture;
+
+    private static final int DATE_ALLER = 0;
+    private static final int DATE_RETOUR = 1;
     static final int DATE_PICKER_ID = 1111;
+
+
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 0;
     private static String[] PERMISSIONS_STORAGE_CAMERA = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -103,7 +110,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
     String API = "https://api.ibragim.fr/public/api/";
 
     ListItem depense = null;
-    private FloatingActionButton depenseSubmit;
+    private FloatingActionButton depenseSubmit, depenseDelete;
 
     private String existing;
 
@@ -128,6 +135,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
         libelleDepense = findViewById(R.id.libelleDepense);
 
         depenseSubmit = findViewById(R.id.depenseSubmit);
+        depenseDelete = findViewById(R.id.depenseDelete);
 
 
         // Get current date by calender
@@ -162,6 +170,11 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
                 if (selectedFragmentType.equals("Trajet")){
                     try {
                         currentDepense = new JSONObject(intent.getStringExtra("DEPENSE_JSON"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        ifExistsInitDepense(selectedFragmentType);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -257,6 +270,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
                     depenseDescriptionField.setEnabled(false);
                     depenseMontantField.setEnabled(false);
                     depenseSubmit.hide();
+                    depenseDelete.hide();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -276,9 +290,71 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
             }
         });
 
+        depenseDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    if (existing.equals("TRUE")){
+                        deleteDepense();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 
 
+    public void deleteDepense() throws JSONException, ExecutionException, InterruptedException {
+        String result = "";
+        HttpsDeleteRequest request;
+
+        String DeleteAPI = API;
+
+        if (selectedFragmentType.equals("Frais")){
+
+            if (!this.currentDepense.getString("etatValidation").equals("Validé") || !this.currentDepense.getString("etatValidation").equals("Refusé")){
+                DeleteAPI = DeleteAPI + "depenses/frais/delete";
+                request = new HttpsDeleteRequest();
+                result = request.execute(DeleteAPI, currentDepense.toString()).get();
+                JSONObject response = new JSONObject(result);
+                if (response.getBoolean("response")){
+                    Intent intent = new Intent(this, NoteFraisActivity.class);
+                    intent.putExtra("EXISTING", true);
+                    intent.putExtra("USER_JSON", currentUser.toString());
+                    intent.putExtra("NOTEFRAIS_JSON", currentNote.toString());
+                    startActivity(intent);
+                    finish();
+                }else{
+                    Toast.makeText(this, "Suppression a échoué", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        }else if (selectedFragmentType.equals("Trajet")){
+            if (!this.currentDepense.getString("etatValidation").equals("Validé") || !this.currentDepense.getString("etatValidation").equals("Refusé")){
+                DeleteAPI = DeleteAPI + "depenses/trajet/delete";
+                request = new HttpsDeleteRequest();
+                result = request.execute(DeleteAPI, currentDepense.toString()).get();
+                JSONObject response = new JSONObject(result);
+                if (response.getBoolean("response")){
+                    Intent intent = new Intent(this, NoteFraisActivity.class);
+                    intent.putExtra("EXISTING", true);
+                    intent.putExtra("USER_JSON", currentUser.toString());
+                    intent.putExtra("NOTEFRAIS_JSON", currentNote.toString());
+                    startActivity(intent);
+                    finish();
+                }else{
+                    Toast.makeText(this, "Suppression a échoué", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+
+    }
 
 
     public void ValidateDepense(){
@@ -367,9 +443,10 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
                     trajet.setVilleArrivee(villeArrivee);
                     trajet.setIdUtilisateur(currentNote.getInt("idUtilisateur"));
                     trajet.setCodeFrais(currentNote.getInt("codeFrais"));
+                    System.out.println("OUTPUTJSON " + trajet.toJSON());
 
-                    HttpsPutRequest putRequest = new HttpsPutRequest();
-                    result = putRequest.execute(API, trajet.toJSON()).get();
+                    HttpsPostRequest postRequest = new HttpsPostRequest();
+                    result = postRequest.execute(API, trajet.toJSON()).get();
                     JSONObject response = new JSONObject(result);
                     if (response.getBoolean("response")){
                         Intent intent = new Intent(this, NoteFraisActivity.class);
@@ -462,6 +539,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
 
 
     public void ifExistsInitDepense(String typeFragment) throws JSONException {
+        System.out.println("TESTSTRING " + typeFragment);
         switch (typeFragment){
             case "Frais":
                 this.Output.setText(currentDepense.getString("dateDepense"));
@@ -483,8 +561,9 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
                 break;
 
             case "Trajet":
-                Output.setText(currentDepense.getString("dateDepense"));
-                depenseDescriptionField.setText("");
+
+                libelleDepense.setText(currentDepense.getString("libelleTrajet"));
+                Output.setText(DateFormat.parseDMY(currentDepense.getString("dateDepense"), "yyyy-mm-dd", "dd/mm/yyyy"));
                 depenseMontantField.setText(String.valueOf(currentDepense.getDouble("montantDepense")));
                 break;
         }
@@ -543,11 +622,13 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
     protected Dialog onCreateDialog(int id) {
         switch (id) {
             case DATE_PICKER_ID:
-
-                // open datepicker dialog.
-                // set date picker for current date
-                // add pickerListener listner to date picker
                 return new DatePickerDialog(this, pickerListener, year, month, day);
+
+            case DATE_ALLER:
+                return new DatePickerDialog(this, dateAllerListener, year, month, day);
+
+            case DATE_RETOUR:
+                return new DatePickerDialog(this, dateRetourListener, year, month, day);
         }
         return null;
     }
@@ -559,15 +640,50 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
         @Override
         public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
             year = selectedYear;
-            month = selectedMonth;
+            month = selectedMonth + 1;
             day = selectedDay;
 
             // Show selected date
-            Output.setText(new StringBuilder().append(day)
-                    .append("/").append(month + 1).append("/").append(year));
+            Output.setText(new StringBuilder().append((day<10?("0"+day):(day)))
+                    .append("/").append((month<10?("0"+month):(month))).append("/").append(year));
         }
 
     };
+
+
+    private DatePickerDialog.OnDateSetListener dateAllerListener = new DatePickerDialog.OnDateSetListener() {
+
+        // when dialog box is closed, below method will be called.
+        @Override
+        public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+            year = selectedYear;
+            month = selectedMonth + 1;
+            day = selectedDay;
+
+            // Show selected date
+            ((TrajetFragment) test).setDateAllerString(new StringBuilder().append((day<10?("0"+day):(day)))
+                    .append("/").append((month<10?("0"+month):(month))).append("/").append(year));
+        }
+
+    };
+
+
+    private DatePickerDialog.OnDateSetListener dateRetourListener = new DatePickerDialog.OnDateSetListener() {
+
+        // when dialog box is closed, below method will be called.
+        @Override
+        public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+            year = selectedYear;
+            month = selectedMonth + 1;
+            day = selectedDay;
+
+            // Show selected date
+            ((TrajetFragment) test).setDateRetourString(new StringBuilder().append((day<10?("0"+day):(day)))
+                    .append("/").append((month<10?("0"+month):(month))).append("/").append(year));
+        }
+
+    };
+
 
     @Override
     public void onFragmentInteraction(Uri uri) {

@@ -48,7 +48,7 @@ public class ViewHolderTrajet extends ViewHolder {
     public void bindType(final ListItem item, final AdapterView.OnItemClickListener listener) {
         title.setText(((Trajet) item).getLibelleTrajet());
         date.setText(((Trajet) item).getDateDepense());
-        setBackground(((Trajet) item).getEtatValidation());
+//        setBackground(((Trajet) item).getEtatValidation());
 
         final Trajet trajet = ((Trajet) item);
 
@@ -59,6 +59,8 @@ public class ViewHolderTrajet extends ViewHolder {
                 intent.putExtra("TYPE_DEPENSE", "Trajet");
                 intent.putExtra("EXISTING", "TRUE");
                 intent.putExtra("DEPENSE_JSON", ((Trajet) item).toJSON());
+                intent.putExtra("NOTEFRAIS_JSON", currentNote.toString());
+                intent.putExtra("CURRENT_USER", currentUser.toString());
                 view.getContext().startActivity(intent);
             }
         });
@@ -93,4 +95,8 @@ public class ViewHolderTrajet extends ViewHolder {
         this.itemClickListener = ic;
     }
 
+    @Override
+    public int getViewHolderType() {
+        return ViewHolderType.ViewHolderTrajet;
+    }
 }

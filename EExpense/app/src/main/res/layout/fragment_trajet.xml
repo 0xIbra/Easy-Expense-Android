@@ -12,7 +12,8 @@
         android:id="@+id/distanceTrajet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Distance KM"
+        android:hint="Distance en KM"
+        android:drawableRight="@drawable/ic_directions_car_black_24dp"
         android:inputType="numberDecimal"
         android:paddingLeft="10dp"/>
 
@@ -21,6 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Durée"
+        android:drawableRight="@drawable/ic_access_time_black_24dp"
         android:inputType="numberDecimal"
         android:paddingLeft="10dp"/>
 
@@ -52,14 +54,14 @@
         android:id="@+id/villeDepartTrajet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Ville depart"
+        android:hint="Ville de départ"
         android:paddingLeft="10dp"/>
 
     <EditText
         android:id="@+id/villeArriveeTrajet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Ville arrivee"
+        android:hint="Ville de arrivee"
         android:paddingLeft="10dp"/>
 
 </LinearLayout>

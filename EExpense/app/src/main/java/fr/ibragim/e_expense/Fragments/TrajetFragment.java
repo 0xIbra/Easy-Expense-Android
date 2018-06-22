@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import fr.ibragim.e_expense.Metier.Depense;
 import fr.ibragim.e_expense.Metier.Trajet;
 import fr.ibragim.e_expense.R;
 import fr.ibragim.e_expense.Views.FragmentType;
+import fr.ibragim.e_expense.Widgets.DateFormat;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,6 +46,8 @@ public class TrajetFragment extends Fragment implements FragmentType{
 
     private OnFragmentInteractionListener mListener;
 
+    private static final int DATE_ALLER = 0;
+    private static final int DATE_RETOUR = 1;
 
     //TRAJET FIELDS
     private EditText distanceField;
@@ -64,8 +68,16 @@ public class TrajetFragment extends Fragment implements FragmentType{
         this.dureeField.setText(String.valueOf(dureeField));
     }
 
+    public void setDateAllerString(StringBuilder date){
+        this.dateAller.setText(date.toString());
+    }
+
     public void setDateAller(String dateAller) {
         this.dateAller.setText(dateAller);
+    }
+
+    public void setDateRetourString(StringBuilder date){
+        this.dateRetour.setText(date.toString());
     }
 
     public void setDateRetour(String dateRetour) {
@@ -138,16 +150,6 @@ public class TrajetFragment extends Fragment implements FragmentType{
         }
     }
 
-
-
-    View rootView;
-    EditText from_date, to_date;
-    DatePickerDialog.OnDateSetListener date;
-    static final int DATE_DIALOG_ID = 999;
-    Calendar myCalendar;
-    int val;
-    Context context;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -161,36 +163,18 @@ public class TrajetFragment extends Fragment implements FragmentType{
         villeDepart = view.findViewById(R.id.villeDepartTrajet);
         villeArrivee = view.findViewById(R.id.villeArriveeTrajet);
 
-        context = getActivity();
-        date = new DatePickerDialog.OnDateSetListener() {
 
-            @Override
-            public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
-                // TODO Auto-generated method stub
-                year = selectedYear;
-                month = selectedMonth;
-                day = selectedDay;
-
-                // Show selected date
-                dateAller.setText(new StringBuilder().append(day)
-                        .append("/").append(month + 1).append("/").append(year));
-            }
-
-        };
         dateAller.setOnClickListener(new View.OnClickListener() {
-
             @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                showDialog(DATE_DIALOG_ID);
-                val = 1;
+            public void onClick(View view) {
+                getActivity().showDialog(DATE_ALLER);
             }
         });
 
         dateRetour.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                showDialog(DATE_DIALOG_ID);
+            public void onClick(View view) {
+                getActivity().showDialog(DATE_RETOUR);
             }
         });
 
@@ -199,21 +183,29 @@ public class TrajetFragment extends Fragment implements FragmentType{
 
 
 
-    protected Dialog showDialog(int dateDialogId) {
-        final Calendar now = Calendar.getInstance();
-        switch (dateDialogId) {
 
-            case DATE_DIALOG_ID:
-                DatePickerDialog _date = new DatePickerDialog(context, date,
-                        myCalendar.get(Calendar.YEAR),
-                        myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)){
 
-                };
-        }
-
-        return null;
-    }
+//    public static class SelectDateFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+//
+//        @Override
+//        public Dialog onCreateDialog(Bundle savedInstanceState) {
+//            final Calendar calendar = Calendar.getInstance();
+//            int yy = calendar.get(Calendar.YEAR);
+//            int mm = calendar.get(Calendar.MONTH);
+//            int dd = calendar.get(Calendar.DAY_OF_MONTH);
+//            return new DatePickerDialog(getActivity(), this, yy, mm, dd);
+//        }
+//
+//        public void onDateSet(DatePicker view, int yy, int mm, int dd) {
+//            populateSetDate(yy, mm+1, dd);
+//        }
+//
+//        public void populateSetDate(int year, int month, int day) {
+//            EditText dateAller = getActivity().findViewById(R.id.dateAllerTrajet);
+//            dateAller.setText(day+"/"+month+"/"+year);
+//        }
+//
+//    }
 
 
 
@@ -231,8 +223,8 @@ public class TrajetFragment extends Fragment implements FragmentType{
             try {
                 distanceField.setText(String.valueOf(currentTrajet.getDouble("distanceKilometres")));
                 dureeField.setText(String.valueOf(currentTrajet.getDouble("dureeTrajet")));
-                dateAller.setText(currentTrajet.getString("dateAller"));
-                dateRetour.setText(currentTrajet.getString("dateRetour"));
+                dateAller.setText(DateFormat.parseDMY(currentTrajet.getString("dateAller"), "yyyy-mm-dd", "dd/mm/yyyy"));
+                dateRetour.setText(DateFormat.parseDMY(currentTrajet.getString("dateRetour"), "yyyy-mm-dd", "dd/mm/yyyy"));
                 villeDepart.setText(currentTrajet.getString("villeDepart"));
                 villeArrivee.setText(currentTrajet.getString("villeArrivee"));
 
@@ -273,6 +265,11 @@ public class TrajetFragment extends Fragment implements FragmentType{
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public Dialog onCreateDialog(int id) {
+        return null;
     }
 
     @Override

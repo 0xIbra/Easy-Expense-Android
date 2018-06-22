@@ -14,7 +14,7 @@ import android.widget.AdapterView.OnItemClickListener;
  * Created by ibragim.abubakarov on 04/04/2018.
  */
 
-public abstract class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public abstract class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, ViewHolderType {
 
 
     public ViewHolder(View itemView) {
