@@ -1,5 +1,7 @@
 package fr.ibragim.e_expense;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 import org.json.JSONArray;
@@ -31,6 +34,9 @@ import fr.ibragim.e_expense.Views.ListItem;
 import fr.ibragim.e_expense.network.HttpsDeleteRequest;
 import fr.ibragim.e_expense.network.HttpsGetRequest;
 import fr.ibragim.e_expense.network.HttpsPostRequest;
+import fr.ibragim.e_expense.network.HttpsPutRequest;
+
+import static fr.ibragim.e_expense.AddDepenseActivity.DATE_PICKER_ID;
 
 public class NoteFraisActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     private final String USER_JSON = "USER_JSON";
@@ -45,6 +51,10 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
     private HttpsPostRequest request;
 
     private String selectedType;
+
+    private int year;
+    private int month;
+    private int day;
 
     private int CurrentNoteFrais;
     private List<ListItem> DepensesList = new ArrayList<ListItem>();
@@ -88,10 +98,22 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
         noteComment.setSelected(false);
 
 
+
+
+
+        // Get current date by calender
+        final java.util.Calendar c = java.util.Calendar.getInstance();
+
+        year = c.get(java.util.Calendar.YEAR);
+        month = c.get(java.util.Calendar.MONTH);
+        day = c.get(java.util.Calendar.DAY_OF_MONTH);
+
+        noteDate.setText(new StringBuilder().append(day).append("/").append(month + 1).append("/").append(year));
+
         noteDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //DATE
+                showDialog(DATE_PICKER_ID);
             }
         });
 
@@ -101,6 +123,8 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(NoteFraisActivity.this, TypeDepenseActivity.class);
+                i.putExtra("NOTEDEFRAIS", currentNote.toString());
+                i.putExtra("CURRENT_USER", currentUser.toString());
                 startActivity(i);
             }
         });
@@ -139,11 +163,7 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
 
         if (this.currentNote != null){
             if (this.existing == true){
-                try {
-                    this.getDepensesForNote();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                this.getDepensesForNote();
             }
         }else {
             if (currentUser != null){
@@ -180,6 +200,94 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
             }
         }
 
+
+
+//        validateDepensesIfNoteFraisValide();
+
+
+    }
+
+
+    public void validateDepensesIfNoteFraisValide(){
+        try {
+            System.out.println("ETAT_TEST : " + this.currentNote.getString("etat"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            if (this.currentNote.getString("etat").equals("Validé")) {
+                String fraisApi = this.API_URL + "notesdefrais/depenses/frais/put";
+                String trajetApi = this.API_URL + "notesdefrais/depenses/trajet/put";
+                String result = "";
+                for ( ListItem depense : DepensesList) {
+                    switch (depense.getListItemType()){
+                        case ListItem.Frais:
+                            if (((Frais) depense).getEtatValidation().equals("En cours")){
+                                HttpsPutRequest request = new HttpsPutRequest();
+                                System.out.println("API URL : " + fraisApi);
+                                try {
+                                    result = request.execute(fraisApi, ((Frais) depense).toJSON()).get();
+                                    Log.v("Depense_RESPONSE ", result);
+                                    JSONObject response = new JSONObject(result);
+                                    if (response.getBoolean("update")){
+                                        this.getDepensesForNote();
+                                    }else{
+                                        Log.v("ERROR ", "ERRRRRRRR");
+                                    }
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                } catch (ExecutionException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            break;
+                        case ListItem.Trajet:
+
+                            break;
+                    }
+                }
+            }else if(this.currentNote.getString("etat").equals("Refusé")){
+                String fraisApi = this.API_URL + "notesdefrais/depenses/frais/put";
+                String trajetApi = this.API_URL + "notesdefrais/depenses/trajet/put";
+                String result = "";
+                if (!this.DepensesList.isEmpty()){
+                    for ( ListItem depense : DepensesList) {
+                        switch (depense.getListItemType()){
+                            case ListItem.Frais:
+                                System.out.println("JSON_TEST : " + ((Frais) depense).getEtatValidation() + ((Frais) depense).getMontantDepense());
+                                switch (((Frais) depense).getEtatValidation()){
+                                    case "En cours":
+                                        HttpsPutRequest request = new HttpsPutRequest();
+                                        System.out.println("JSON testtttt : " + ((Frais) depense).toJSON());
+                                        try {
+                                            ((Frais) depense).setEtatValidation("Refusé");
+                                            result = request.execute(fraisApi, ((Frais) depense).toJSON()).get();
+                                            Log.v("Depense_RESPONSE ", result);
+        //                                    JSONObject response = new JSONObject(result);
+        //                                    if (response.getBoolean("update")){
+        //                                        this.getDepensesForNote();
+        //                                    }else{
+        //                                        Log.v("ERROR ", "ERRRRRRRR");
+        //                                    }
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        } catch (ExecutionException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        break;
+                                }
+                                break;
+                            case ListItem.Trajet:
+
+                                break;
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void initNewNoteFrais() throws JSONException {
@@ -205,12 +313,17 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
     }
 
 
-    public void getDepensesForNote() throws JSONException {
+    public void getDepensesForNote() {
         HttpsGetRequest request = new HttpsGetRequest();
         String result = null;
         String API = API_URL;
-        API = API+"depenses/get/"+currentNote.getInt("codeFrais");
+        try {
+            API = API+"depenses/get/"+currentNote.getInt("codeFrais");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         try{
+            System.out.println("DEPENSEURL : " + API);
             result = request.execute(API).get();
             Log.v("RETOUR DEPENSES", result+"");
             JSONObject depenseArray = new JSONObject(result);
@@ -223,20 +336,25 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
 
             for (int i = 0; i < FraisType.length(); i++){
                 currentDepense = FraisType.getJSONObject(i);
+                System.out.println("JSON-"+i + "  -  " + currentDepense.toString());
                 currentD = new Frais(currentDepense);
-                this.DepensesList.add((Frais) currentD);
+                currentD.setMontantDepense(currentDepense.getDouble("montantDepense"));
+
+
+                this.DepensesList.add((Frais)currentD);
             }
 
             for (int i = 0; i < Trajet.length(); i++){
                 currentDepense = Trajet.getJSONObject(i);
                 currentD = new Trajet(currentDepense);
+                currentD.setMontantDepense(currentDepense.getDouble("montantDepense"));
 
-                this.DepensesList.add((Trajet) currentD);
+                this.DepensesList.add((Trajet)currentD);
             }
 
             this.depenseRecyclerview = findViewById(R.id.depenseRecycler);
             depenseRecyclerview.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-            depenseRecyclerview.setAdapter(new FraisAdapter(DepensesList, null, getApplicationContext()));
+            depenseRecyclerview.setAdapter(new FraisAdapter(DepensesList, null, this.currentNote, this.currentUser));
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -304,6 +422,7 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
     }
 
 
+
     public void DeleteNoteDeFrais(){
         API_URL += "notesdefrais/delete";
         HttpsDeleteRequest deleteRequest = new HttpsDeleteRequest();
@@ -311,6 +430,7 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
 
         try {
             response = deleteRequest.execute(API_URL, currentNote.toString()).get();
+//            Log.v("RESPONSE", response);
             JSONObject JsonResponse = new JSONObject(response);
             if (JsonResponse.getBoolean("response") == true){
                 Toast.makeText(getApplicationContext(), "Note de frais supprimée", Toast.LENGTH_SHORT).show();
@@ -330,6 +450,37 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
             e.printStackTrace();
         }
     }
+
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case DATE_PICKER_ID:
+
+                // open datepicker dialog.
+                // set date picker for current date
+                // add pickerListener listner to date picker
+                return new DatePickerDialog(this, pickerListener, year, month, day);
+        }
+        return null;
+    }
+
+
+    private DatePickerDialog.OnDateSetListener pickerListener = new DatePickerDialog.OnDateSetListener() {
+
+        // when dialog box is closed, below method will be called.
+        @Override
+        public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+            year = selectedYear;
+            month = selectedMonth;
+            day = selectedDay;
+
+            // Show selected date
+            noteDate.setText(new StringBuilder().append(day)
+                    .append("/").append(month + 1).append("/").append(year));
+        }
+
+    };
 
 
 }

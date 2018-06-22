@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Distance KM"
+        android:inputType="numberDecimal"
         android:paddingLeft="10dp"/>
 
     <EditText
@@ -20,6 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Durée"
+        android:inputType="numberDecimal"
         android:paddingLeft="10dp"/>
 
 
@@ -28,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:drawableRight="@drawable/ic_arrow_drop_down_black_24dp"
+        android:drawableRight="@drawable/date"
         android:editable="false"
         android:hint="Date aller"
         android:paddingLeft="10dp"
@@ -40,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Date retour"
-        android:drawableRight="@drawable/ic_arrow_drop_down_black_24dp"
+        android:drawableRight="@drawable/date"
         android:clickable="true"
         android:paddingLeft="10dp"
         android:editable="false"/>

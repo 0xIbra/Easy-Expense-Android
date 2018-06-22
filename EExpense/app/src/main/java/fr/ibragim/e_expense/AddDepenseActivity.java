@@ -15,10 +15,12 @@ import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,19 +35,26 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.concurrent.ExecutionException;
 
 import fr.ibragim.e_expense.Fragments.FraisFragment;
 import fr.ibragim.e_expense.Fragments.TrajetFragment;
 import fr.ibragim.e_expense.Metier.Depense;
+import fr.ibragim.e_expense.Metier.Frais;
 import fr.ibragim.e_expense.Metier.Trajet;
 import fr.ibragim.e_expense.Views.FragmentType;
 import fr.ibragim.e_expense.Views.ListItem;
+import fr.ibragim.e_expense.network.HttpsPostRequest;
+import fr.ibragim.e_expense.network.HttpsPutRequest;
 
 public class AddDepenseActivity extends AppCompatActivity implements FraisFragment.OnFragmentInteractionListener, TrajetFragment.OnFragmentInteractionListener{
 
     // CURRENT USER
-    private JSONObject user;
+    private JSONObject currentUser;
     private JSONObject currentDepense;
+    private JSONObject currentNote;
+
+    private Depense Depense;
 
     private int year;
     private int month;
@@ -70,26 +79,28 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
 
     //Depense Fields
     private EditText Output;
-    EditText depenseDescriptionField;
-    EditText depenseMontantField;
+    private EditText depenseDescriptionField;
+    private EditText depenseMontantField;
+    private EditText libelleDepense;
 
 
 
-    //DEPENSE VARIABLES
-    private int depenseId;
-    private String depenseLibelle;
-    private String depenseDate;
-    private String depenseEtat;
-    private double depenseDistance;
-    private double depenseDuree;
-    private String depenseDateAller;
-    private String depenseDateRetour;
-    private String depenseVilleDepart;
-    private String depenseVilleArrivee;
-    private int codeFrais;
-    private double depenseMontant;
-    private String depenseDetails;
+//    //DEPENSE VARIABLES
+//    private int depenseId;
+//    private String depenseLibelle;
+//    private String depenseDate;
+//    private String depenseEtat;
+//    private double depenseDistance;
+//    private double depenseDuree;
+//    private String depenseDateAller;
+//    private String depenseDateRetour;
+//    private String depenseVilleDepart;
+//    private String depenseVilleArrivee;
+//    private int codeFrais;
+//    private double depenseMontant;
+//    private String depenseDetails;
 
+    String API = "https://api.ibragim.fr/public/api/";
 
     ListItem depense = null;
     private FloatingActionButton depenseSubmit;
@@ -114,24 +125,23 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
         Output =  findViewById(R.id.Output);
         depenseDescriptionField = findViewById(R.id.depenseDescription);
         depenseMontantField = findViewById(R.id.depenseMontantField);
+        libelleDepense = findViewById(R.id.libelleDepense);
 
         depenseSubmit = findViewById(R.id.depenseSubmit);
 
 
-        // Validation de la depense
-        depenseSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
         // Get current date by calender
-        final Calendar c = Calendar.getInstance();
+        final java.util.Calendar c = java.util.Calendar.getInstance();
 
-        year = c.get(Calendar.YEAR);
-        month = c.get(Calendar.MONTH);
-        day = c.get(Calendar.DAY_OF_MONTH);
+        year = c.get(java.util.Calendar.YEAR);
+        month = c.get(java.util.Calendar.MONTH);
+        day = c.get(java.util.Calendar.DAY_OF_MONTH);
+
+//        final Calendar c = Calendar.getInstance();
+//
+//        year = c.get(Calendar.YEAR);
+//        month = c.get(Calendar.MONTH);
+//        day = c.get(Calendar.DAY_OF_MONTH);
 
         Output.setText(new StringBuilder().append(day).append("/").append(month + 1).append("/").append(year));
 
@@ -142,6 +152,12 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
             String intentEx = intent.getStringExtra("EXISTING");
             existing = intentEx;
             if (intentEx.equals("TRUE")){
+                try {
+                    currentNote = new JSONObject(intent.getStringExtra("NOTEFRAIS_JSON"));
+                    currentUser = new JSONObject(intent.getStringExtra("CURRENT_USER"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
                 if (selectedFragmentType.equals("Trajet")){
                     try {
@@ -157,16 +173,19 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    ifExistsInitDepense(selectedFragmentType);
+                    try {
+                        ifExistsInitDepense(selectedFragmentType);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                 }
 
-                // Remplir les champs si y a de l'existant
+
+            }else if(intentEx.equals("FALSE")){
                 try {
-                    Output.setText(currentDepense.getString("dateDepense"));
-                    if (selectedFragmentType.equals("Frais")){
-                        depenseDescriptionField.setText(currentDepense.getString("detailsFrais"));
-                    }
-                    depenseMontantField.setText(String.valueOf(currentDepense.getDouble("montantDepense")));
+                    currentNote = new JSONObject(intent.getStringExtra("NOTEFRAIS_JSON"));
+                    currentUser = new JSONObject(intent.getStringExtra("CURRENT_USER"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -188,6 +207,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
                 //transaction.add(R.id.middleContainer, (Fragment) test);
                 break;
             case "Trajet":
+                this.depenseDescriptionField.setVisibility(View.GONE);
                 test = new TrajetFragment();
                 ((TrajetFragment) test).initCurrentDepense(currentDepense);
                 transaction.add(R.id.middleContainer, (Fragment) test);
@@ -232,6 +252,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
         if (existing.equals("TRUE")){
             try {
                 if (currentDepense.getString("etatValidation").equals("Validé") || currentDepense.getString("etatValidation").equals("Refusé")){
+                    libelleDepense.setEnabled(false);
                     Output.setEnabled(false);
                     depenseDescriptionField.setEnabled(false);
                     depenseMontantField.setEnabled(false);
@@ -242,25 +263,229 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
             }
         }
 
+
+        // Validation de la depense
+        depenseSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (existing.equals("TRUE")){
+                    updateDepense();
+                }else if (existing.equals("FALSE")){
+                    ValidateDepense();
+                }
+            }
+        });
+
     }
+
+
+
+
+    public void ValidateDepense(){
+        HttpsPostRequest request;
+        String result = "";
+
+        if (selectedFragmentType.equals("Frais")){
+            request = new HttpsPostRequest();
+            String API_URL  = API + "depenses/frais/add";
+
+            if (!depenseMontantField.getText().toString().isEmpty() && !libelleDepense.getText().toString().isEmpty() && !Output.getText().toString().isEmpty()){
+                String libelle = this.libelleDepense.getText().toString();
+                String date = this.Output.getText().toString();
+                String description = this.depenseDescriptionField.getText().toString();
+                String montantStr = this.depenseMontantField.getText().toString();
+                double montant = Double.parseDouble(montantStr);
+                Frais frais = new Frais();
+                frais.setIntituleFrais(libelle);
+                frais.setDateFrais(date);
+                frais.setDateDepense(date);
+                frais.setDetailsFrais(description);
+                frais.setMontantDepense(montant);
+                try {
+                    frais.setCodeFrais(currentNote.getInt("codeFrais"));
+                    frais.setIdUtilisateur(currentNote.getInt("idUtilisateur"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    Log.v("JSONOBJECT ", frais.toJSON());
+                    result = request.execute(API_URL, frais.toJSON()).get();
+                    Log.v("RESPONSE ADD ", result);
+                    JSONObject response = new JSONObject(result);
+                    if (response.getBoolean("response")){
+                        Intent intent = new Intent(this, NoteFraisActivity.class);
+                        intent.putExtra("EXISTING", true);
+                        intent.putExtra("USER_JSON", currentUser.toString());
+                        intent.putExtra("NOTEFRAIS_JSON", currentNote.toString());
+                        startActivity(intent);
+                        finish();
+                    }else {
+                        Toast.makeText(this, "Ajout de la depense echoué", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }else{
+                Toast.makeText(this, "Merci de bien vouloir remplir tous les champs", Toast.LENGTH_SHORT).show();
+            }
+
+        }else if (selectedFragmentType.equals("Trajet")){
+            String API  = this.API + "depenses/trajet/add";
+
+            if (!depenseMontantField.getText().toString().isEmpty() && !libelleDepense.getText().toString().isEmpty() && !Output.getText().toString().isEmpty() &&
+                    !((TrajetFragment) test).getDistanceField().isEmpty() && !((TrajetFragment) test).getDureeField().isEmpty() && !((TrajetFragment) test).getDateAller().isEmpty() &&
+                    !((TrajetFragment) test).getDateRetour().isEmpty() && !((TrajetFragment) test).getVilleDepart().isEmpty() && !((TrajetFragment) test).getVilleArrivee().isEmpty()){
+                String libelle = this.libelleDepense.getText().toString();
+                String date = this.Output.getText().toString();
+                String description = this.depenseDescriptionField.getText().toString();
+                String montantStr = this.depenseMontantField.getText().toString();
+                double montant = Double.parseDouble(montantStr);
+                double distanceKm = Double.parseDouble(((TrajetFragment) test).getDistanceField());
+                double duree = Double.parseDouble(((TrajetFragment) test).getDureeField());
+                String dateAller = ((TrajetFragment) test).getDateAller();
+                String dateRetour = ((TrajetFragment) test).getDateRetour();
+                String villeDepart = ((TrajetFragment) test).getVilleDepart();
+                String villeArrivee = ((TrajetFragment) test).getVilleArrivee();
+
+                Trajet trajet = new Trajet();
+                try {
+                    trajet.setLibelleTrajet(libelle);
+                    trajet.setCodeFrais(currentNote.getInt("codeFrais"));
+                    trajet.setDateDepense(date);
+                    trajet.setMontantDepense(montant);
+                    trajet.setDistanceKM(distanceKm);
+                    trajet.setDureeTrajet(duree);
+                    trajet.setDateAller(dateAller);
+                    trajet.setDateRetour(dateRetour);
+                    trajet.setVilleDepart(villeDepart);
+                    trajet.setVilleArrivee(villeArrivee);
+                    trajet.setIdUtilisateur(currentNote.getInt("idUtilisateur"));
+                    trajet.setCodeFrais(currentNote.getInt("codeFrais"));
+
+                    HttpsPutRequest putRequest = new HttpsPutRequest();
+                    result = putRequest.execute(API, trajet.toJSON()).get();
+                    JSONObject response = new JSONObject(result);
+                    if (response.getBoolean("response")){
+                        Intent intent = new Intent(this, NoteFraisActivity.class);
+                        intent.putExtra("EXISTING", true);
+                        intent.putExtra("USER_JSON", currentUser.toString());
+                        intent.putExtra("NOTEFRAIS_JSON", currentNote.toString());
+                        startActivity(intent);
+                        finish();
+                    }else{
+                        Toast.makeText(this, "Erreur lors de l'ajout de la depense", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+            }else{
+                Toast.makeText(this, "Merci de bien vouloir remplir tous les champs.", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+
+    }
+
+
+    public void updateDepense(){
+        HttpsPutRequest request;
+        String result = "";
+
+        if (selectedFragmentType.equals("Frais")){
+            String API = this.API + "notesdefrais/depenses/frais/put";
+            request = new HttpsPutRequest();
+
+            if (!depenseMontantField.getText().toString().isEmpty() && !libelleDepense.getText().toString().isEmpty() && !Output.getText().toString().isEmpty()){
+                String libelle = this.libelleDepense.getText().toString();
+                String date = this.Output.getText().toString();
+                String description = this.depenseDescriptionField.getText().toString();
+                String montantStr = this.depenseMontantField.getText().toString();
+                double montant = Double.parseDouble(montantStr);
+                this.Depense = new Frais(currentDepense);
+                ((Frais) Depense).setIntituleFrais(libelle);
+                ((Frais) Depense).setDateFrais(date);
+                ((Frais) Depense).setDateDepense(date);
+                ((Frais) Depense).setDetailsFrais(description);
+                ((Frais) Depense).setMontantDepense(montant);
+                try {
+                    ((Frais) Depense).setIdUtilisateur(currentNote.getInt("idUtilisateur"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    ((Frais) Depense).setId(Integer.parseInt(currentDepense.getString("idDepense")));
+                    ((Frais) Depense).setCodeFrais(currentNote.getInt("codeFrais"));
+                    ((Frais) Depense).setIdUtilisateur(currentNote.getInt("idUtilisateur"));
+
+                    result = request.execute(API, ((Frais) Depense).toJSON()).get();
+                    JSONObject response = new JSONObject(result);
+                    if (response.getBoolean("update")){
+                        Intent intent = new Intent(this, NoteFraisActivity.class);
+                        intent.putExtra("EXISTING", true);
+                        intent.putExtra("USER_JSON", currentUser.toString());
+                        intent.putExtra("NOTEFRAIS_JSON", currentNote.toString());
+                        startActivity(intent);
+                        finish();
+                    }else{
+                        Toast.makeText(this, "Modification de la depense echoué.", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }else if (selectedFragmentType.equals("Trajet")){
+
+        }
+    }
+
+
 
     //public void setTrajetFields(TrajetFragment fragment){
     //    fragment.fillTrajetFieldsByObject(depenseDistance, depenseDuree, depenseDateAller, depenseDateRetour, depenseVilleDepart, depenseVilleArrivee);
     //}
 
 
-    public void ifExistsInitDepense(String typeFragment){
+    public void ifExistsInitDepense(String typeFragment) throws JSONException {
         switch (typeFragment){
             case "Frais":
-                this.Output.setText(depenseDate);
-                depenseDescriptionField.setText(depenseDetails);
-                depenseMontantField.setText(String.valueOf(depenseMontant));
+                this.Output.setText(currentDepense.getString("dateDepense"));
+                depenseDescriptionField.setText(currentDepense.getString("detailsFrais"));
+                try {
+                    depenseMontantField.setText(String.valueOf(currentDepense.getDouble("montantDepense")));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    Output.setText(currentDepense.getString("dateDepense"));
+                    libelleDepense.setText(currentDepense.getString("libelleFrais"));
+                    depenseDescriptionField.setText(currentDepense.getString("detailsFrais"));
+                    Log.v("EXISTINGVALUE ", currentDepense.toString());
+                    depenseMontantField.setText(currentDepense.getString("montantDepense"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case "Trajet":
-                Output.setText(depenseDate);
+                Output.setText(currentDepense.getString("dateDepense"));
                 depenseDescriptionField.setText("");
-                depenseMontantField.setText(String.valueOf(depenseMontant));
+                depenseMontantField.setText(String.valueOf(currentDepense.getDouble("montantDepense")));
                 break;
         }
 
@@ -327,6 +552,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
         return null;
     }
 
+
     private DatePickerDialog.OnDateSetListener pickerListener = new DatePickerDialog.OnDateSetListener() {
 
         // when dialog box is closed, below method will be called.
@@ -338,8 +564,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
 
             // Show selected date
             Output.setText(new StringBuilder().append(day)
-                    .append("/").append(month + 1).append("/").append(year)
-                    .append(" "));
+                    .append("/").append(month + 1).append("/").append(year));
         }
 
     };

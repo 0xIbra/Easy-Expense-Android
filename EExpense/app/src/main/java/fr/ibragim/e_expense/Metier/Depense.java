@@ -14,8 +14,12 @@ public abstract class Depense {
     private String etatValidation;
     private String dateValidation;
     private double montantDepense;
-    private int codeFrais;
     private int idUtilisateur;
+
+
+    public Depense(){
+
+    }
 
 
     public Depense(JSONObject depense){
@@ -26,7 +30,20 @@ public abstract class Depense {
             this.etatValidation = depense.getString("etatValidation");
             this.dateValidation = depense.getString("dateValidation");
             this.montantDepense = depense.getDouble("montantDepense");
-            this.codeFrais = depense.getInt("codeFrais");
+            this.idUtilisateur = depense.getInt("idUtilisateur");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void initDepense(JSONObject depense){
+        try {
+            this.id = depense.getInt("idDepense");
+            this.dateDepense = depense.getString("dateDepense");
+            this.MontantRemboursement = depense.getDouble("montantRemboursement");
+            this.etatValidation = depense.getString("etatValidation");
+            this.dateValidation = depense.getString("dateValidation");
+            this.montantDepense = depense.getDouble("montantDepense");
             this.idUtilisateur = depense.getInt("idUtilisateur");
         } catch (JSONException e) {
             e.printStackTrace();
@@ -36,7 +53,7 @@ public abstract class Depense {
     public String getJSON(){
         return "\"idDepense\" : \""+this.id+"\", \"dateDepense\" : \""+this.dateDepense+"\", \"montantRemboursement\" : \""+this.MontantRemboursement+"\", " +
                 "\"etatValidation\" : \""+this.etatValidation+"\", \"dateValidation\" : \""+this.dateValidation+"\", \"montantDepense\" : \""+this.montantDepense+"\"," +
-                "\"codeFrais\" : \""+this.codeFrais+"\", \"idUtilisateur\" : \""+this.idUtilisateur+"\",";
+                " \"idUtilisateur\" : \""+this.idUtilisateur+"\",";
     }
 
 
@@ -47,7 +64,6 @@ public abstract class Depense {
         this.etatValidation = etatValidation;
         this.dateValidation = dateValidation;
         this.montantDepense = montantDepense;
-        this.codeFrais = codeF;
         this.idUtilisateur = idU;
     }
 
@@ -58,7 +74,6 @@ public abstract class Depense {
         this.etatValidation = etatValidation;
         this.dateValidation = dateValidation;
         this.montantDepense = montantDepense;
-        this.codeFrais = codeF;
         this.idUtilisateur = idU;
     }
 
@@ -91,7 +106,7 @@ public abstract class Depense {
     }
 
     public String getEtatValidation() {
-        return etatValidation;
+        return this.etatValidation;
     }
 
     public void setEtatValidation(String etatValidation) {
@@ -112,14 +127,6 @@ public abstract class Depense {
 
     public void setMontantDepense(double montantDepense) {
         this.montantDepense = montantDepense;
-    }
-
-    public int getCodeFrais() {
-        return codeFrais;
-    }
-
-    public void setCodeFrais(int codeFrais) {
-        this.codeFrais = codeFrais;
     }
 
     public int getIdUtilisateur() {

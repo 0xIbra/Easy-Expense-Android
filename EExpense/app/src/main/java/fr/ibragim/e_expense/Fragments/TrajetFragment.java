@@ -1,5 +1,7 @@
 package fr.ibragim.e_expense.Fragments;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,10 +9,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.EditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Calendar;
 
 import fr.ibragim.e_expense.Metier.Depense;
 import fr.ibragim.e_expense.Metier.Trajet;
@@ -34,6 +39,8 @@ public class TrajetFragment extends Fragment implements FragmentType{
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private int year, month, day;
 
     private OnFragmentInteractionListener mListener;
 
@@ -74,14 +81,12 @@ public class TrajetFragment extends Fragment implements FragmentType{
     }
 
 
-    public double getDistanceField() {
-        double distance = Double.parseDouble(this.distanceField.getText().toString());
-        return distance;
+    public String getDistanceField() {
+        return this.distanceField.getText().toString();
     }
 
-    public double getDureeField() {
-        double duree = Double.parseDouble(this.dureeField.getText().toString());
-        return duree;
+    public String getDureeField() {
+        return this.dureeField.getText().toString();
     }
 
     public String getDateAller() {
@@ -133,6 +138,16 @@ public class TrajetFragment extends Fragment implements FragmentType{
         }
     }
 
+
+
+    View rootView;
+    EditText from_date, to_date;
+    DatePickerDialog.OnDateSetListener date;
+    static final int DATE_DIALOG_ID = 999;
+    Calendar myCalendar;
+    int val;
+    Context context;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -146,8 +161,61 @@ public class TrajetFragment extends Fragment implements FragmentType{
         villeDepart = view.findViewById(R.id.villeDepartTrajet);
         villeArrivee = view.findViewById(R.id.villeArriveeTrajet);
 
+        context = getActivity();
+        date = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+                // TODO Auto-generated method stub
+                year = selectedYear;
+                month = selectedMonth;
+                day = selectedDay;
+
+                // Show selected date
+                dateAller.setText(new StringBuilder().append(day)
+                        .append("/").append(month + 1).append("/").append(year));
+            }
+
+        };
+        dateAller.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                showDialog(DATE_DIALOG_ID);
+                val = 1;
+            }
+        });
+
+        dateRetour.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(DATE_DIALOG_ID);
+            }
+        });
+
         return view;
     }
+
+
+
+    protected Dialog showDialog(int dateDialogId) {
+        final Calendar now = Calendar.getInstance();
+        switch (dateDialogId) {
+
+            case DATE_DIALOG_ID:
+                DatePickerDialog _date = new DatePickerDialog(context, date,
+                        myCalendar.get(Calendar.YEAR),
+                        myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)){
+
+                };
+        }
+
+        return null;
+    }
+
+
 
     public void initCurrentDepense(JSONObject trajet){
         this.currentTrajet = trajet;

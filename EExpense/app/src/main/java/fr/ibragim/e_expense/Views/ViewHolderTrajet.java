@@ -7,6 +7,8 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
 import fr.ibragim.e_expense.AddDepenseActivity;
 import fr.ibragim.e_expense.Metier.Trajet;
 import fr.ibragim.e_expense.R;
@@ -22,6 +24,14 @@ public class ViewHolderTrajet extends ViewHolder {
     private TextView etat;
 
     private ItemClickListener itemClickListener;
+
+    private JSONObject currentNote, currentUser;
+
+
+    public void InitUserAndNote(JSONObject User, JSONObject Note){
+        this.currentNote = Note;
+        this.currentUser = User;
+    }
 
     public ViewHolderTrajet(View itemView) {
         super(itemView);

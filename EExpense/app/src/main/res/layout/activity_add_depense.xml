@@ -55,6 +55,13 @@
                 android:paddingHorizontal="5dp">
 
                 <EditText
+                    android:id="@+id/libelleDepense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Libellé"
+                    android:paddingLeft="10dp"/>
+
+                <EditText
                     android:id="@+id/Output"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -76,7 +83,9 @@
                     android:id="@+id/depenseMontantField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
                     android:hint="Montant TTC"
+                    android:drawableRight="@drawable/ic_euro_symbol_black_24dp"
                     android:paddingLeft="10dp"/>
 
 

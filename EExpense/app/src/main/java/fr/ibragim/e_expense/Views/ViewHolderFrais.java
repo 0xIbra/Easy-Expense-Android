@@ -7,6 +7,8 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
 import fr.ibragim.e_expense.AddDepenseActivity;
 import fr.ibragim.e_expense.Metier.Frais;
 import fr.ibragim.e_expense.R;
@@ -24,6 +26,14 @@ public class ViewHolderFrais extends ViewHolder {
 
     ItemClickListener itemClickListener;
 
+    private JSONObject currentNote, currentUser;
+
+
+    public void InitUserAndNote(JSONObject User, JSONObject Note){
+        this.currentNote = Note;
+        this.currentUser = User;
+    }
+
     public ViewHolderFrais(View itemView) {
         super(itemView);
 
@@ -38,7 +48,12 @@ public class ViewHolderFrais extends ViewHolder {
         title.setText(((Frais) item).getIntituleFrais());
         date.setText(((Frais) item).getDateDepense());
         System.out.println("ETATVAL : " + ((Frais) item).getEtatValidation());
-        //setBackground(((Frais) item).getEtatValidation());
+        String etat = ((Frais) item).getEtatValidation();
+        if (etat == null || etat.equals(null)){
+            setBackground("NULL");
+        }else{
+            setBackground(etat);
+        }
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,9 +62,8 @@ public class ViewHolderFrais extends ViewHolder {
                 intent.putExtra("TYPE_DEPENSE", "Frais");
                 intent.putExtra("EXISTING", "TRUE");
                 intent.putExtra("DEPENSE_JSON", ((Frais) item).toJSON());
-                //intent.putExtra("DEPENSE_DATE", ((Frais) item).getDateDepense());
-                //intent.putExtra("DEPENSE_LIBELLE", ((Frais) item).getIntituleFrais());
-                //intent.putExtra("DEPENSE_MONTANT", ((Frais) item).getMontantDepense());
+                intent.putExtra("NOTEFRAIS_JSON", currentNote.toString());
+                intent.putExtra("CURRENT_USER", currentUser.toString());
                 view.getContext().startActivity(intent);
             }
         });

@@ -13,8 +13,11 @@ public class Frais extends Depense implements ListItem{
     private String intituleFrais;
     private String detailsFrais;
     private String dateFrais;
-    private int idDepense;
     private int codeFrais;
+
+    public Frais(){
+        super();
+    }
 
 
     public Frais(JSONObject depense){
@@ -23,7 +26,6 @@ public class Frais extends Depense implements ListItem{
             this.intituleFrais = depense.getString("libelleFrais");
             this.detailsFrais = depense.getString("detailsFrais");
             this.dateFrais = depense.getString("dateFrais");
-            this.idDepense = depense.getInt("idDepense");
             this.codeFrais = depense.getInt("codeFrais");
         } catch (JSONException e) {
             e.printStackTrace();
@@ -33,7 +35,7 @@ public class Frais extends Depense implements ListItem{
     @Override
     public String toJSON() {
         return "{ "+super.getJSON()+" \"libelleFrais\" : \""+this.intituleFrais+"\", \"detailsFrais\" : \""+this.detailsFrais+"\", \"dateFrais\" : \""+this.dateFrais+"\", " +
-                "\"idDepense\" : \""+this.idDepense+"\", \"codeFrais\" : \""+this.codeFrais+"\"}";
+                " \"codeFrais\" : \""+this.codeFrais+"\"}";
     }
 
 
@@ -42,7 +44,6 @@ public class Frais extends Depense implements ListItem{
         this.intituleFrais = intituleFrais;
         this.detailsFrais = detailsFrais;
         this.dateFrais = dateFrais;
-        this.idDepense = idDepense;
         this.codeFrais = codeFrais;
     }
 
@@ -51,7 +52,6 @@ public class Frais extends Depense implements ListItem{
         this.intituleFrais = intituleFrais;
         this.detailsFrais = detailsFrais;
         this.dateFrais = dateFrais;
-        this.idDepense = idDepense;
         this.codeFrais = codeFrais;
     }
 
@@ -88,12 +88,10 @@ public class Frais extends Depense implements ListItem{
     //    this.idDepense = idDepense;
    // }
 
-    @Override
     public int getCodeFrais() {
         return codeFrais;
     }
 
-    @Override
     public void setCodeFrais(int codeFrais) {
         this.codeFrais = codeFrais;
     }
@@ -102,4 +100,9 @@ public class Frais extends Depense implements ListItem{
     public int getListItemType() {
         return ListItem.Frais;
     }
+
+    public String toString2(){
+        return String.valueOf(super.getMontantDepense());
+    }
+
 }

@@ -17,12 +17,16 @@ public class Trajet extends Depense implements ListItem{
     private String dateAller;
     private String dateRetour;
     private double distanceKM;
-    private int idDepense;
     private int codeFrais;
 
 
+    public Trajet(){
+
+    }
+
+
     public Trajet(JSONObject depense){
-        super(depense);
+        super.initDepense(depense);
         try {
             this.libelleTrajet = depense.getString("libelleTrajet");
             this.dureeTrajet = depense.getDouble("dureeTrajet");
@@ -31,7 +35,6 @@ public class Trajet extends Depense implements ListItem{
             this.dateAller = depense.getString("dateAller");
             this.dateRetour = depense.getString("dateRetour");
             this.distanceKM = depense.getDouble("distanceKilometres");
-            this.idDepense = depense.getInt("idDepense");
             this.codeFrais = depense.getInt("codeFrais");
         } catch (JSONException e) {
             e.printStackTrace();
@@ -42,7 +45,7 @@ public class Trajet extends Depense implements ListItem{
     public String toJSON() {
         return "{ "+super.getJSON()+" \"libelleTrajet\" : \""+this.libelleTrajet+"\", \"dureeTrajet\" : \""+this.dureeTrajet+"\", \"villeDepart\" : \""+this.villeDepart+"\", " +
                 "\"villeArrivee\" : \""+this.villeArrivee+"\", \"dateAller\" : \""+this.dateAller+"\", \"dateRetour\" : \""+this.dateRetour+"\", " +
-                "\"distanceKilometres\" : \""+this.distanceKM+"\", \"idDepense\" : \""+this.idDepense+"\", \"codeFrais\" : \""+this.codeFrais+"\"}";
+                "\"distanceKilometres\" : \""+this.distanceKM+"\", \"codeFrais\" : \""+this.codeFrais+"\"}";
     }
 
     public Trajet(int id, String libelle, String datePaiement, double montantRemboursement, String etatValidation, String dateValidation, double montantDepense, int codeF, int idU, double dureeTrajet, String villeDepart, String villeArrivee, String dateAller, String dateRetour, double distanceKM, int idDepense, int codeFrais) {
@@ -54,7 +57,6 @@ public class Trajet extends Depense implements ListItem{
         this.dateAller = dateAller;
         this.dateRetour = dateRetour;
         this.distanceKM = distanceKM;
-        this.idDepense = idDepense;
         this.codeFrais = codeFrais;
     }
 
@@ -67,7 +69,6 @@ public class Trajet extends Depense implements ListItem{
         this.dateAller = dateAller;
         this.dateRetour = dateRetour;
         this.distanceKM = distanceKM;
-        this.idDepense = idDepense;
         this.codeFrais = codeFrais;
     }
 
@@ -131,14 +132,6 @@ public class Trajet extends Depense implements ListItem{
 
     public void setDistanceKM(double distanceKM) {
         this.distanceKM = distanceKM;
-    }
-
-    public int getIdDepense() {
-        return idDepense;
-    }
-
-    public void setIdDepense(int idDepense) {
-        this.idDepense = idDepense;
     }
 
     public int getCodeFrais() {

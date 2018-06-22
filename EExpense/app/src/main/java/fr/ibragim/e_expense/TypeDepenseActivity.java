@@ -7,9 +7,13 @@ import android.support.v7.widget.CardView;
 import android.view.MenuItem;
 import android.view.View;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class TypeDepenseActivity extends AppCompatActivity {
 
     CardView fraisBTN, trajetBTN;
+    JSONObject currentNote, currentUser;
 
 
     @Override
@@ -26,12 +30,27 @@ public class TypeDepenseActivity extends AppCompatActivity {
         fraisBTN = findViewById(R.id.FraisCard);
         trajetBTN = findViewById(R.id.TrajetCard);
 
+
+        Intent intent = getIntent();
+        if (intent != null){
+            try {
+                currentNote = new JSONObject(intent.getStringExtra("NOTEDEFRAIS"));
+                currentUser = new JSONObject(intent.getStringExtra("CURRENT_USER"));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+
         fraisBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), AddDepenseActivity.class);
                 intent.putExtra("TYPE_DEPENSE", "Frais");
                 intent.putExtra("EXISTING", "FALSE");
+                intent.putExtra("NOTEFRAIS_JSON", currentNote.toString());
+                intent.putExtra("CURRENT_USER", currentUser.toString());
                 startActivity(intent);
             }
         });
@@ -43,9 +62,12 @@ public class TypeDepenseActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), AddDepenseActivity.class);
                 intent.putExtra("TYPE_DEPENSE", "Trajet");
                 intent.putExtra("EXISTING", "FALSE");
+                intent.putExtra("NOTEFRAIS_JSON", currentNote.toString());
+                intent.putExtra("CURRENT_USER", currentUser.toString());
                 startActivity(intent);
             }
         });
+
     }
 
 
