@@ -28,9 +28,11 @@ import java.util.concurrent.ExecutionException;
 
 import fr.ibragim.e_expense.Metier.Depense;
 import fr.ibragim.e_expense.Metier.Frais;
+import fr.ibragim.e_expense.Metier.NoteFrais;
 import fr.ibragim.e_expense.Metier.Trajet;
 import fr.ibragim.e_expense.Views.FraisAdapter;
 import fr.ibragim.e_expense.Views.ListItem;
+import fr.ibragim.e_expense.Widgets.DateFormat;
 import fr.ibragim.e_expense.network.HttpsDeleteRequest;
 import fr.ibragim.e_expense.network.HttpsGetRequest;
 import fr.ibragim.e_expense.network.HttpsPostRequest;
@@ -71,6 +73,8 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
     private String currentNoteFraisTitle;
     private int countNote;
 
+    private NoteFrais currentNoteFrais = null;
+
     private JSONObject currentNote = null;
     private JSONObject currentUser = null;
 
@@ -108,7 +112,8 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
         month = c.get(java.util.Calendar.MONTH);
         day = c.get(java.util.Calendar.DAY_OF_MONTH);
 
-        noteDate.setText(new StringBuilder().append(day).append("/").append(month + 1).append("/").append(year));
+        noteDate.setText(new StringBuilder().append((day<10?("0"+day):(day)))
+                .append("/").append((month<10?("0"+month):(month))).append("/").append(year));
 
         noteDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,6 +124,8 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
 
 
         FloatingActionButton addDepense = (FloatingActionButton) findViewById(R.id.addDepense);
+        FloatingActionButton deleteNoteFrais = findViewById(R.id.notefraisDelete);
+
         addDepense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -135,7 +142,7 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
         noteSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                updateNoteFrais();
             }
         });
 
@@ -178,7 +185,7 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
 
         try {
             noteLibelle.setText(currentNote.getString("libelleNote"));
-            noteDate.setText(currentNote.getString("dateFrais"));
+            noteDate.setText(DateFormat.parseDMY(currentNote.getString("dateFrais"), DateFormat.DATE_DASH_FORMAT, DateFormat.DATE_FORMAT));
             if (noteComment.getText() == null || noteComment.getText().equals("") || noteComment.equals("null")){
                 noteComment.setText("merci de modifier ceci");
             }
@@ -194,17 +201,72 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
                     noteComment.setEnabled(false);
                     noteSubmit.hide();
                     addDepense.hide();
+                    deleteNoteFrais.hide();
+                    Toast.makeText(this, "La note de frais a déjà été traitée.", Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
+        deleteNoteFrais.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    if (currentNote.getString("etat").equals("En Cours")){
+                        DeleteNoteDeFrais();
+                    }else{
+                        Toast.makeText(view.getContext(), "Note de frais déjà traitée", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
 
 
 //        validateDepensesIfNoteFraisValide();
 
 
+    }
+
+
+    public void updateNoteFrais(){
+        String NoteFraisAPI = API_URL + "notesdefrais/put";
+        String result = "";
+        HttpsPutRequest request;
+
+        currentNoteFrais = new NoteFrais(currentNote);
+
+        if (!noteLibelle.getText().toString().isEmpty() && !noteDate.getText().toString().isEmpty()){
+            currentNoteFrais.setLibelle(noteLibelle.getText().toString());
+            currentNoteFrais.setDateFrais(noteDate.getText().toString());
+            currentNoteFrais.setCommentaireFrais(noteComment.getText().toString());
+
+            request = new HttpsPutRequest();
+
+            try {
+                result = request.execute(NoteFraisAPI, currentNoteFrais.toJSON()).get();
+                JSONObject response = new JSONObject(result);
+                if (response.getBoolean("update")){
+                    Intent intent = new Intent(NoteFraisActivity.this, MainActivity.class);
+                    intent.putExtra("USER_JSON", currentUser.toString());
+                    startActivity(intent);
+                    finish();
+                }else{
+                    Toast.makeText(this, "Modification de la note de frais a echoué.", Toast.LENGTH_SHORT).show();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }else{
+            Toast.makeText(this, "Merci de bien vouloir remplir tous les champs.", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -339,6 +401,7 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
                 System.out.println("JSON-"+i + "  -  " + currentDepense.toString());
                 currentD = new Frais(currentDepense);
                 currentD.setMontantDepense(currentDepense.getDouble("montantDepense"));
+                currentD.setEtatValidation(currentDepense.getString("etatValidation"));
 
 
                 this.DepensesList.add((Frais)currentD);
@@ -348,6 +411,7 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
                 currentDepense = Trajet.getJSONObject(i);
                 currentD = new Trajet(currentDepense);
                 currentD.setMontantDepense(currentDepense.getDouble("montantDepense"));
+                currentD.setEtatValidation(currentDepense.getString("etatValidation"));
 
                 this.DepensesList.add((Trajet)currentD);
             }
@@ -389,19 +453,6 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
         switch (item.getItemId()){
             case android.R.id.home:
                 onBackPressed();
-                return true;
-
-
-            case R.id.action_delete:
-                try {
-                    if (this.currentNote.getString("etat").equals("En Cours")){
-                        this.DeleteNoteDeFrais();
-                    }else{
-                        Toast.makeText(this, "Note de frais déjà traitée", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
                 return true;
 
         }
@@ -476,8 +527,8 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
             day = selectedDay;
 
             // Show selected date
-            noteDate.setText(new StringBuilder().append(day)
-                    .append("/").append(month + 1).append("/").append(year));
+            noteDate.setText(new StringBuilder().append((day<10?("0"+day):(day)))
+                    .append("/").append((month<10?("0"+month):(month))).append("/").append(year));
         }
 
     };

@@ -10,8 +10,8 @@ import java.util.Locale;
  */
 
 public class DateFormat {
-    public static final String DATE_DASH_FORMAT = "yyyy-MM-dd";
-    public static final String DATE_FORMAT = "MM/dd/yyyy";
+    public static final String DATE_DASH_FORMAT = "yyyy-mm-dd";
+    public static final String DATE_FORMAT = "dd/mm/yyyy";
 
     public static String parseYMD(String strDate){
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-mm-dd");

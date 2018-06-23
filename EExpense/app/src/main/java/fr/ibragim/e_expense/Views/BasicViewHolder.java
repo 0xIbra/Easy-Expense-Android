@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import fr.ibragim.e_expense.Metier.NoteFrais;
 import fr.ibragim.e_expense.R;
+import fr.ibragim.e_expense.Widgets.DateFormat;
 
 /**
  * Created by ibragim.abubakarov on 07/04/2018.
@@ -36,7 +37,7 @@ public class BasicViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
     public void bind(final NoteFrais n, final AdapterView.OnItemClickListener listener){
         title.setText(n.getLibelle());
-        date.setText(n.getDateFrais());
+        date.setText(DateFormat.parseDMY(n.getDateFrais(), DateFormat.DATE_DASH_FORMAT, DateFormat.DATE_FORMAT));
         setEtatBackground(n.getEtat());
     }
 

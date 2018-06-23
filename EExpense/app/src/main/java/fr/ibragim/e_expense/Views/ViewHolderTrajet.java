@@ -10,8 +10,10 @@ import android.widget.TextView;
 import org.json.JSONObject;
 
 import fr.ibragim.e_expense.AddDepenseActivity;
+import fr.ibragim.e_expense.Metier.Frais;
 import fr.ibragim.e_expense.Metier.Trajet;
 import fr.ibragim.e_expense.R;
+import fr.ibragim.e_expense.Widgets.DateFormat;
 
 /**
  * Created by ibragim.abubakarov on 07/04/2018.
@@ -47,10 +49,14 @@ public class ViewHolderTrajet extends ViewHolder {
     @Override
     public void bindType(final ListItem item, final AdapterView.OnItemClickListener listener) {
         title.setText(((Trajet) item).getLibelleTrajet());
-        date.setText(((Trajet) item).getDateDepense());
-//        setBackground(((Trajet) item).getEtatValidation());
-
-        final Trajet trajet = ((Trajet) item);
+        date.setText(DateFormat.parseDMY(((Trajet) item).getDateDepense(), DateFormat.DATE_DASH_FORMAT, DateFormat.DATE_FORMAT));
+        System.out.println("ETATVAL : " + ((Trajet) item).getEtatValidation());
+        String etat = ((Trajet) item).getEtatValidation();
+        if (etat == null || etat.equals(null)){
+            setBackground("NULL");
+        }else{
+            setBackground(etat);
+        }
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override

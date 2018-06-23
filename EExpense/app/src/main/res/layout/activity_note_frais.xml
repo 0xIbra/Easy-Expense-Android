@@ -99,13 +99,24 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/notefraisDelete"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="left|bottom"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_delete_forever_black_24dp"
+            android:scaleType="center"
+            android:backgroundTint="@color/danger"
+            />
+
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/addDepense"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="bottom|center"
             android:layout_margin="@dimen/fab_margin"
-
             android:scaleType="center"
             android:src="@drawable/ic_add_black_24dp"
             app:backgroundTint="#374761"

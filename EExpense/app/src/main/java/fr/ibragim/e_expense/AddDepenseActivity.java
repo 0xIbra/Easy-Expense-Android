@@ -271,6 +271,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
                     depenseMontantField.setEnabled(false);
                     depenseSubmit.hide();
                     depenseDelete.hide();
+                    Toast.makeText(this, "La dépense a déjà été traitée.", Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -283,7 +284,11 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
             @Override
             public void onClick(View view) {
                 if (existing.equals("TRUE")){
-                    updateDepense();
+                    try {
+                        updateDepense();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }else if (existing.equals("FALSE")){
                     ValidateDepense();
                 }
@@ -328,6 +333,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
                     intent.putExtra("EXISTING", true);
                     intent.putExtra("USER_JSON", currentUser.toString());
                     intent.putExtra("NOTEFRAIS_JSON", currentNote.toString());
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     finish();
                 }else{
@@ -345,6 +351,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
                     Intent intent = new Intent(this, NoteFraisActivity.class);
                     intent.putExtra("EXISTING", true);
                     intent.putExtra("USER_JSON", currentUser.toString());
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.putExtra("NOTEFRAIS_JSON", currentNote.toString());
                     startActivity(intent);
                     finish();
@@ -394,6 +401,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
                         intent.putExtra("EXISTING", true);
                         intent.putExtra("USER_JSON", currentUser.toString());
                         intent.putExtra("NOTEFRAIS_JSON", currentNote.toString());
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                         finish();
                     }else {
@@ -453,6 +461,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
                         intent.putExtra("EXISTING", true);
                         intent.putExtra("USER_JSON", currentUser.toString());
                         intent.putExtra("NOTEFRAIS_JSON", currentNote.toString());
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                         finish();
                     }else{
@@ -475,7 +484,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
     }
 
 
-    public void updateDepense(){
+    public void updateDepense() throws JSONException {
         HttpsPutRequest request;
         String result = "";
 
@@ -512,6 +521,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
                         intent.putExtra("EXISTING", true);
                         intent.putExtra("USER_JSON", currentUser.toString());
                         intent.putExtra("NOTEFRAIS_JSON", currentNote.toString());
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                         finish();
                     }else{
@@ -527,7 +537,60 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
             }
 
         }else if (selectedFragmentType.equals("Trajet")){
+            if (!depenseMontantField.getText().toString().isEmpty() && !libelleDepense.getText().toString().isEmpty() && !Output.getText().toString().isEmpty() &&
+                    !((TrajetFragment) test).getDistanceField().isEmpty() && !((TrajetFragment) test).getDureeField().isEmpty() && !((TrajetFragment) test).getDateAller().isEmpty() &&
+                    !((TrajetFragment) test).getDateRetour().isEmpty() && !((TrajetFragment) test).getVilleDepart().isEmpty() && !((TrajetFragment) test).getVilleArrivee().isEmpty()){
 
+                String APITRAJET = this.API + "notesdefrais/depenses/trajet/put";
+
+                String libelle = this.libelleDepense.getText().toString();
+                String date = this.Output.getText().toString();
+                String description = this.depenseDescriptionField.getText().toString();
+                String montantStr = this.depenseMontantField.getText().toString();
+                double montant = Double.parseDouble(montantStr);
+                double distanceKm = Double.parseDouble(((TrajetFragment) test).getDistanceField());
+                double duree = Double.parseDouble(((TrajetFragment) test).getDureeField());
+                String dateAller = ((TrajetFragment) test).getDateAller();
+                String dateRetour = ((TrajetFragment) test).getDateRetour();
+                String villeDepart = ((TrajetFragment) test).getVilleDepart();
+                String villeArrivee = ((TrajetFragment) test).getVilleArrivee();
+
+                this.Depense = new Trajet(currentDepense);
+                ((Trajet) Depense).setLibelleTrajet(libelle);
+                ((Trajet) Depense).setDateDepense(date);
+                ((Trajet) Depense).setMontantDepense(montant);
+                ((Trajet) Depense).setDistanceKM(distanceKm);
+                ((Trajet) Depense).setDureeTrajet(duree);
+                ((Trajet) Depense).setDateAller(dateAller);
+                ((Trajet) Depense).setDateRetour(dateRetour);
+                ((Trajet) Depense).setVilleDepart(villeDepart);
+                ((Trajet) Depense).setVilleArrivee(villeArrivee);
+                ((Trajet) Depense).setIdUtilisateur(currentNote.getInt("idUtilisateur"));
+
+                request = new HttpsPutRequest();
+                System.out.println("TRAJET JSON  "  +  ((Trajet) Depense).toJSON());
+                try {
+                    result = request.execute(APITRAJET, ((Trajet) Depense).toJSON()).get();
+                    JSONObject response = new JSONObject(result);
+                    if (response.getBoolean("update")){
+                        Intent intent = new Intent(this, NoteFraisActivity.class);
+                        intent.putExtra("EXISTING", true);
+                        intent.putExtra("USER_JSON", currentUser.toString());
+                        intent.putExtra("NOTEFRAIS_JSON", currentNote.toString());
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
+                    }else{
+                        Toast.makeText(this, "Modification a echoué", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

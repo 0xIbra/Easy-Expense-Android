@@ -51,9 +51,9 @@ public abstract class Depense {
     }
 
     public String getJSON(){
-        return "\"idDepense\" : \""+this.id+"\", \"dateDepense\" : \""+this.dateDepense+"\", \"montantRemboursement\" : \""+this.MontantRemboursement+"\", " +
+        return "\"idDepense\" : "+this.id+", \"dateDepense\" : \""+this.dateDepense+"\", \"montantRemboursement\" : "+this.MontantRemboursement+", " +
                 "\"etatValidation\" : \""+this.etatValidation+"\", \"dateValidation\" : \""+this.dateValidation+"\", \"montantDepense\" : \""+this.montantDepense+"\"," +
-                " \"idUtilisateur\" : \""+this.idUtilisateur+"\",";
+                " \"idUtilisateur\" : "+this.idUtilisateur+",";
     }
 
 

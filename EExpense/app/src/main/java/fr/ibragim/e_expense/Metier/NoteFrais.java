@@ -23,9 +23,9 @@ public class NoteFrais {
 
 
     public String toJSON(){
-        return "{\"codeFrais\" : \""+this.id+"\", \"libelleNote\" : \""+this.libelle+"\", \"dateFrais\" : \""+this.DateFrais+"\", \"villeFrais\" : \""+this.Ville+"\"," +
+        return "{\"codeFrais\" : "+this.id+", \"libelleNote\" : \""+this.libelle+"\", \"dateFrais\" : \""+this.DateFrais+"\", \"villeFrais\" : \""+this.Ville+"\"," +
                 "\"dateSoumission\" : \""+this.dateSoumission+"\", \"commentaireFrais\" : \""+this.commentaireFrais+"\", \"etat\" : \""+this.etat+"\", " +
-                "\"idUtilisateur\" : \""+this.idUtilisateur+"\", \"idClient\" : \""+this.idClient+"\"}";
+                "\"idUtilisateur\" : "+this.idUtilisateur+", \"idClient\" : "+this.idClient+"}";
     }
 
     public NoteFrais(JSONObject note){

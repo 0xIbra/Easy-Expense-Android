@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import fr.ibragim.e_expense.AddDepenseActivity;
 import fr.ibragim.e_expense.Metier.Frais;
 import fr.ibragim.e_expense.R;
+import fr.ibragim.e_expense.Widgets.DateFormat;
 
 /**
  * Created by ibragim.abubakarov on 07/04/2018.
@@ -46,7 +47,7 @@ public class ViewHolderFrais extends ViewHolder {
     @Override
     public void bindType(final ListItem item, AdapterView.OnItemClickListener listener) {
         title.setText(((Frais) item).getIntituleFrais());
-        date.setText(((Frais) item).getDateDepense());
+        date.setText(DateFormat.parseDMY(((Frais) item).getDateDepense(), DateFormat.DATE_DASH_FORMAT, DateFormat.DATE_FORMAT));
         System.out.println("ETATVAL : " + ((Frais) item).getEtatValidation());
         String etat = ((Frais) item).getEtatValidation();
         if (etat == null || etat.equals(null)){
