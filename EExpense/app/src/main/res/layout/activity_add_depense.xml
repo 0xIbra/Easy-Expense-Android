@@ -32,11 +32,13 @@
 
 
             <ImageView
-                android:layout_margin="5dp"
+                android:layout_marginHorizontal="5dp"
+                android:layout_marginVertical="10dp"
                 android:id="@+id/addPicture"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/add_picture"/>
+
         </RelativeLayout>
 
         <RelativeLayout

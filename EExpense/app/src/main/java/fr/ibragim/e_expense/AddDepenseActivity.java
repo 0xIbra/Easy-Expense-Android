@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.icu.util.Calendar;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -34,17 +35,21 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.concurrent.ExecutionException;
 
 import fr.ibragim.e_expense.Fragments.FraisFragment;
 import fr.ibragim.e_expense.Fragments.TrajetFragment;
 import fr.ibragim.e_expense.Metier.Depense;
 import fr.ibragim.e_expense.Metier.Frais;
+import fr.ibragim.e_expense.Metier.Justificatif;
 import fr.ibragim.e_expense.Metier.Trajet;
 import fr.ibragim.e_expense.Views.FragmentType;
 import fr.ibragim.e_expense.Views.ListItem;
 import fr.ibragim.e_expense.Widgets.DateFormat;
+import fr.ibragim.e_expense.Widgets.ImageParser;
 import fr.ibragim.e_expense.network.HttpsDeleteRequest;
 import fr.ibragim.e_expense.network.HttpsPostRequest;
 import fr.ibragim.e_expense.network.HttpsPutRequest;
@@ -77,7 +82,11 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
             Manifest.permission.CAPTURE_VIDEO_OUTPUT,
             Manifest.permission.CAPTURE_AUDIO_OUTPUT
     };
+
+
+    // Image variables
     private Uri imageUri;
+    private String encodedImage = "";
 
 
     private String selectedFragmentType;
@@ -391,12 +400,45 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
                     e.printStackTrace();
                 }
 
+
                 try {
-                    Log.v("JSONOBJECT ", frais.toJSON());
+//                    Log.v("JSONOBJECT ", frais.toJSON());
                     result = request.execute(API_URL, frais.toJSON()).get();
-                    Log.v("RESPONSE ADD ", result);
+//                    Log.v("RESPONSE ADD ", result);
+
                     JSONObject response = new JSONObject(result);
                     if (response.getBoolean("response")){
+
+                        if (!this.encodedImage.equals("")){
+                            Justificatif justificatif = new Justificatif();
+                            justificatif.setTitreJustificatif(frais.getIntituleFrais());
+                            justificatif.setCodeFrais(frais.getCodeFrais());
+                            justificatif.setIdDepense(response.getInt("insertedId"));
+                            justificatif.setUrlJustiifcatif(this.encodedImage);
+//                            String slug = "justificatif_" + justificatif.getIdDepense() + justificatif.getTitreJustificatif() + frais.getDateDepense() + currentUser.getString("nomUtilisateur") + currentUser.getString("prenomUtilisateur");
+//                            byte[] slugbytes = slug.getBytes("UTF-8");
+//                            justificatif.setSlug(Base64.encodeToString(slugbytes, Base64.DEFAULT));
+
+//                            System.out.println("JUSTIFICATIF : " + justificatif.getSlug());
+
+                            String J_API = API + "justificatifs/post";
+                            System.out.println(J_API);
+                            HttpsPostRequest postRequest = new HttpsPostRequest();
+
+
+                            String res = "";
+
+//                            Log.v("IMAGEURLTEST ", justif.toString());
+
+                            res = postRequest.execute(J_API, justificatif.toJSON()).get();
+                            JSONObject respons = new JSONObject(res);
+                            if (respons.getBoolean("response")){
+                                Toast.makeText(this, "Enregistrement du justificatif réussi.", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(this, "Ajout du justificatif echoué", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
                         Intent intent = new Intent(this, NoteFraisActivity.class);
                         intent.putExtra("EXISTING", true);
                         intent.putExtra("USER_JSON", currentUser.toString());
@@ -404,6 +446,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                         finish();
+
                     }else {
                         Toast.makeText(this, "Ajout de la depense echoué", Toast.LENGTH_SHORT).show();
                     }
@@ -482,6 +525,10 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
 
 
     }
+
+
+
+
 
 
     public void updateDepense() throws JSONException {
@@ -664,6 +711,16 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
         Bitmap bitmap = BitmapFactory.decodeFile(imageUri.getPath(), options);
         addPicture.setImageBitmap(bitmap);
         addPicture.setRotation(90);
+
+        ImageEncode encoder = new ImageEncode(bitmap, depenseDescriptionField);
+
+        try {
+            this.encodedImage = encoder.execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -751,6 +808,25 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    private class ImageEncode extends AsyncTask<Void, Void, String> {
+        private Bitmap bitmap;
+        private EditText test;
+
+        public ImageEncode(Bitmap bitmap, EditText test){
+            this.bitmap = bitmap;
+            this.test = test;
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 20, byteArrayOutputStream);
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+
+            return Base64.encodeToString(byteArray, Base64.DEFAULT);
+        }
     }
 }
 

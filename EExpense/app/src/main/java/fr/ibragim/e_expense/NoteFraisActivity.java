@@ -483,7 +483,7 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
             response = deleteRequest.execute(API_URL, currentNote.toString()).get();
 //            Log.v("RESPONSE", response);
             JSONObject JsonResponse = new JSONObject(response);
-            if (JsonResponse.getBoolean("response") == true){
+            if (JsonResponse.getBoolean("response")){
                 Toast.makeText(getApplicationContext(), "Note de frais supprimée", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.putExtra("USER_JSON", currentUser.toString());
