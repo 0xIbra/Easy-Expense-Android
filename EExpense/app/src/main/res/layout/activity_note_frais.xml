@@ -85,13 +85,18 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/depenseRecycler"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/fieldContainer"></android.support.v7.widget.RecyclerView>
+
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/depenseRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/fieldContainer">
+
+        </android.support.v7.widget.RecyclerView>
 
 
 

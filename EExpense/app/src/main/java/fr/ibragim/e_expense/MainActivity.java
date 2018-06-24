@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.design.widget.NavigationView;
@@ -59,7 +60,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected String userpass;
 
     protected List<NoteFrais> NotesFrais = new ArrayList<NoteFrais>();
-    RecyclerView r;
+    protected RecyclerView r;
+
+    private SwipeRefreshLayout swipeRefresh;
 
     //protected NoteFrais currentNote;
 
@@ -142,9 +145,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-        if (this.NotesFrais.isEmpty()){
-            this.getNotes();
-        }
+//        if (this.NotesFrais.isEmpty()){
+//            this.getNotes();
+//        }
 
 
 
@@ -188,10 +191,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (id){
             case R.id.mesNotesFrais:
                 mainF = new MainFragment();
-                if (this.NotesFrais.isEmpty()){
-                    this.getNotes();
-                }
-                ((MainFragment) mainF).setNotes(this.NotesFrais);
+//                if (this.NotesFrais.isEmpty()){
+//                    this.getNotes();
+//                }
+//                ((MainFragment) mainF).setNotes(this.NotesFrais);
                 ((MainFragment) mainF).setUser(this.user);
                 fab.show();
                 break;
@@ -244,31 +247,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    public void getNotes(){
-        getRequest = new HttpsGetRequest();
-        String res = "";
-        try {
-            String API = API_URL;
-            API = API+"notesdefrais/get/"+user.getInt("idUtilisateur");
-            System.out.println("API URL : " + API);
-            res = getRequest.execute(API).get();
-            Log.v("RETOUR ", res+"");
-            JSONArray cards = new JSONArray(res);
-            JSONObject currentCard;
-            NoteFrais noteFrais;
-            for (int i = 0; i < cards.length(); i++){
-                currentCard = cards.getJSONObject(i);
-                noteFrais = new NoteFrais(currentCard);
-                NotesFrais.add(noteFrais);
-            }
+//    public void getNotes(){
+//        getRequest = new HttpsGetRequest();
+//        String res = "";
+//        try {
+//            String API = API_URL;
+//            API = API+"notesdefrais/get/"+user.getInt("idUtilisateur");
+//            System.out.println("API URL : " + API);
+//            res = getRequest.execute(API).get();
+//            Log.v("RETOUR ", res+"");
+//            JSONArray cards = new JSONArray(res);
+//            JSONObject currentCard;
+//            NoteFrais noteFrais;
+//            for (int i = 0; i < cards.length(); i++){
+//                currentCard = cards.getJSONObject(i);
+//                noteFrais = new NoteFrais(currentCard);
+//                NotesFrais.add(noteFrais);
+//            }
+//
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
+
 
 }

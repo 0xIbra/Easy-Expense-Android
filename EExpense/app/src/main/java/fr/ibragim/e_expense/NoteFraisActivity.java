@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -40,7 +41,7 @@ import fr.ibragim.e_expense.network.HttpsPutRequest;
 
 import static fr.ibragim.e_expense.AddDepenseActivity.DATE_PICKER_ID;
 
-public class NoteFraisActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
+public class NoteFraisActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
     private final String USER_JSON = "USER_JSON";
     private final String NOTEFRAIS_JSON = "NOTEFRAIS_JSON";
 
@@ -100,10 +101,6 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
 
         noteLibelle.setSelected(false);
         noteComment.setSelected(false);
-
-
-
-
 
         // Get current date by calender
         final java.util.Calendar c = java.util.Calendar.getInstance();
@@ -396,6 +393,8 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
             JSONObject currentDepense;
             Depense currentD;
 
+            DepensesList = new ArrayList<ListItem>();
+
             for (int i = 0; i < FraisType.length(); i++){
                 currentDepense = FraisType.getJSONObject(i);
                 System.out.println("JSON-"+i + "  -  " + currentDepense.toString());
@@ -534,4 +533,8 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
     };
 
 
+    @Override
+    public void onRefresh() {
+        Toast.makeText(this, "Refresh", Toast.LENGTH_SHORT).show();
+    }
 }
