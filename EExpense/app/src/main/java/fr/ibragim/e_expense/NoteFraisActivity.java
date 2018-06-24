@@ -186,8 +186,8 @@ public class NoteFraisActivity extends AppCompatActivity implements AdapterView.
         try {
             noteLibelle.setText(currentNote.getString("libelleNote"));
             noteDate.setText(DateFormat.parseDMY(currentNote.getString("dateFrais"), DateFormat.DATE_DASH_FORMAT, DateFormat.DATE_FORMAT));
-            if (noteComment.getText() == null || noteComment.getText().equals("") || noteComment.equals("null")){
-                noteComment.setText("merci de modifier ceci");
+            if (!currentNote.getString("commentaireFrais").equals("")){
+                noteComment.setText(currentNote.getString("commentaireFrais"));
             }
         } catch (JSONException e) {
             e.printStackTrace();

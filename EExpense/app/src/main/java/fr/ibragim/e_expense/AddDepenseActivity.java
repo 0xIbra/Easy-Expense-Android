@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.icu.util.Calendar;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -16,7 +15,6 @@ import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -37,7 +35,6 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.util.concurrent.ExecutionException;
 
 import fr.ibragim.e_expense.Fragments.FraisFragment;
@@ -49,10 +46,12 @@ import fr.ibragim.e_expense.Metier.Trajet;
 import fr.ibragim.e_expense.Views.FragmentType;
 import fr.ibragim.e_expense.Views.ListItem;
 import fr.ibragim.e_expense.Widgets.DateFormat;
-import fr.ibragim.e_expense.Widgets.ImageParser;
+import fr.ibragim.e_expense.Widgets.ImageCompressor;
 import fr.ibragim.e_expense.network.HttpsDeleteRequest;
+import fr.ibragim.e_expense.network.HttpsGetRequest;
 import fr.ibragim.e_expense.network.HttpsPostRequest;
 import fr.ibragim.e_expense.network.HttpsPutRequest;
+import fr.ibragim.e_expense.network.ImageLoader;
 
 public class AddDepenseActivity extends AppCompatActivity implements FraisFragment.OnFragmentInteractionListener, TrajetFragment.OnFragmentInteractionListener{
 
@@ -60,6 +59,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
     private JSONObject currentUser;
     private JSONObject currentDepense;
     private JSONObject currentNote;
+    private JSONObject currentJustificatif;
 
     private Depense Depense;
 
@@ -98,23 +98,6 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
     private EditText depenseDescriptionField;
     private EditText depenseMontantField;
     private EditText libelleDepense;
-
-
-
-//    //DEPENSE VARIABLES
-//    private int depenseId;
-//    private String depenseLibelle;
-//    private String depenseDate;
-//    private String depenseEtat;
-//    private double depenseDistance;
-//    private double depenseDuree;
-//    private String depenseDateAller;
-//    private String depenseDateRetour;
-//    private String depenseVilleDepart;
-//    private String depenseVilleArrivee;
-//    private int codeFrais;
-//    private double depenseMontant;
-//    private String depenseDetails;
 
     String API = "https://api.ibragim.fr/public/api/";
 
@@ -179,20 +162,30 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
                 if (selectedFragmentType.equals("Trajet")){
                     try {
                         currentDepense = new JSONObject(intent.getStringExtra("DEPENSE_JSON"));
+                        getJustificatif();
                     } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
                         e.printStackTrace();
                     }
                     try {
+
                         ifExistsInitDepense(selectedFragmentType);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    //this.depense = new Trajet(depenseId, depenseLibelle, depenseDate, 0, depenseEtat, null, depenseMontant, codeFrais, 0, depenseDuree, depenseVilleDepart, depenseVilleArrivee, depenseDateAller, depenseDateRetour, depenseDistance, depenseId, codeFrais);
-                    //System.out.println("TOSTRING " + this.depense.toString());
+
                 }else if (selectedFragmentType.equals("Frais")){
                     try {
                         currentDepense = new JSONObject(intent.getStringExtra("DEPENSE_JSON"));
+                        getJustificatif();
                     } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
                         e.printStackTrace();
                     }
                     try {
@@ -202,6 +195,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
                     }
 
                 }
+
 
 
             }else if(intentEx.equals("FALSE")){
@@ -285,6 +279,8 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }else{
+            depenseDelete.hide();
         }
 
 
@@ -321,6 +317,23 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
             }
         });
 
+    }
+
+
+    public void getJustificatif() throws JSONException, ExecutionException, InterruptedException {
+        String result = "";
+        HttpsGetRequest request;
+        String J_API = API + "justificatifs/" + currentDepense.getInt("idDepense");
+        System.out.println("JUSTIF API " + J_API);
+
+        request = new HttpsGetRequest();
+        result = request.execute(J_API).get();
+        System.out.println("JUSTIF " + result);
+        JSONObject response = new JSONObject(result);
+        if (response.getBoolean("response")){
+            this.encodedImage = "";
+            currentJustificatif = response.getJSONObject("result");
+        }
     }
 
 
@@ -415,11 +428,8 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
                             justificatif.setCodeFrais(frais.getCodeFrais());
                             justificatif.setIdDepense(response.getInt("insertedId"));
                             justificatif.setUrlJustiifcatif(this.encodedImage);
-//                            String slug = "justificatif_" + justificatif.getIdDepense() + justificatif.getTitreJustificatif() + frais.getDateDepense() + currentUser.getString("nomUtilisateur") + currentUser.getString("prenomUtilisateur");
-//                            byte[] slugbytes = slug.getBytes("UTF-8");
-//                            justificatif.setSlug(Base64.encodeToString(slugbytes, Base64.DEFAULT));
-
-//                            System.out.println("JUSTIFICATIF : " + justificatif.getSlug());
+                            String slug = justificatif.getIdDepense() + justificatif.getTitreJustificatif() + frais.getDateDepense() + currentUser.getString("nomUtilisateur") + currentUser.getString("prenomUtilisateur");
+                            justificatif.setSlug(slug);
 
                             String J_API = API + "justificatifs/post";
                             System.out.println(J_API);
@@ -427,8 +437,6 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
 
 
                             String res = "";
-
-//                            Log.v("IMAGEURLTEST ", justif.toString());
 
                             res = postRequest.execute(J_API, justificatif.toJSON()).get();
                             JSONObject respons = new JSONObject(res);
@@ -463,7 +471,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
             }
 
         }else if (selectedFragmentType.equals("Trajet")){
-            String API  = this.API + "depenses/trajet/add";
+            String TRAJETAPI  = this.API + "depenses/trajet/add";
 
             if (!depenseMontantField.getText().toString().isEmpty() && !libelleDepense.getText().toString().isEmpty() && !Output.getText().toString().isEmpty() &&
                     !((TrajetFragment) test).getDistanceField().isEmpty() && !((TrajetFragment) test).getDureeField().isEmpty() && !((TrajetFragment) test).getDateAller().isEmpty() &&
@@ -497,9 +505,37 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
                     System.out.println("OUTPUTJSON " + trajet.toJSON());
 
                     HttpsPostRequest postRequest = new HttpsPostRequest();
-                    result = postRequest.execute(API, trajet.toJSON()).get();
+                    result = postRequest.execute(TRAJETAPI, trajet.toJSON()).get();
                     JSONObject response = new JSONObject(result);
                     if (response.getBoolean("response")){
+
+
+                        if (!this.encodedImage.equals("")){
+                            Justificatif justificatif = new Justificatif();
+                            justificatif.setTitreJustificatif(trajet.getLibelleTrajet());
+                            justificatif.setCodeFrais(trajet.getCodeFrais());
+                            justificatif.setIdDepense(response.getInt("insertedId"));
+                            justificatif.setUrlJustiifcatif(this.encodedImage);
+                            String slug = justificatif.getIdDepense() + justificatif.getTitreJustificatif() + trajet.getDateDepense() + currentUser.getString("nomUtilisateur") + currentUser.getString("prenomUtilisateur");
+                            justificatif.setSlug(slug);
+
+                            String J_API = API + "justificatifs/post";
+                            System.out.println(J_API);
+                            HttpsPostRequest postRequest1 = new HttpsPostRequest();
+
+
+                            String res = "";
+
+                            res = postRequest1.execute(J_API, justificatif.toJSON()).get();
+                            JSONObject respons = new JSONObject(res);
+                            if (respons.getBoolean("response")){
+                                Toast.makeText(this, "Enregistrement du justificatif réussi.", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(this, "Enregistrement du justificatif echoué", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+
                         Intent intent = new Intent(this, NoteFraisActivity.class);
                         intent.putExtra("EXISTING", true);
                         intent.putExtra("USER_JSON", currentUser.toString());
@@ -536,7 +572,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
         String result = "";
 
         if (selectedFragmentType.equals("Frais")){
-            String API = this.API + "notesdefrais/depenses/frais/put";
+            String FRAISAPI = this.API + "notesdefrais/depenses/frais/put";
             request = new HttpsPutRequest();
 
             if (!depenseMontantField.getText().toString().isEmpty() && !libelleDepense.getText().toString().isEmpty() && !Output.getText().toString().isEmpty()){
@@ -561,9 +597,37 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
                     ((Frais) Depense).setCodeFrais(currentNote.getInt("codeFrais"));
                     ((Frais) Depense).setIdUtilisateur(currentNote.getInt("idUtilisateur"));
 
-                    result = request.execute(API, ((Frais) Depense).toJSON()).get();
+                    result = request.execute(FRAISAPI, ((Frais) Depense).toJSON()).get();
                     JSONObject response = new JSONObject(result);
                     if (response.getBoolean("update")){
+
+
+                        if (!this.encodedImage.equals("")){
+                            Justificatif justificatif = new Justificatif();
+                            justificatif.setTitreJustificatif(((Frais) Depense).getIntituleFrais());
+                            justificatif.setCodeFrais(((Frais) Depense).getCodeFrais());
+                            justificatif.setIdDepense(((Frais) Depense).getId());
+                            justificatif.setUrlJustiifcatif(this.encodedImage);
+                            String slug = justificatif.getIdDepense() + justificatif.getTitreJustificatif() + ((Frais) Depense).getDateDepense() + currentUser.getString("nomUtilisateur") + currentUser.getString("prenomUtilisateur");
+                            justificatif.setSlug(slug);
+
+                            String J_API = API + "justificatifs/put";
+                            System.out.println(J_API);
+                            HttpsPutRequest putRequest = new HttpsPutRequest();
+
+
+                            String res = "";
+
+                            res = putRequest.execute(J_API, justificatif.toJSON()).get();
+                            JSONObject respons = new JSONObject(res);
+                            if (respons.getBoolean("response")){
+                                Toast.makeText(this, "Enregistrement du justificatif réussi.", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(this, "Enregistrement du justificatif echoué", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+
                         Intent intent = new Intent(this, NoteFraisActivity.class);
                         intent.putExtra("EXISTING", true);
                         intent.putExtra("USER_JSON", currentUser.toString());
@@ -620,6 +684,34 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
                     result = request.execute(APITRAJET, ((Trajet) Depense).toJSON()).get();
                     JSONObject response = new JSONObject(result);
                     if (response.getBoolean("update")){
+
+
+                        if (!this.encodedImage.equals("")){
+                            Justificatif justificatif = new Justificatif();
+                            justificatif.setTitreJustificatif(((Trajet) Depense).getLibelleTrajet());
+                            justificatif.setCodeFrais(((Trajet) Depense).getCodeFrais());
+                            justificatif.setIdDepense(((Trajet) Depense).getId());
+                            justificatif.setUrlJustiifcatif(this.encodedImage);
+                            String slug = justificatif.getIdDepense() + justificatif.getTitreJustificatif() + ((Trajet) Depense).getDateDepense() + currentUser.getString("nomUtilisateur") + currentUser.getString("prenomUtilisateur");
+                            justificatif.setSlug(slug);
+
+                            String J_API = API + "justificatifs/put";
+                            System.out.println(J_API);
+                            HttpsPutRequest putRequest = new HttpsPutRequest();
+
+
+                            String res = "";
+
+                            res = putRequest.execute(J_API, justificatif.toJSON()).get();
+                            JSONObject respons = new JSONObject(res);
+                            if (respons.getBoolean("response")){
+                                Toast.makeText(this, "Enregistrement du justificatif réussi.", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(this, "Enregistrement du justificatif echoué", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+
                         Intent intent = new Intent(this, NoteFraisActivity.class);
                         intent.putExtra("EXISTING", true);
                         intent.putExtra("USER_JSON", currentUser.toString());
@@ -641,15 +733,17 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
         }
     }
 
-
-
-    //public void setTrajetFields(TrajetFragment fragment){
-    //    fragment.fillTrajetFieldsByObject(depenseDistance, depenseDuree, depenseDateAller, depenseDateRetour, depenseVilleDepart, depenseVilleArrivee);
-    //}
-
-
     public void ifExistsInitDepense(String typeFragment) throws JSONException {
-        System.out.println("TESTSTRING " + typeFragment);
+
+        if (currentJustificatif != null){
+
+            ImageLoader imageLoader = new ImageLoader(addPicture);
+
+            imageLoader.execute(currentJustificatif.getString("urlJustificatif"));
+
+
+        }
+
         switch (typeFragment){
             case "Frais":
                 this.Output.setText(currentDepense.getString("dateDepense"));
@@ -712,7 +806,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
         addPicture.setImageBitmap(bitmap);
         addPicture.setRotation(90);
 
-        ImageEncode encoder = new ImageEncode(bitmap, depenseDescriptionField);
+        ImageEncode encoder = new ImageEncode(bitmap);
 
         try {
             this.encodedImage = encoder.execute().get();
@@ -812,21 +906,27 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
 
     private class ImageEncode extends AsyncTask<Void, Void, String> {
         private Bitmap bitmap;
-        private EditText test;
 
-        public ImageEncode(Bitmap bitmap, EditText test){
+        public ImageEncode(Bitmap bitmap){
             this.bitmap = bitmap;
-            this.test = test;
+            this.bitmap = ImageCompressor.compress(bitmap, 720);
         }
 
         @Override
         protected String doInBackground(Void... voids) {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 20, byteArrayOutputStream);
+
+
+
             byte[] byteArray = byteArrayOutputStream.toByteArray();
 
             return Base64.encodeToString(byteArray, Base64.DEFAULT);
         }
     }
+
+
+
+
 }
 
