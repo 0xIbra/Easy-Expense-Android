@@ -909,7 +909,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
 
         public ImageEncode(Bitmap bitmap){
             this.bitmap = bitmap;
-            this.bitmap = ImageCompressor.compress(bitmap, 720);
+            this.bitmap = ImageCompressor.compress(bitmap, 1024);
         }
 
         @Override

@@ -206,6 +206,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.nav_manage:
                 mainF = new AccountFragment();
+                ((AccountFragment) mainF).setUser(this.user);
                 fab.hide();
                 break;
 

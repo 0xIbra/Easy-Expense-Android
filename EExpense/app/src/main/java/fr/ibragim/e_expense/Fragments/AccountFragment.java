@@ -7,6 +7,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import fr.ibragim.e_expense.R;
 import fr.ibragim.e_expense.Views.MainActivityFragmentType;
@@ -21,6 +25,12 @@ public class AccountFragment extends Fragment implements MainActivityFragmentTyp
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private JSONObject currentUser = null;
+
+    public void setUser(JSONObject user){
+        this.currentUser = user;
+    }
 
     //private OnFragmentInteractionListener mListener;
 
@@ -58,8 +68,18 @@ public class AccountFragment extends Fragment implements MainActivityFragmentTyp
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_account, container, false);
+        View view = inflater.inflate(R.layout.fragment_account, container, false);
+        TextView name = view.findViewById(R.id.nameTitle);
+
+        if (this.currentUser != null){
+            try {
+                name.setText(currentUser.getString("prenomUtilisateur") + " " + currentUser.getString("nomUtilisateur"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
