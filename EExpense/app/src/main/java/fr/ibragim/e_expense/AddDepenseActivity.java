@@ -647,6 +647,8 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
+            }else{
+                Toast.makeText(this, "Veuillez remplir tous les champs", Toast.LENGTH_SHORT).show();
             }
 
         }else if (selectedFragmentType.equals("Trajet")){
@@ -748,6 +750,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
 
         switch (typeFragment){
             case "Frais":
+                libelleDepense.setText(currentDepense.getString("libelleFrais"));
                 this.Output.setText(DateFormat.parseDMY(currentDepense.getString("dateDepense"), "yyyy-mm-dd", "dd/mm/yyyy"));
                 depenseDescriptionField.setText(currentDepense.getString("detailsFrais"));
                 try {
