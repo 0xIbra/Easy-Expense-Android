@@ -135,6 +135,7 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
 
         year = c.get(java.util.Calendar.YEAR);
         month = c.get(java.util.Calendar.MONTH);
+        month = month + 1;
         day = c.get(java.util.Calendar.DAY_OF_MONTH);
 
 //        final Calendar c = Calendar.getInstance();
@@ -143,7 +144,8 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
 //        month = c.get(Calendar.MONTH);
 //        day = c.get(Calendar.DAY_OF_MONTH);
 
-        Output.setText(new StringBuilder().append(day).append("/").append(month + 1).append("/").append(year));
+        Output.setText(new StringBuilder().append((day<10?("0"+day):(day)))
+                .append("/").append((month<10?("0"+month):(month))).append("/").append(year));
 
 
         Intent intent = getIntent();
@@ -746,19 +748,10 @@ public class AddDepenseActivity extends AppCompatActivity implements FraisFragme
 
         switch (typeFragment){
             case "Frais":
-                this.Output.setText(currentDepense.getString("dateDepense"));
+                this.Output.setText(DateFormat.parseDMY(currentDepense.getString("dateDepense"), "yyyy-mm-dd", "dd/mm/yyyy"));
                 depenseDescriptionField.setText(currentDepense.getString("detailsFrais"));
                 try {
                     depenseMontantField.setText(String.valueOf(currentDepense.getDouble("montantDepense")));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    Output.setText(currentDepense.getString("dateDepense"));
-                    libelleDepense.setText(currentDepense.getString("libelleFrais"));
-                    depenseDescriptionField.setText(currentDepense.getString("detailsFrais"));
-                    Log.v("EXISTINGVALUE ", currentDepense.toString());
-                    depenseMontantField.setText(currentDepense.getString("montantDepense"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
